@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans: 'Poppins', 'Akira', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+:root {
+    --background: #FFFFFF;
+    --foreground: #252525;
+    --card: #FEEC9C;
+    --card-foreground: #252525;
+    --popover: #FEEC9C;
+    --popover-foreground: #252525;
+    --primary: #EABB2B;
+    --primary-foreground: #252525;
+    --secondary: #FEEC9C;
+    --secondary-foreground: #252525;
+    --muted: #FEEC9C;
+    --muted-foreground: #252525;
+    --accent: #EABB2B;
+    --accent-foreground: #252525;
+    --destructive: #BA0000;
+    --destructive-foreground: #FEEC9C;
+    --border: #EABB2B;
+    --input: #EABB2B;
+    --ring: #EABB2B;
+    --chart-1: #EABB2B;
+    --chart-2: #BA0000;
+    --chart-3: #252525;
+    --chart-4: #FEEC9C;
+    --chart-5: #EABB2B;
+    --radius: 0.625rem;
+    --sidebar: #252525;
+    --sidebar-foreground: #FEEC9C;
+    --sidebar-primary: #EABB2B;
+    --sidebar-primary-foreground: #252525;
+    --sidebar-accent: #BA0000;
+    --sidebar-accent-foreground: #FEEC9C;
+    --sidebar-border: #EABB2B;
+    --sidebar-ring: #EABB2B;
+}
+
+.dark {
+    --background: #FFFFFF;
+    --foreground: #FEEC9C;
+    --card: #252525;
+    --card-foreground: #FEEC9C;
+    --popover: #252525;
+    --popover-foreground: #FEEC9C;
+    --primary: #EABB2B;
+    --primary-foreground: #252525;
+    --secondary: #BA0000;
+    --secondary-foreground: #FEEC9C;
+    --muted: #252525;
+    --muted-foreground: #FEEC9C;
+    --accent: #EABB2B;
+    --accent-foreground: #FEEC9C;
+    --destructive: #BA0000;
+    --destructive-foreground: #FEEC9C;
+    --border: #EABB2B;
+    --input: #EABB2B;
+    --ring: #EABB2B;
+    --chart-1: #EABB2B;
+    --chart-2: #BA0000;
+    --chart-3: #252525;
+    --chart-4: #FEEC9C;
+    --chart-5: #EABB2B;
+    --sidebar: #252525;
+    --sidebar-foreground: #FEEC9C;
+    --sidebar-primary: #EABB2B;
+    --sidebar-primary-foreground: #FEEC9C;
+    --sidebar-accent: #BA0000;
+    --sidebar-accent-foreground: #FEEC9C;
+    --sidebar-border: #EABB2B;
+    --sidebar-ring: #EABB2B;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@font-face {
+    font-family: Akira;
+    src: url('/fonts/AkiraExpanded-SuperBold.woff') format('woff'),
+         url('/fonts/AkiraExpanded-SuperBold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
