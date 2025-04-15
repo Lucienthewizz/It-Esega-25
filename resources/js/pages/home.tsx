@@ -38,14 +38,20 @@ export default function Home() {
             <Head title="IT-ESEGA 2025 Official Website" />
             <div className="bg-background from-primary to-secondary font-poppins relative min-h-screen text-black">
                 {/* Background Overlay */}
+
                 <div
                     className="from-primary to-secondary absolute inset-0 z-0 bg-gradient-to-br opacity-8"
                     style={{
-                        backgroundImage: `url('/images/Halftone-1.png'), url('/images/bg-image.png')`,
-                        backgroundRepeat: 'repeat, no-repeat',
-                        backgroundSize: '400px, contain',
-                        backgroundPosition: 'center, top center',
+                        backgroundImage: `
+                        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23FF0000' stroke-width='0.5'%3E%3Cpath d='M 0 0 L 0 100 M 10 0 L 10 100 M 20 0 L 20 100 M 30 0 L 30 100 M 40 0 L 40 100 M 50 0 L 50 100 M 60 0 L 60 100 M 70 0 L 70 100 M 80 0 L 80 100 M 90 0 L 90 100 M 100 0 L 100 100' /%3E%3Cpath d='M 0 0 L 100 0 M 0 10 L 100 10 M 0 20 L 100 20 M 0 30 L 100 30 M 0 40 L 100 40 M 0 50 L 100 50 M 0 60 L 100 60 M 0 70 L 100 70 M 0 80 L 100 80 M 0 90 L 100 90 M 0 100 L 100 100' /%3E%3C/g%3E%3C/svg%3E"),
+                        url('/images/Halftone-1.png'),
+                        url('/images/bg-image.png')
+                         `,
+                        backgroundRepeat: 'repeat, repeat, no-repeat',
+                        backgroundSize: '100px 100px, 400px, contain',
+                        backgroundPosition: 'center, center, top center',
                         backgroundBlendMode: 'overlay',
+                        opacity: 0.07,
                     }}
                 />
 
@@ -92,7 +98,7 @@ export default function Home() {
                     </div>
 
                     {/* About Section */}
-                    <section className="bg-white py-16" data-aos="fade-up">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="container mx-auto px-6">
                             <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
                                 <div className="flex justify-center md:justify-start" data-aos="fade-right">
@@ -112,7 +118,7 @@ export default function Home() {
                     </section>
 
                     {/* Competition Section */}
-                    <section className="relative bg-white py-16">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="relative z-10 container mx-auto px-6 pt-25">
                             <h2 className="mb-8 text-center text-4xl font-bold" data-aos="fade-up">
                                 Upcoming <span className="text-red-600">Tournament</span>
@@ -179,7 +185,7 @@ export default function Home() {
                     </section>
 
                     {/* Timeline Section */}
-                    <section className="relative bg-white py-20">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="container mx-auto px-6">
                             <h2 className="mb-16 text-center text-4xl font-extrabold text-gray-900">
                                 Event <span className="text-red-600">Timeline</span>
@@ -240,7 +246,7 @@ export default function Home() {
                     </section>
 
                     {/* FAQ Section */}
-                    <section className="bg-white py-20">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="container mx-auto px-4">
                             <div className="mx-auto max-w-3xl">
                                 <h2 className="mb-10 text-center text-4xl font-extrabold text-gray-900">
