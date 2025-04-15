@@ -1,7 +1,9 @@
 import { Navbar } from '@/components/navbar';
+import { Disclosure } from '@headlessui/react';
 import { Head, Link } from '@inertiajs/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { route } from 'ziggy-js';
 
@@ -25,7 +27,10 @@ export default function Home() {
             question: 'What is IT-ESEGA?',
             answer: 'IT-ESEGA is the premier technology competition that brings together the brightest minds from universities across the nation.',
         },
-        { question: 'How can I register?', answer: 'You can register for the tournament by clicking the "Register Now" button on our homepage.' },
+        {
+            question: 'How can I register?',
+            answer: 'You can register for the tournament by clicking the "Register Now" button on our homepage.',
+        },
         {
             question: 'What games are included in the tournament?',
             answer: 'The tournament features popular games like Mobile Legends and Free Fire.',
@@ -48,7 +53,6 @@ export default function Home() {
                     }}
                 />
 
-                {/* Content */}
                 <div className="relative z-10">
                     <Navbar
                         logo={
@@ -91,11 +95,11 @@ export default function Home() {
                     </div>
 
                     {/* About Section */}
-                    <section className="bg-white py-16" data-aos="fade-up">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="container mx-auto px-6">
                             <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
                                 <div className="flex justify-center md:justify-start" data-aos="fade-right">
-                                    <img src="/images/MascotEsega25.png" alt="IT-ESEGA Logo" className="h-64 w-auto object-contain md:h-150" />
+                                    <img src="/images/MascotEsega25.png" alt="Mascot" className="h-64 w-auto object-contain md:h-150" />
                                 </div>
                                 <div className="text-center md:text-left" data-aos="fade-left">
                                     <h2 className="mb-8 text-4xl font-bold">
@@ -111,12 +115,13 @@ export default function Home() {
                     </section>
 
                     {/* Competition Section */}
-                    <section className="relative bg-white py-16">
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
                         <div className="relative z-10 container mx-auto px-6 pt-25">
                             <h2 className="mb-8 text-center text-4xl font-bold" data-aos="fade-up">
                                 Upcoming Tournament
                             </h2>
                             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                                {/* Mobile Legends */}
                                 <div
                                     className="relative overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
                                     data-aos="fade-up"
@@ -145,6 +150,8 @@ export default function Home() {
                                         </Link>
                                     </div>
                                 </div>
+
+                                {/* Free Fire */}
                                 <div
                                     className="relative overflow-hidden rounded-lg shadow-md transition-shadow hover:shadow-lg"
                                     data-aos="fade-up"
@@ -176,6 +183,140 @@ export default function Home() {
                             </div>
                         </div>
                     </section>
+
+                    {/* Timeline Section */}
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <h2 className="mb-16 text-center text-4xl font-extrabold text-gray-900">
+                                Event <span className="text-red-600">Timeline</span>
+                            </h2>
+
+                            <div className="relative mx-auto flex w-full flex-col items-center">
+                                <div className="bg-primary absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform" />
+                                {[
+                                    {
+                                        date: 'January 1, 2025',
+                                        title: 'Lorem Ipsum Dolor',
+                                        description:
+                                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula magna ut ante cursus.',
+                                    },
+                                    {
+                                        date: 'February 10, 2025',
+                                        title: 'Sit Amet Consectetur',
+                                        description:
+                                            'Phasellus vitae sapien vel velit dapibus suscipit. Pellentesque habitant morbi tristique senectus.',
+                                    },
+                                    {
+                                        date: 'March 20, 2025',
+                                        title: 'Adipisicing Elit',
+                                        description:
+                                            'Mauris lacinia, nulla in fermentum blandit, urna leo laoreet nulla, eget sodales ligula erat ac elit.',
+                                    },
+                                    {
+                                        date: 'April 5, 2025',
+                                        title: 'Dolore Magna Aliqua',
+                                        description:
+                                            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                    },
+                                ].map((item, index) => {
+                                    const isLeft = index % 2 === 0;
+                                    return (
+                                        <motion.div
+                                            key={index}
+                                            initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                                            className={`mb-16 flex w-full flex-col items-center md:w-1/2 ${
+                                                isLeft ? 'pr-4 md:items-end md:self-start' : 'pl-4 md:items-start md:self-end'
+                                            }`}
+                                        >
+                                            <div className="relative max-w-md rounded-xl border bg-white p-6 shadow-md">
+                                                <span className="bg-primary absolute -top-3 left-1/2 h-5 w-5 -translate-x-1/2 transform rounded-full border-4 border-white shadow-lg"></span>
+                                                <p className="mb-1 text-sm text-gray-500">{item.date}</p>
+                                                <h4 className="text-primary mb-2 text-xl font-semibold">{item.title}</h4>
+                                                <p className="text-gray-700">{item.description}</p>
+                                            </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* FAQ Section */}
+                    <section className="bg-cover bg-center py-16" style={{ backgroundImage: 'url(/images/backrground.jpg)' }} data-aos="fade-up">
+                        <div className="container mx-auto px-4">
+                            <div className="mx-auto max-w-3xl">
+                                <h2 className="mb-10 text-center text-4xl font-extrabold text-gray-900">
+                                    Frequently <span className="text-red-600">Asked Questions</span>
+                                </h2>
+                                <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm">
+                                    {faqs.map((faq, index) => (
+                                        <Disclosure key={index}>
+                                            {({ open }) => (
+                                                <div className="px-6 py-5 transition-all hover:bg-gray-100">
+                                                    <Disclosure.Button className="flex w-full items-center justify-between text-left text-lg font-medium text-gray-800 focus:outline-none">
+                                                        <span>{faq.question}</span>
+                                                        <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
+                                                            <svg
+                                                                className={`h-5 w-5 transform transition-transform duration-300 ${
+                                                                    open ? 'rotate-180' : ''
+                                                                }`}
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="2"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                                            </svg>
+                                                        </span>
+                                                    </Disclosure.Button>
+                                                    <Disclosure.Panel className="mt-2 text-sm leading-relaxed text-gray-700">
+                                                        {faq.answer}
+                                                    </Disclosure.Panel>
+                                                </div>
+                                            )}
+                                        </Disclosure>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="border-t border-gray-200 bg-gray-100 py-10">
+                        <div className="container mx-auto px-4">
+                            <div className="flex flex-col items-center justify-center space-y-6 text-center">
+                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA Logo" className="h-14 w-auto" />
+
+                                <div className="flex space-x-6">
+                                    <Link
+                                        href={route('home')}
+                                        className="hover:text-primary text-sm font-medium text-gray-600 transition duration-300"
+                                    >
+                                        Home
+                                    </Link>
+                                    <Link
+                                        href={route('about')}
+                                        className="hover:text-primary text-sm font-medium text-gray-600 transition duration-300"
+                                    >
+                                        About
+                                    </Link>
+                                    <Link
+                                        href={route('register')}
+                                        className="hover:text-primary text-sm font-medium text-gray-600 transition duration-300"
+                                    >
+                                        Register
+                                    </Link>
+                                </div>
+
+                                <div className="text-sm font-medium text-gray-500">
+                                    &copy; {new Date().getFullYear()} IT-ESEGA. All rights reserved.
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </>
