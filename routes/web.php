@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\AboutController;
+use App\Http\Controllers\PageController;
 
 Route::get('/', function () {
     return Inertia::render('home');
@@ -14,7 +14,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/about', [PageController::class, 'about'])->name('about');
+Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
