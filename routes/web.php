@@ -14,7 +14,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+
+
+Route::middleware(['auth', 'role:super_admin'])->prefix('secure-admin-essega')->group(function () {
+
+});
+
+
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
