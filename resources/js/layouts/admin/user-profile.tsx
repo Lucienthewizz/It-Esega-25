@@ -11,16 +11,24 @@ type UserProfileProps = {
 
 export function UserProfile({ user }: UserProfileProps) {
 
+    const avatarUrl = user?.name
+        ? `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(user.name)}`
+        : "/placeholder.svg?height=32&width=32"
+
+    const initials = user?.name
+        ? user.name.split(" ").map(part => part[0]).join("").toUpperCase().slice(0, 2)
+        : "JD"
+
     return (
         <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.name || "/placeholder.svg?height=32&width=32"} alt="Avatar" />
-                    <AvatarFallback>{user?.name || "JD"}</AvatarFallback>
+                    <AvatarImage src={avatarUrl || "/placeholder.svg?height=32&width=32"} alt="Avatar" />
+                    <AvatarFallback>{initials || "JD"}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="text-sm font-medium">{user?.name || "John Doe"}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email || "admin@acme.com"}</p>
+                    <p className="text-sm font-medium">{user?.name || "-"}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email || "None"}</p>
                 </div>
             </div>
             <DropdownMenu>
