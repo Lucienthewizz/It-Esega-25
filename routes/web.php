@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\AboutController;
@@ -8,7 +10,7 @@ Route::get('/', function () {
     return Inertia::render('home');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', 'role: user'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
@@ -16,8 +18,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 
-Route::middleware(['auth', 'role:super_admin'])->prefix('secure-admin-essega')->group(function () {
+Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-essega')->group(function () {
+    Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 
+
+
+
+    Route::post('logout/admin/it-esega', [AuthenticatedSessionControllerAdmin::class, 'destroy'])
+        ->name('logout.admin');
 });
 
 

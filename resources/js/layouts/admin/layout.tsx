@@ -1,21 +1,35 @@
-import { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { UsePermission } from '@/utils/permission';
+// import { UseRoles } from '@/utils/roles';
+import { UserType } from '@/types/user';
+import { ReactNode, useState } from 'react';
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import DashboardHeader from './header';
+import SidebarNav from "./sidebar"
 
 
-export default function Authenticated({ children, user }) {
+type AuthenticatedLayoutProps = {
+    children: ReactNode;
+    user: UserType;
+};
 
-    // const { auth } = usePage().props;
-    const { hasRole } = UsePermission();
+
+export default function AuthenticatedAdminLayout({ children, user }: AuthenticatedLayoutProps) {
+    const [activeItem, setActiveItem] = useState("dashboard");
 
     return (
         <>
-            <div className='relative'>
-                {children}
-                {/* <Navbar user={user} />
-                <ScrollToTop />
-                <Footer /> */}
-            </div>
+
+            <SidebarProvider>
+                <div className="flex h-screen w-full">
+                    <SidebarNav activeItem={activeItem} setActiveItem={setActiveItem} user={user} />
+                    <SidebarInset>
+                        <div className="flex h-full flex-col">
+                            <DashboardHeader user={user} />
+                            <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
+                        </div>
+                    </SidebarInset>
+                </div>
+            </SidebarProvider>
+
         </>
     );
 }
