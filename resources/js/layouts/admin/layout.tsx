@@ -10,11 +10,12 @@ import { usePage } from '@inertiajs/react';
 type AuthenticatedLayoutProps = {
     children: ReactNode;
     user: UserType;
+    headerTitle: string;
 };
 
 
 
-export default function AuthenticatedAdminLayout({ children, user }: AuthenticatedLayoutProps) {
+export default function AuthenticatedAdminLayout({ children, user, headerTitle }: AuthenticatedLayoutProps) {
     const { url } = usePage();
     const [activeItem, setActiveItem] = useState("");
 
@@ -36,7 +37,7 @@ export default function AuthenticatedAdminLayout({ children, user }: Authenticat
                     <SidebarNav activeItem={activeItem} setActiveItem={setActiveItem} user={user} />
                     <SidebarInset>
                         <div className="flex h-full flex-col">
-                            <DashboardHeader user={user} />
+                            <DashboardHeader user={user} headerTitle={headerTitle} />
                             <main className="flex-1 overflow-auto p-4 lg:p-6 text-slate-800">{children}</main>
                         </div>
                     </SidebarInset>

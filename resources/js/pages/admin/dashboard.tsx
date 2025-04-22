@@ -9,7 +9,7 @@ export default function AdminDashboard() {
     console.log('admin dashboard data', auth);
 
     return (
-        <AuthenticatedAdminLayout user={auth}>
+        <AuthenticatedAdminLayout headerTitle={'Dashboard'} user={auth}>
             <div>
                 {auth?.name}
             </div>
