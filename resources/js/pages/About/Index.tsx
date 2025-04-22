@@ -8,7 +8,7 @@ const breadcrumbs = [
     },
 ];
 
-export default function Index() {
+export default function about() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="About Us" />

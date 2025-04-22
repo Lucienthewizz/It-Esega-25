@@ -118,6 +118,7 @@ body {
     --sidebar-accent-foreground: #FEEC9C;
     --sidebar-border: #EABB2B;
     --sidebar-ring: #EABB2B;
+    --custom: #333;
 }
 
 .dark {
@@ -153,6 +154,7 @@ body {
     --sidebar-accent-foreground: #FEEC9C;
     --sidebar-border: #EABB2B;
     --sidebar-ring: #EABB2B;
+    --custom: #333;
 }
 
 @layer base {
@@ -191,3 +193,9 @@ body {
     font-style: normal;
     font-display: swap;
 }
+
+/* .container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 0 1rem;
+} */
