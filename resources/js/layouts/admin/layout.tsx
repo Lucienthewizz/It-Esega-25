@@ -1,9 +1,10 @@
 // import { UseRoles } from '@/utils/roles';
 import { UserType } from '@/types/user';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import DashboardHeader from './header';
 import SidebarNav from "./sidebar"
+import { usePage } from '@inertiajs/react';
 
 
 type AuthenticatedLayoutProps = {
@@ -12,8 +13,20 @@ type AuthenticatedLayoutProps = {
 };
 
 
+
 export default function AuthenticatedAdminLayout({ children, user }: AuthenticatedLayoutProps) {
-    const [activeItem, setActiveItem] = useState("dashboard");
+    const { url } = usePage();
+    const [activeItem, setActiveItem] = useState("");
+
+    useEffect(() => {
+        if (url.includes('dashboard')) {
+            setActiveItem('dashboard');
+        } else if (url.includes('users')) {
+            setActiveItem('users');
+        } else if (url.includes("settings")) {
+            setActiveItem('settings');
+        }
+    }, [url]);
 
     return (
         <>
@@ -24,7 +37,7 @@ export default function AuthenticatedAdminLayout({ children, user }: Authenticat
                     <SidebarInset>
                         <div className="flex h-full flex-col">
                             <DashboardHeader user={user} />
-                            <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
+                            <main className="flex-1 overflow-auto p-4 lg:p-6 text-slate-800">{children}</main>
                         </div>
                     </SidebarInset>
                 </div>

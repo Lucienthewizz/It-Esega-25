@@ -27,16 +27,16 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
     }
 
     return (
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-16 lg:px-6">
+        <header className="flex h-14 items-center bg-[#252525] gap-4 border-b px-4 lg:h-16 lg:px-6">
             <SidebarTrigger />
             <div className="flex-1">
-                <h1 className="text-lg font-semibold">Dashboard</h1>
+                <h1 className="text-lg font-semibold text-white">Dashboard</h1>
             </div>
             <div className="flex items-center gap-2">
-                <Button variant="outline" size="icon" onClick={toggleTheme}>
+                <Button variant="ghost" className="" size="icon" onClick={toggleTheme}>
                     {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </Button>
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-12 w-12">
                     <AvatarImage src={avatarUrl} alt={user?.name || "Avatar"} />
                     <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
