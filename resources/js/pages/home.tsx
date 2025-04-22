@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/navbar';
+import { UserType } from '@/types/user';
 import { Disclosure } from '@headlessui/react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
@@ -8,6 +9,16 @@ import { useEffect } from 'react';
 import { route } from 'ziggy-js';
 
 export default function Home() {
+    const { user } = usePage<{ user: { data: UserType } }>().props;
+    // const auth = user;
+
+
+    console.log('Dari Home', user);
+
+    // console.log(auth?.roles?.[0]?.name)
+
+
+
     const navItems = [
         { title: 'Home', href: route('home') },
         { title: 'About', href: route('about') },
@@ -55,6 +66,7 @@ export default function Home() {
 
                 <div className="relative z-10">
                     <Navbar
+                        user={user}
                         logo={
                             <div className="flex items-center justify-center">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
@@ -227,9 +239,8 @@ export default function Home() {
                                             whileInView={{ opacity: 1, x: 0 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.6, delay: index * 0.1 }}
-                                            className={`mb-16 flex w-full flex-col items-center md:w-1/2 ${
-                                                isLeft ? 'pr-4 md:items-end md:self-start' : 'pl-4 md:items-start md:self-end'
-                                            }`}
+                                            className={`mb-16 flex w-full flex-col items-center md:w-1/2 ${isLeft ? 'pr-4 md:items-end md:self-start' : 'pl-4 md:items-start md:self-end'
+                                                }`}
                                         >
                                             <div className="relative max-w-md rounded-xl border bg-white p-6 shadow-md">
                                                 <span className="bg-primary absolute -top-3 left-1/2 h-5 w-5 -translate-x-1/2 transform rounded-full border-4 border-white shadow-lg"></span>
@@ -260,9 +271,8 @@ export default function Home() {
                                                         <span>{faq.question}</span>
                                                         <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
                                                             <svg
-                                                                className={`h-5 w-5 transform transition-transform duration-300 ${
-                                                                    open ? 'rotate-180' : ''
-                                                                }`}
+                                                                className={`h-5 w-5 transform transition-transform duration-300 ${open ? 'rotate-180' : ''
+                                                                    }`}
                                                                 fill="none"
                                                                 stroke="currentColor"
                                                                 strokeWidth="2"

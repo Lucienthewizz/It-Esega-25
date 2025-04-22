@@ -6,11 +6,11 @@ export default function AdminDashboard() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
     const auth = user.data;
 
-    console.log(auth);
+    console.log('admin dashboard data', auth);
+
     return (
         <AuthenticatedAdminLayout user={auth}>
             <div>
-
                 {auth?.name}
             </div>
         </AuthenticatedAdminLayout>

@@ -45,7 +45,7 @@ class HandleInertiaRequests extends Middleware
             'csrf' => csrf_token(),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
-            'auth.user' => fn() => $request->user()
+            'user' => fn() => $request->user()
                 ? new UserSharedResource($request->user())
                 : null,
             'flash' => [
