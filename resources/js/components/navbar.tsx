@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Menu, User } from 'lucide-react';
 import { UserType } from '@/types/user';
+import { useEffect, useState } from 'react';
 
 interface NavItem {
     title: string;
@@ -20,10 +21,19 @@ interface NavbarProps {
 }
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
+    const [isScrolled, setIsScrolled] = useState(false);
     const navigationItems = items.slice(0, -1);
     const actionItem = items.slice(-1)[0];
     const currentPath = window.location.pathname;
 
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // const getRedirectPath = (user: UserType) => {
     //     if (user === undefined) return '#';
@@ -44,21 +54,19 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     console.log('Navbar user:', user);
     console.log('Navbar Data Role:', user?.data.name);
 
-
-
     return (
-        <nav className="bg-transparent">
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
             <div className="container px-6 py-1.5 mx-auto">
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                     {/* Logo Section */}
-                    <div className="flex items-center">
+                    <div className="flex-shrink-0">
                         {logo}
                     </div>
 
-                    {/* Desktop Navigation */}
-                    <div className="hidden gap-x-8 items-center md:flex">
+                    {/* Desktop Navigation - Centered */}
+                    <div className="hidden flex-grow justify-center md:flex">
                         {/* Center Navigation Links */}
-                        <div className="flex space-x-6">
+                        <div className="flex space-x-8">
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.title}
@@ -70,8 +78,10 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                 </Link>
                             ))}
                         </div>
+                    </div>
 
-                        {/* Action Button or User Icon */}
+                    {/* Action Button or User Icon */}
+                    <div className="flex-shrink-0">
                         {user ? (
                             <Link
                                 href={

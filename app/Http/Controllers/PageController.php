@@ -13,7 +13,7 @@ class PageController extends Controller
      */
     public function about(): Response
     {
-        return Inertia::render('About');
+        return Inertia::render('About/Index');
     }
 
     /**

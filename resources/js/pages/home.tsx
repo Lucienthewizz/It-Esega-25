@@ -5,7 +5,6 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
-import { title } from 'process';
 import { useEffect } from 'react';
 import { route } from 'ziggy-js';
 
@@ -79,7 +78,7 @@ export default function Home() {
                     />
 
                     {/* Hero Section */}
-                    <div className="container mx-auto px-6 py-30 pt-35">
+                    <div className="container mx-auto px-6 py-25">
                         <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[1.5fr_1fr]">
                             <div className="text-center md:text-left" data-aos="fade-right">
                                 <h1 className="mb-4 text-7xl font-black text-[#333]">
@@ -108,26 +107,6 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-
-                    {/* About Section */}
-                    <section className="bg-cover bg-center py-16 bg-white" data-aos="fade-up">
-                        <div className="container mx-auto px-6">
-                            <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
-                                <div className="flex justify-center md:justify-start" data-aos="fade-right">
-                                    <img src="/images/MascotEsega25.png" alt="Mascot" className="h-64 w-auto object-contain md:h-150" />
-                                </div>
-                                <div className="text-center md:text-left" data-aos="fade-left">
-                                    <h2 className="mb-8 text-4xl font-bold text-[#333]">
-                                        About <span className="text-red-600">IT-ESEGA</span>
-                                    </h2>
-                                    <p className="mb-6 text-lg text-[#333]">
-                                        IT-ESEGA is the premier technology competition that brings together the brightest minds from universities
-                                        across the nation.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
 
                     {/* Competition Section */}
                     <section className="bg-[#f9f9f9] bg-cover bg-center py-24" data-aos="fade-up">
