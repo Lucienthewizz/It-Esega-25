@@ -8,6 +8,7 @@ import {
 import { Menu, User } from 'lucide-react';
 import { UserType } from '@/types/user';
 import { useEffect, useState } from 'react';
+import { route } from 'ziggy-js';
 
 interface NavItem {
     title: string;
@@ -35,6 +36,17 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const handleNavigation = (e: React.MouseEvent, href: string) => {
+        const isHomePage = window.location.pathname === '/';
+        if (isHomePage && (href === '#faq' || href === '#contact')) {
+            e.preventDefault();
+            const element = document.getElementById(href.substring(1));
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    };
+
     // const getRedirectPath = (user: UserType) => {
     //     if (user === undefined) return '#';
 
@@ -60,17 +72,20 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
                     <div className="flex-shrink-0">
-                        {logo}
+                        <Link href={route('home')}>
+                            {logo}
+                        </Link>
                     </div>
 
                     {/* Desktop Navigation - Centered */}
                     <div className="hidden flex-grow justify-center md:flex">
                         {/* Center Navigation Links */}
-                        <div className="flex space-x-8">
+                        <div className="flex space-x-10">
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.title}
-                                    href={item.href}
+                                    href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
+                                    onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href)}
                                     className={`text-black transition-all duration-300 hover:text-secondary relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-secondary after:left-0 after:-bottom-1 after:rounded-full ${currentPath === item.href ? 'after:scale-x-100' : 'after:scale-x-0'
                                         } after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 >
@@ -81,11 +96,12 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     </div>
 
                     {/* Action Button or User Icon */}
-                    <div className="flex-shrink-0">
+                    <div className="hidden md:flex flex-shrink-0">
                         {user ? (
                             <Link
                                 href={
-                                    user?.data.roles?.some(role => role.name === 'admin' || 'super_admin') ? route('admin.dashboard')
+                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin') 
+                                        ? route('admin.dashboard')
                                         : route('dashboard')
                                 }
                                 className="flex items-center justify-center w-10 h-10 rounded-full border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
@@ -108,7 +124,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     <div className="md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-black">
+                                <Button variant="ghost" size="icon" className={`${isScrolled ? 'text-black' : 'text-black'}`}>
                                     <Menu className="w-5 h-5" />
                                 </Button>
                             </DropdownMenuTrigger>
@@ -117,7 +133,8 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     {navigationItems.map((item) => (
                                         <Link
                                             key={item.title}
-                                            href={item.href}
+                                            href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
+                                            onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href)}
                                             className={`block px-4 py-2 text-sm rounded-md transition-colors ${currentPath === item.href ? 'bg-secondary/10 text-secondary' : 'text-black hover:bg-secondary/10'
                                                 }`}
                                         >
@@ -126,10 +143,14 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     ))}
                                     {user ? (
                                         <Link
-                                            href="/profile"
+                                            href={
+                                                user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
+                                                    ? route('admin.dashboard')
+                                                    : route('dashboard')
+                                            }
                                             className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
                                         >
-                                            <User className="w-5 h-5 inline-block" /> Profile
+                                            <User className="w-5 h-5 inline-block mr-2" /> Profile
                                         </Link>
                                     ) : (
                                         actionItem && (
