@@ -9,13 +9,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 body {
     scroll-behavior: smooth;
 }
 
 @theme {
-    --font-sans: 'Poppins', 'Akira', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        'Poppins', 'Akira', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -65,16 +65,7 @@ body {
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -85,76 +76,99 @@ body {
 }
 
 :root {
-    --background: #FFFFFF;
-    --foreground: #252525;
-    --card: #FEEC9C;
-    --card-foreground: #252525;
-    --popover: #FEEC9C;
-    --popover-foreground: #252525;
-    --primary: #EABB2B;
-    --primary-foreground: #252525;
-    --secondary: #FEEC9C;
-    --secondary-foreground: #252525;
-    --muted: #FEEC9C;
-    --muted-foreground: #252525;
-    --accent: #EABB2B;
-    --accent-foreground: #252525;
-    --destructive: #BA0000;
-    --destructive-foreground: #FEEC9C;
-    --border: #EABB2B;
-    --input: #EABB2B;
-    --ring: #EABB2B;
-    --chart-1: #EABB2B;
-    --chart-2: #BA0000;
-    --chart-3: #252525;
-    --chart-4: #FEEC9C;
-    --chart-5: #EABB2B;
+    --background: #ffffff;
+    --foreground: #000000;
+
+    --card: #f5f5f5;
+    --card-foreground: #000000;
+
+    --popover: #f5f5f5;
+    --popover-foreground: #000000;
+
+    --primary: #dc143c;
+    --primary-foreground: #ffffff;
+
+    --secondary: #8b0000;
+    --secondary-foreground: #ffffff;
+
+    --muted: #e0e0e0;
+    --muted-foreground: #000000;
+
+    --accent: #dc143c;
+    --accent-foreground: #ffffff;
+
+    --destructive: #dc143c;
+    --destructive-foreground: #ffffff;
+
+    --border: #cccccc;
+    --input: #cccccc;
+    --ring: #dc143c;
+
+    --chart-1: #dc143c;
+    --chart-2: #8b0000;
+    --chart-3: #000000;
+    --chart-4: #e0e0e0;
+    --chart-5: #f5f5f5;
+
     --radius: 0.625rem;
-    --sidebar: #252525;
-    --sidebar-foreground: #FEEC9C;
-    --sidebar-primary: #EABB2B;
-    --sidebar-primary-foreground: #252525;
-    --sidebar-accent: #BA0000;
-    --sidebar-accent-foreground: #FEEC9C;
-    --sidebar-border: #EABB2B;
-    --sidebar-ring: #EABB2B;
-    --custom: #333;
+
+    --sidebar: #000000;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #dc143c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #8b0000;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #dc143c;
+    --sidebar-ring: #dc143c;
+
+    --custom: #111;
 }
 
 .dark {
-    --background: #FFFFFF;
-    --foreground: #FEEC9C;
-    --card: #252525;
-    --card-foreground: #FEEC9C;
-    --popover: #252525;
-    --popover-foreground: #FEEC9C;
-    --primary: #EABB2B;
-    --primary-foreground: #252525;
-    --secondary: #BA0000;
-    --secondary-foreground: #FEEC9C;
-    --muted: #252525;
-    --muted-foreground: #FEEC9C;
-    --accent: #EABB2B;
-    --accent-foreground: #FEEC9C;
-    --destructive: #BA0000;
-    --destructive-foreground: #FEEC9C;
-    --border: #EABB2B;
-    --input: #EABB2B;
-    --ring: #EABB2B;
-    --chart-1: #EABB2B;
-    --chart-2: #BA0000;
-    --chart-3: #252525;
-    --chart-4: #FEEC9C;
-    --chart-5: #EABB2B;
-    --sidebar: #252525;
-    --sidebar-foreground: #FEEC9C;
-    --sidebar-primary: #EABB2B;
-    --sidebar-primary-foreground: #FEEC9C;
-    --sidebar-accent: #BA0000;
-    --sidebar-accent-foreground: #FEEC9C;
-    --sidebar-border: #EABB2B;
-    --sidebar-ring: #EABB2B;
-    --custom: #333;
+    --background: #000000;
+    --foreground: #ffffff;
+
+    --card: #1a1a1a;
+    --card-foreground: #ffffff;
+
+    --popover: #1a1a1a;
+    --popover-foreground: #ffffff;
+
+    --primary: #dc143c;
+    --primary-foreground: #ffffff;
+
+    --secondary: #8b0000;
+    --secondary-foreground: #ffffff;
+
+    --muted: #2e2e2e;
+    --muted-foreground: #ffffff;
+
+    --accent: #dc143c;
+    --accent-foreground: #ffffff;
+
+    --destructive: #dc143c;
+    --destructive-foreground: #ffffff;
+
+    --border: #444444;
+    --input: #444444;
+    --ring: #dc143c;
+
+    --chart-1: #dc143c;
+    --chart-2: #8b0000;
+    --chart-3: #ffffff;
+    --chart-4: #2e2e2e;
+    --chart-5: #1a1a1a;
+
+    --sidebar: #1a1a1a;
+    --sidebar-foreground: #ffffff;
+    --sidebar-primary: #dc143c;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #8b0000;
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: #dc143c;
+    --sidebar-ring: #dc143c;
+
+    --custom: #fafafa;
 }
 
 @layer base {
@@ -187,15 +201,10 @@ body {
 
 @font-face {
     font-family: Akira;
-    src: url('/fonts/AkiraExpanded-SuperBold.woff') format('woff'),
+    src:
+        url('/fonts/AkiraExpanded-SuperBold.woff') format('woff'),
         url('/fonts/AkiraExpanded-SuperBold.woff2') format('woff2');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
 }
-
-/* .container {
-    max-width: 1500px;
-    margin: 0 auto;
-    padding: 0 1rem;
-} */
