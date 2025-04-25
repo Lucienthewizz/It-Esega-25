@@ -23,13 +23,7 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(<App {...props} />);
     },
-    progress: false,
-    // Mengaktifkan cache untuk komponen yang sudah di-load
-    cache: (page) => {
-        // Cache semua halaman kecuali yang memiliki data dinamis
-        if (page.startsWith('dashboard')) return false;
-        return true;
-    }
+    progress: false
 });
 
 // This will set light / dark mode on load...

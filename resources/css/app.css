@@ -266,8 +266,3 @@ html {
 body {
     overflow-y: scroll;
 }
-
-/* Optimisasi Loading */
-* {
-    will-change: transform, opacity;
-}

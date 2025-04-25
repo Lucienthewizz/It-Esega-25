@@ -85,26 +85,6 @@ export default function Home() {
 
                     {/* Hero Section */}
                     <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-24 md:pt-45 pb-16 md:pb-40">
-
-                        {/* Cross Blob - Bottom Left */}
-                        <div className="absolute left-8 bottom-32 w-24 h-24 opacity-5 pointer-events-none">
-                            <motion.div
-                                animate={{
-                                    rotate: [360, 0],
-                                }}
-                                transition={{
-                                    duration: 25,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                                className="w-full h-full"
-                            >
-                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
-                                </svg>
-                            </motion.div>
-                        </div>
-
                         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1.5fr_1fr] relative z-10 w-full">
                             <div className="text-center md:text-left" data-aos="fade-up">
                                 <h1 className="mb-4 text-4xl sm:text-7xl font-black text-[#333] leading-tight">

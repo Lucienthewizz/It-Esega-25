@@ -34,6 +34,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         };
 
         window.addEventListener('scroll', handleScroll);
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -98,11 +99,17 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     console.log('Navbar Data Role:', user?.data.name);
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-            isScrolled 
-                ? 'bg-white/90 backdrop-blur-md shadow-sm' 
-                : 'bg-transparent'
-        }`}>
+        <nav 
+            className={`fixed top-0 left-0 right-0 z-[999] transform-gpu backdrop-blur-md transition-all duration-300 ${
+                isScrolled 
+                    ? 'bg-white/95 shadow-sm translate-y-0' 
+                    : 'bg-transparent translate-y-0'
+            }`}
+            style={{
+                willChange: 'transform, opacity, background-color',
+                backfaceVisibility: 'hidden'
+            }}
+        >
             <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
