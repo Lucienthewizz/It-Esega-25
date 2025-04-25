@@ -17,4 +17,14 @@ class AdminUserController extends Controller
             'admin' => UserSharedResource::collection($admin)
         ]);
     }
+
+    public function store()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
 }

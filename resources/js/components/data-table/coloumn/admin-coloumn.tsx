@@ -11,6 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { UserType } from "@/types/user"
+import { CustomDialog } from "@/components/dialog/custom-dialog";
 
 export const Admincolumns: ColumnDef<UserType>[] = [
     {
@@ -150,9 +151,47 @@ export const Admincolumns: ColumnDef<UserType>[] = [
                             Copy Email
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View</DropdownMenuItem>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                        <DropdownMenuItem >View</DropdownMenuItem>
+                        <CustomDialog
+                            title="Edit User"
+                            description={`Ubah data admin: ${user.name}`}
+                            trigger={
+                                <DropdownMenuItem>Edit</DropdownMenuItem>
+                            }
+                            confirmText="Simpan"
+                            type="form"
+                            onConfirm={() => {
+                                console.log("Save edit for", user.id)
+                            }}
+                        >
+                            <div className="space-y-4">
+                                <input
+                                    defaultValue={user.name}
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Nama"
+                                />
+                                <input
+                                    defaultValue={user.email}
+                                    className="w-full border p-2 rounded"
+                                    placeholder="Email"
+                                />
+                            </div>
+                        </CustomDialog>
+                        <CustomDialog
+                            title="Hapus User"
+                            description={`Yakin ingin menghapus user ${user.name}?`}
+                            trigger={
+                                <DropdownMenuItem className="text-red-500">
+                                    Delete
+                                </DropdownMenuItem>
+                            }
+                            confirmText="Hapus"
+                            type="delete"
+                            onConfirm={() => {
+                                console.log("Delete user", user.id)
+                                //   logic BE
+                            }}
+                        />
                     </DropdownMenuContent>
                 </DropdownMenu>
             );

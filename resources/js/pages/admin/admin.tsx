@@ -2,6 +2,7 @@ import { Admincolumns } from "@/components/data-table/coloumn/admin-coloumn";
 import { DataTable } from "@/components/data-table/data-table";
 import AuthenticatedAdminLayout from "@/layouts/admin/layout";
 import { UserType } from "@/types/user";
+import { Button } from "@headlessui/react";
 import { usePage } from "@inertiajs/react";
 
 export default function AdminUser() {
@@ -16,7 +17,23 @@ export default function AdminUser() {
 
     return (
         <AuthenticatedAdminLayout title="Admin Management" headerTitle={'Admin Management'} user={auth}>
-            <DataTable data={data ?? []} columns={Admincolumns} filterColumn='email' />
+            <DataTable isButtonAdd={true} isButtonRestore={true} data={data ?? []}
+                addDialogContent={
+                    <div className="space-y-4">
+                        <input className="w-full border p-2 rounded" placeholder="Nama" />
+                        <input className="w-full border p-2 rounded" placeholder="Email" />
+                    </div>
+                }
+                restoreDialogContent={
+                    <p>Apakah Anda yakin ingin mengembalikan data yang dipilih?</p>
+                }
+                columns={Admincolumns} filterColumn='email' />
+
+
+
+
+
+
         </AuthenticatedAdminLayout>
     );
 }
