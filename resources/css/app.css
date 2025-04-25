@@ -155,7 +155,9 @@ body {
     --sidebar-border: #eabb2b;
     --sidebar-ring: #8f8f8f;
     --custom: #333;
+    --white: #ffffff; /* Added white color variable */
 }
+
 
 @layer base {
     * {
@@ -200,7 +202,6 @@ body {
     margin: 0 auto;
     padding: 0 1rem;
 } */
-<<<<<<< HEAD
 
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
@@ -267,5 +268,4 @@ html {
 body {
     overflow-y: scroll;
 }
-=======
->>>>>>> rama
+

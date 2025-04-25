@@ -24,8 +24,9 @@ interface NavbarProps {
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
     const [isScrolled, setIsScrolled] = useState(false);
-    const navigationItems = items.slice(0, -1);
-    const actionItem = items.slice(-1)[0];
+    // Memisahkan item Register dari items lainnya
+    const navigationItems = items.filter(item => item.title !== 'Register');
+    const registerItem = items.find(item => item.title === 'Register');
     const currentPath = window.location.pathname;
 
     useEffect(() => {
@@ -73,8 +74,12 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
             // Untuk navigasi normal ke halaman lain
             e.preventDefault();
             router.visit(href, {
-                preserveScroll: true,
-                preserveState: false
+                preserveScroll: false,
+                preserveState: false,
+                onSuccess: () => {
+                    // Reset scroll position setelah navigasi
+                    window.scrollTo(0, 0);
+                }
             });
         }
     };
@@ -100,9 +105,9 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
 
     return (
         <nav 
-            className={`fixed top-0 left-0 right-0 z-[999] transform-gpu backdrop-blur-md transition-all duration-300 ${
+            className={`fixed top-0 left-0 right-0 z-[999] transform-gpu transition-all duration-300 ${
                 isScrolled 
-                    ? 'bg-white/95 shadow-sm translate-y-0' 
+                    ? 'bg-white/95 backdrop-blur-md shadow-sm translate-y-0' 
                     : 'bg-transparent translate-y-0'
             }`}
             style={{
@@ -113,7 +118,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
             <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
-                    <div className="flex-shrink-0 transition-transform duration-300 hover:scale-105">
+                    <div className="w-[180px] flex-shrink-0 transition-transform duration-300 hover:scale-105">
                         <Link 
                             href={route('home')} 
                             onClick={(e) => {
@@ -129,9 +134,9 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     </div>
 
                     {/* Desktop Navigation - Centered */}
-                    <div className="hidden flex-grow justify-center md:flex max-w-2xl">
+                    <div className="hidden flex-grow justify-center md:flex">
                         {/* Center Navigation Links */}
-                        <div className="flex items-center space-x-12">
+                        <div className="flex items-center justify-center space-x-12 w-full max-w-2xl">
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.title}
@@ -153,7 +158,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     </div>
 
                     {/* Action Button or User Icon */}
-                    <div className="hidden md:flex flex-shrink-0">
+                    <div className="w-[180px] hidden md:flex justify-end flex-shrink-0">
                         {user ? (
                             <Link
                                 href={
@@ -169,15 +174,15 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                 <User className="w-5 h-5" />
                             </Link>
                         ) : (
-                            actionItem && (
+                            registerItem && (
                                 <Link
-                                    href={actionItem.href}
+                                    href={registerItem.href}
                                     className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
                                         bg-gradient-to-r from-red-500 to-red-600 text-white
                                         shadow-md hover:shadow-lg transform hover:-translate-y-0.5
                                         transition-all duration-300 hover:from-red-600 hover:to-red-700"
                                 >
-                                    {actionItem.title}
+                                    {registerItem.title}
                                 </Link>
                             )
                         )}
@@ -232,14 +237,14 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                                 <User className="w-5 h-5" /> Profile
                                             </Link>
                                         ) : (
-                                            actionItem && (
+                                            registerItem && (
                                                 <Link
-                                                    href={actionItem.href}
+                                                    href={registerItem.href}
                                                     className="block px-4 py-3 mt-2 text-[15px] font-semibold text-center text-white rounded-lg
                                                         bg-gradient-to-r from-red-500 to-red-600
                                                         hover:from-red-600 hover:to-red-700 transition-all duration-300"
                                                 >
-                                                    {actionItem.title}
+                                                    {registerItem.title}
                                                 </Link>
                                             )
                                         )}

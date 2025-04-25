@@ -5,12 +5,14 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { route } from 'ziggy-js';
 import { Footer } from '@/components/footer';
+import { Dialog, Transition } from '@headlessui/react';
 
 export default function Home() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
+    const [isOpen, setIsOpen] = useState(false);
     // const auth = user;
 
 
@@ -58,7 +60,7 @@ export default function Home() {
     return (
         <>
             <Head title="IT-ESEGA 2025 Official Website" />
-            <div className="bg-background from-primary to-secondary font-poppins relative min-h-screen text-black overflow-hidden">
+            <div className="bg-white from-primary to-secondary font-poppins relative min-h-screen text-black overflow-hidden">
 
                 {/* Background Overlay */}
                 <div
@@ -76,7 +78,7 @@ export default function Home() {
                     <Navbar
                         user={user}
                         logo={
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-start">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
@@ -84,7 +86,7 @@ export default function Home() {
                     />
 
                     {/* Hero Section */}
-                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-24 md:pt-45 pb-16 md:pb-40">
+                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-35 md:pt-45 pb-16 md:pb-40">
                         <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1.5fr_1fr] relative z-10 w-full">
                             <div className="text-center md:text-left" data-aos="fade-up">
                                 <h1 className="mb-4 text-4xl sm:text-7xl font-black text-[#333] leading-tight">
@@ -102,6 +104,24 @@ export default function Home() {
                                     >
                                         Register Now!
                                     </Link>
+                                    <button
+                                        onClick={() => setIsOpen(true)}
+                                        className="group inline-flex items-center px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-semibold
+                                            bg-white text-red-600 rounded-lg transform transition-all duration-300
+                                            hover:bg-red-50 hover:scale-105 hover:shadow-lg border-2 border-red-600"
+                                    >
+                                        <span className="mr-2">How to Register</span>
+                                        <div className="relative w-6 h-6">
+                                            <div className="absolute inset-0 bg-red-600 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
+                                            <svg
+                                                className="relative w-6 h-6 text-red-600 group-hover:text-red-700 transition-colors duration-300"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                             <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
@@ -122,6 +142,104 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Video Tutorial Modal */}
+                    <Transition appear show={isOpen} as={Fragment}>
+                        <Dialog
+                            as="div"
+                            className="fixed inset-0 z-[60] overflow-y-auto"
+                            onClose={() => setIsOpen(false)}
+                        >
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-200"
+                                enterFrom="opacity-0"
+                                enterTo="opacity-100"
+                                leave="ease-in duration-150"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <div className="fixed inset-0">
+                                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+                                </div>
+                            </Transition.Child>
+
+                            <div className="fixed inset-0 flex items-center justify-center p-4">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-200"
+                                    enterFrom="opacity-0 scale-95"
+                                    enterTo="opacity-100 scale-100"
+                                    leave="ease-in duration-150"
+                                    leaveFrom="opacity-100 scale-100"
+                                    leaveTo="opacity-0 scale-95"
+                                >
+                                    <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all">
+                                        <div className="relative">
+                                            {/* Header */}
+                                            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+                                                <Dialog.Title
+                                                    as="h3"
+                                                    className="text-xl font-semibold leading-6 text-gray-900"
+                                                >
+                                                    How to Register
+                                                </Dialog.Title>
+                                                <button
+                                                    onClick={() => setIsOpen(false)}
+                                                    className="rounded-full p-1.5 text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-all duration-200"
+                                                >
+                                                    <span className="sr-only">Close</span>
+                                                    <svg
+                                                        className="h-5 w-5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth={2}
+                                                            d="M6 18L18 6M6 6l12 12"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            {/* Video Container */}
+                                            <div className="relative bg-black">
+                                                <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
+                                                    <iframe
+                                                        className="absolute inset-0 w-full h-full"
+                                                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                                        title="How to Register IT-ESEGA 2025"
+                                                        frameBorder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                    ></iframe>
+                                                </div>
+                                            </div>
+
+                                            {/* Footer */}
+                                            <div className="bg-gray-50 px-6 py-4">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="text-sm text-gray-600">
+                                                        Watch the tutorial carefully to understand the registration process
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        className="inline-flex justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors duration-200"
+                                                        onClick={() => setIsOpen(false)}
+                                                    >
+                                                        Got it
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Dialog.Panel>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition>
 
                     {/* Competition Section */}
                     <section className="relative overflow-hidden py-16 md:py-24">

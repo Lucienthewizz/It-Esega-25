@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { Navbar } from '@/components/navbar';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -7,8 +7,18 @@ import { route } from 'ziggy-js';
 import { router } from '@inertiajs/react';
 import { Footer } from '@/components/footer';
 import { motion } from 'framer-motion';
+import { UserType } from '@/types/user';
+
+interface NavItem {
+    title: string;
+    href: string;
+    isActive?: boolean;
+    onClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+    className?: string;
+}
 
 export default function About() {
+    const { user } = usePage<{ user: { data: UserType } }>().props;
     console.log('About page is rendering');
 
     const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -25,9 +35,9 @@ export default function About() {
         });
     };
 
-    const navItems = [
+    const navItems: NavItem[] = [
         { title: 'Home', href: route('home') },
-        { title: 'About', href: route('about') },
+        { title: 'About', href: route('about'), isActive: true },
         { 
             title: 'FAQ', 
             href: '#faq',
@@ -37,11 +47,23 @@ export default function About() {
             title: 'Contact', 
             href: '#contact',
             onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavigation(e, '#contact')
-        },
-        { title: 'Register', href: route('register') },
+        }
+
     ];
 
+    if (!user) {
+        navItems.push({ 
+            title: 'Register', 
+            href: route('register'), 
+            className: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-lg transition-colors duration-200' 
+        });
+    }
+
     useEffect(() => {
+        // Reset scroll position when page loads
+        window.scrollTo(0, 0);
+        
+        // Initialize AOS
         AOS.init({
             duration: 1000,
             once: true,
@@ -72,10 +94,11 @@ export default function About() {
 
     return (
         <>
-            <Head title="About Us" />
-            <div className="bg-background from-primary to-secondary font-poppins relative min-h-screen text-black">
-                <div className="relative z-10 mx-auto text-[#333]">
+            <Head title="Tentang IT-ESEGA 2025 | Kompetisi Teknologi Premier" />
+            <div className="home min-h-screen relative overflow-hidden">
+                <div className="relative z-10 mx-auto">
                     <Navbar
+                        user={user}
                         logo={
                             <div className="flex items-center justify-center">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
@@ -132,7 +155,7 @@ export default function About() {
                             </div>
                             
                             {/* Content Container */}
-                            <div className="relative max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-24 md:pt-32 pb-16 md:pb-24">
+                            <div className="relative max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-35 md:pt-45 pb-16 md:pb-24">
                                 <div className="text-center" data-aos="fade-up">
                                     <h2 className="mb-6 sm:mb-8 text-3xl sm:text-4xl font-bold text-[#333]">
                                         About <span className="text-red-600">IT-ESEGA</span>
@@ -331,7 +354,7 @@ export default function About() {
                             {/* Content Container */}
                             <div className="relative py-16 md:py-24">
                                 <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
-                                    <h2 className="text-3xl sm:text-4xl font-bold text-center mb-10 sm:mb-16" data-aos="fade-down">
+                                    <h2 className="text-3xl text-background sm:text-4xl font-bold text-center mb-10 sm:mb-16" data-aos="fade-down">
                                         After <span className="text-red-600">Event</span> Videos
                                     </h2>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
