@@ -100,7 +100,7 @@ export default function About() {
                     <Navbar
                         user={user}
                         logo={
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-start">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
