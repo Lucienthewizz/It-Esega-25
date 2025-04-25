@@ -4,26 +4,27 @@ import { ReactNode, useEffect, useState } from 'react';
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import DashboardHeader from './header';
 import SidebarNav from "./sidebar"
-import { usePage } from '@inertiajs/react';
+import { usePage, Head } from '@inertiajs/react';
 
 
 type AuthenticatedLayoutProps = {
     children: ReactNode;
     user: UserType;
     headerTitle: string;
+    title: string;
 };
 
 
 
-export default function AuthenticatedAdminLayout({ children, user, headerTitle }: AuthenticatedLayoutProps) {
+export default function AuthenticatedAdminLayout({ children, user, headerTitle, title }: AuthenticatedLayoutProps) {
     const { url } = usePage();
     const [activeItem, setActiveItem] = useState("");
 
     useEffect(() => {
         if (url.includes('dashboard')) {
             setActiveItem('dashboard');
-        } else if (url.includes('users')) {
-            setActiveItem('users');
+        } else if (url.includes('admins')) {
+            setActiveItem('admins');
         } else if (url.includes("settings")) {
             setActiveItem('settings');
         }
@@ -31,7 +32,7 @@ export default function AuthenticatedAdminLayout({ children, user, headerTitle }
 
     return (
         <>
-
+            <Head title={title} />
             <SidebarProvider>
                 <div className="flex h-screen w-full">
                     <SidebarNav activeItem={activeItem} setActiveItem={setActiveItem} user={user} />

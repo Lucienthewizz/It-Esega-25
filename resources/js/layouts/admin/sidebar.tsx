@@ -17,6 +17,7 @@ import {
 import type { UserType } from "@/types/user"
 
 import { UserProfile } from "./user-profile"
+import { Link } from "@inertiajs/react"
 
 type SidebarNavProps = {
     activeItem: string
@@ -30,27 +31,29 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
             id: "dashboard",
             label: "Dashboard",
             icon: Home,
+            link: route('admin.dashboard')
         },
         {
-            id: "customers",
-            label: "Customers",
+            id: "admins",
+            label: "Admin Management",
             icon: Users,
+            link: route('admins.index')
         },
-        {
-            id: "products",
-            label: "Products",
-            icon: Package,
-        },
-        {
-            id: "orders",
-            label: "Orders",
-            icon: ShoppingCart,
-        },
-        {
-            id: "analytics",
-            label: "Analytics",
-            icon: BarChart3,
-        },
+        // {
+        //     id: "settings",
+        //     label: "Settings",
+        //     icon: Package,
+        // },
+        // {
+        //     id: "orders",
+        //     label: "Orders",
+        //     icon: ShoppingCart,
+        // },
+        // {
+        //     id: "analytics",
+        //     label: "Analytics",
+        //     icon: BarChart3,
+        // },
     ]
 
     return (
@@ -68,10 +71,12 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
                         <SidebarMenu>
                             {menuItems.map((item) => (
                                 <SidebarMenuItem key={item.id}>
-                                    <SidebarMenuButton isActive={activeItem === item.id} onClick={() => setActiveItem(item.id)}>
-                                        <item.icon className="h-4 w-4" />
-                                        <span>{item.label}</span>
-                                    </SidebarMenuButton>
+                                    <Link href={item.link}>
+                                        <SidebarMenuButton isActive={activeItem === item.id} onClick={() => setActiveItem(item.id)}>
+                                            <item.icon className="h-4 w-4" />
+                                            <span>{item.label}</span>
+                                        </SidebarMenuButton>
+                                    </Link>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
