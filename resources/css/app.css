@@ -121,7 +121,7 @@ body {
 }
 
 .dark {
-    --background: #ffffff;
+    --background: #252525;
     --foreground: #feec9c;
     --card: #252525;
     --card-foreground: #feec9c;
@@ -152,7 +152,7 @@ body {
     --sidebar-accent: #ba0000;
     --sidebar-accent-foreground: #feec9c;
     --sidebar-border: #eabb2b;
-    --sidebar-ring: #eabb2b;
+    --sidebar-ring: #8f8f8f;
     --custom: #333;
 }
 

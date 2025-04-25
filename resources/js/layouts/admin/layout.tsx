@@ -1,11 +1,10 @@
 // import { UseRoles } from '@/utils/roles';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { UserType } from '@/types/user';
+import { Head, usePage } from '@inertiajs/react';
 import { ReactNode, useEffect, useState } from 'react';
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import DashboardHeader from './header';
-import SidebarNav from "./sidebar"
-import { usePage, Head } from '@inertiajs/react';
-
+import SidebarNav from './sidebar';
 
 type AuthenticatedLayoutProps = {
     children: ReactNode;
@@ -14,18 +13,16 @@ type AuthenticatedLayoutProps = {
     title: string;
 };
 
-
-
 export default function AuthenticatedAdminLayout({ children, user, headerTitle, title }: AuthenticatedLayoutProps) {
     const { url } = usePage();
-    const [activeItem, setActiveItem] = useState("");
+    const [activeItem, setActiveItem] = useState('');
 
     useEffect(() => {
         if (url.includes('dashboard')) {
             setActiveItem('dashboard');
         } else if (url.includes('admins')) {
             setActiveItem('admins');
-        } else if (url.includes("settings")) {
+        } else if (url.includes('settings')) {
             setActiveItem('settings');
         }
     }, [url]);
@@ -39,12 +36,11 @@ export default function AuthenticatedAdminLayout({ children, user, headerTitle, 
                     <SidebarInset>
                         <div className="flex h-full flex-col">
                             <DashboardHeader user={user} headerTitle={headerTitle} />
-                            <main className="flex-1 overflow-auto p-4 lg:p-6 text-slate-800">{children}</main>
+                            <main className="flex-1 overflow-auto p-4 text-yellow-500 lg:p-6">{children}</main>
                         </div>
                     </SidebarInset>
                 </div>
             </SidebarProvider>
-
         </>
     );
 }
