@@ -30,9 +30,13 @@ export default function Home() {
 
     useEffect(() => {
         AOS.init({
-            duration: 1000,
+            duration: 800,
             once: true,
-            easing: 'ease-in-out',
+            easing: 'ease-out-cubic',
+            offset: 100,
+            delay: 0,
+            mirror: false,
+            anchorPlacement: 'top-bottom',
         });
     }, []);
 
@@ -49,67 +53,6 @@ export default function Home() {
             question: 'What games are included in the tournament?',
             answer: 'The tournament features popular games like Mobile Legends and Free Fire.',
         },
-    ];
-
-    const footerSections = [
-        {
-            title: "Quick Links",
-            links: [
-                { title: "Home", href: route('home') },
-                { title: "About", href: route('about') },
-                { title: "FAQ", href: "#faq" },
-                { title: "Contact", href: "#contact" },
-            ]
-        },
-        {
-            title: "Competition",
-            links: [
-                { title: "Mobile Legends", href: "#" },
-                { title: "Free Fire", href: "#" }
-            ]
-        }
-    ];
-
-    const socialMedia = [
-        {
-            name: "Facebook",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                </svg>
-            ),
-            href: "https://facebook.com"
-        },
-        {
-            name: "TikTok",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-                </svg>
-            ),
-            href: "https://tiktok.com"
-        },
-        {
-            name: "Instagram",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                </svg>
-            ),
-            href: "https://instagram.com"
-        },
-        {
-            name: "YouTube",
-            icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                    <path d="m10 15 5-3-5-3z" />
-                </svg>
-            ),
-            href: "https://youtube.com"
-        }
     ];
 
     return (
@@ -141,63 +84,13 @@ export default function Home() {
                     />
 
                     {/* Hero Section */}
-                    <div className="container mx-auto px-6 py-25">
-                        <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[1.5fr_1fr]">
-                            <div className="text-center md:text-left" data-aos="fade-right">
-                                <h1 className="mb-4 text-7xl font-black text-[#333]">
-                                    IT-ESEGA <span className="text-secondary inline-block -skew-x-12 transform">2025</span>
-                                </h1>
-                                <p className="mb-8 text-xl text-[#333]">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi molestias architecto nemo? Dolorem alias cum
-                                    fugit inventore tempore fuga perspiciatis, eligendi provident natus non cupiditate labore vero tenetur deserunt
-                                    suscipit..
-                                </p>
-                                <div className="flex justify-center space-x-4 md:justify-start">
-                                    <Link
-                                        href={route('register')}
-                                        className="border-secondary text-secondary hover:bg-secondary rounded-lg border bg-transparent px-8 py-4 text-lg font-semibold transition-colors duration-300 hover:text-white"
-                                    >
-                                        Register Now!
-                                    </Link>
-                                </div>
-                            </div>
-                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-left">
-                                <img
-                                    src="/images/LogoEsega25.png"
-                                    alt="IT-ESEGA Logo"
-                                    className="animate-float h-60 w-auto object-contain md:h-115"
-                                />
-                            </div>
-                        </div>
-                    </div>
+                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-24 md:pt-45 pb-16 md:pb-40">
 
-                    {/* Competition Section */}
-                    <section className="bg-gradient-to-b from-white to-red-50/50 py-32 relative overflow-hidden">
-                        {/* Cross Shape Blob 1 */}
-                        <div className="absolute -right-16 top-32 w-64 h-64 opacity-10 pointer-events-none">
+                        {/* Cross Blob - Bottom Left */}
+                        <div className="absolute left-8 bottom-32 w-24 h-24 opacity-5 pointer-events-none">
                             <motion.div
                                 animate={{
-                                    rotate: [0, 360],
-                                }}
-                                transition={{
-                                    duration: 20,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                                className="w-full h-full"
-                            >
-                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
-                                </svg>
-                            </motion.div>
-                                </div>
-
-                        {/* Cross Shape Blob 2 */}
-                        <div className="absolute -left-16 bottom-32 w-48 h-48 opacity-10 pointer-events-none">
-                            <motion.div
-                                animate={{
-                                    rotate: [0, -360],
-                                    scale: [1, 1.1, 1]
+                                    rotate: [360, 0],
                                 }}
                                 transition={{
                                     duration: 25,
@@ -212,15 +105,100 @@ export default function Home() {
                             </motion.div>
                         </div>
 
-                        <div className="container mx-auto px-4">
-                            <div className="text-center mb-20">
-                                <h2 className="text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-down">
+                        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1.5fr_1fr] relative z-10 w-full">
+                            <div className="text-center md:text-left" data-aos="fade-up">
+                                <h1 className="mb-4 text-4xl sm:text-7xl font-black text-[#333] leading-tight">
+                                    IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
+                                </h1>
+                                <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi molestias architecto nemo?
+                                </p>
+                                <div className="flex justify-center space-x-4 md:justify-start">
+                                    <Link
+                                        href={route('register')}
+                                        className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold
+                                            bg-red-600 text-white rounded-lg transform transition-all duration-300
+                                            hover:bg-red-700 hover:scale-105 hover:shadow-lg"
+                                    >
+                                        Register Now!
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
+                                <motion.img
+                                    src="/images/LogoEsega25.png"
+                                    alt="IT-ESEGA Logo"
+                                    className="w-auto h-[420px] object-contain"
+                                    style={{ maxWidth: '100%' }}
+                                    animate={{
+                                        y: [0, -20, 0],
+                                    }}
+                                    transition={{
+                                        duration: 4,
+                                        repeat: Infinity,
+                                        ease: "easeInOut"
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Competition Section */}
+                    <section className="relative overflow-hidden py-16 md:py-24">
+                        {/* Background Layer */}
+                        <div className="absolute inset-0 bg-white"></div>
+                        
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
+
+                        {/* Cross Blob - Top Left Competition */}
+                        <div className="absolute -left-12 top-24 w-28 h-28 opacity-5 pointer-events-none">
+                            <motion.div
+                                animate={{
+                                    rotate: [0, -360],
+                                }}
+                                transition={{
+                                    duration: 28,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="w-full h-full"
+                            >
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
+                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                </svg>
+                            </motion.div>
+                                </div>
+
+                        {/* Cross Blob - Bottom Right Competition */}
+                        <div className="absolute right-8 bottom-16 w-20 h-20 opacity-5 pointer-events-none">
+                            <motion.div
+                                animate={{
+                                    rotate: [360, 0],
+                                }}
+                                transition={{
+                                    duration: 22,
+                                    repeat: Infinity,
+                                    ease: "linear"
+                                }}
+                                className="w-full h-full"
+                            >
+                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
+                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                </svg>
+                            </motion.div>
+                        </div>
+                        
+                        {/* Content Container */}
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
                                     Upcoming <span className="text-red-600">Tournament</span>
                             </h2>
-                                <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-down"></div>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 justify-items-center">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 justify-items-center">
                                 {[{
                                     title: "Mobile Legends",
                                     slots: "64 SLOTS",
@@ -230,8 +208,8 @@ export default function Home() {
                                     mode: "ONLINE",
                                     image: "/images/ML-logo.png",
                                     bgImage: "/images/ml-bg.png",
-                                    delay: 100,
-                                    animation: "fade-right"
+                                delay: 0,
+                                    animation: "fade-up"
                                 }, {
                                     title: "Free Fire",
                                     slots: "64 SLOTS",
@@ -241,8 +219,8 @@ export default function Home() {
                                     mode: "ONLINE",
                                     image: "/images/FF-logo.png",
                                     bgImage: "/images/FF-bg.jpg",
-                                    delay: 200,
-                                    animation: "fade-left"
+                                delay: 100,
+                                    animation: "fade-up"
                                 }].map((game, i) => (
                                     <div
                                         key={i}
@@ -306,104 +284,129 @@ export default function Home() {
                         </div>
                     </section>
 
-                    {/* Prizepool Section */}
-                    <section className="bg-gradient-to-b from-red-50/50 to-white py-32 relative overflow-hidden">
-                        {/* Cross Shape Blob */}
-                        <div className="absolute -right-16 top-32 w-64 h-64 opacity-10 pointer-events-none">
-                            <motion.div
-                                animate={{
-                                    rotate: [0, -360],
-                                }}
-                                transition={{
-                                    duration: 20,
-                                    repeat: Infinity,
-                                    ease: "linear"
-                                }}
-                                className="w-full h-full"
-                            >
-                                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
-                                </svg>
-                            </motion.div>
-                        </div>
-
-                        <div className="container mx-auto px-4">
-                            <div className="text-center mb-20">
-                                <h2 className="text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-down">
-                                    Total <span className="text-red-600">Prizepool</span>
+                    {/* Video Teaser Section */}
+                    <section className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-100/30 via-white to-red-50/40"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
+                                    IT-ESEGA <span className="text-red-600">Teaser</span>
                                 </h2>
-                                <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-down"></div>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full mb-6 sm:mb-8" data-aos="fade-up" data-aos-delay="50"></div>
+                                <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                                    Saksikan keseruan dan kemeriahan IT-ESEGA dalam video teaser berikut ini
+                                </p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 justify-items-center">
-                                {[{
-                                    title: "Mobile Legends",
-                                    prizepool: "Rp 10.000.000",
-                                    prizes: [
-                                        { position: "1st Place", amount: "Rp 5.000.000" },
-                                        { position: "2nd Place", amount: "Rp 3.000.000" },
-                                        { position: "3rd Place", amount: "Rp 2.000.000" }
-                                    ],
-                                    animation: "fade-right"
-                                }, {
-                                    title: "Free Fire",
-                                    prizepool: "Rp 8.000.000",
-                                    prizes: [
-                                        { position: "1st Place", amount: "Rp 4.000.000" },
-                                        { position: "2nd Place", amount: "Rp 2.500.000" },
-                                        { position: "3rd Place", amount: "Rp 1.500.000" }
-                                    ],
-                                    animation: "fade-left"
-                                }].map((game, i) => (
-                                    <div
-                                        key={i}
-                                        className="w-full max-w-md bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 border-2 border-red-500/50 hover:border-red-500 overflow-hidden"
-                                        data-aos={game.animation}
-                                    >
-                                        <div className="bg-gradient-to-br from-red-600 to-red-700 p-8 text-center text-white">
-                                            <h3 className="text-2xl font-bold mb-4">{game.title}</h3>
-                                            <div className="text-4xl font-black">{game.prizepool}</div>
-                                        </div>
-                                        <div className="p-8">
-                                            <div className="space-y-6">
-                                                {game.prizes.map((prize, index) => (
-                                                    <div 
-                                                        key={index}
-                                                        className="flex items-center justify-between border-b border-gray-200 pb-4 last:border-0"
-                                                    >
-                                                        <div className="flex items-center gap-4">
-                                                            {index === 0 ? (
-                                                                <span className="text-yellow-500">🏆</span>
-                                                            ) : index === 1 ? (
-                                                                <span className="text-gray-400">🥈</span>
-                                                            ) : (
-                                                                <span className="text-amber-700">🥉</span>
-                                                            )}
-                                                            <span className="font-semibold text-gray-700">{prize.position}</span>
-                                                        </div>
-                                                        <span className="text-red-600 font-bold">{prize.amount}</span>
-                                                    </div>
-                                                ))}
+                            <div className="max-w-4xl mx-auto px-4 sm:px-0">
+                                <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-red-500/20 hover:border-red-500/40 transition-all duration-500" data-aos="fade-up" data-aos-delay="150">
+                                    {/* Video Container dengan Aspect Ratio 16:9 */}
+                                    <div className="relative w-full pt-[56.25%] bg-black">
+                                        <iframe
+                                            className="absolute top-0 left-0 w-full h-full"
+                                            src="https://www.youtube.com/embed/YOUR_TEASER_VIDEO_ID"
+                                            title="IT-ESEGA 2025 Official Teaser"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowFullScreen
+                                        ></iframe>
+                                    </div>
+
+                                    {/* Video Info */}
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                                        <div className="flex items-center justify-between text-white">
+                                            <div>
+                                                <h3 className="text-xl font-bold mb-2">IT-ESEGA 2025 Official Teaser</h3>
+                                                <p className="text-sm text-gray-300">Experience the Next Level of Gaming Competition</p>
+                                            </div>
+                                            <div className="flex items-center space-x-2">
+                                                <span className="inline-flex items-center bg-red-600/80 px-3 py-1 rounded-full text-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                                    </svg>
+                                                    Official Teaser
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
-                                ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Prizepool Section */}
+                    <section className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-red-100/30 to-white"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
+                                    Total <span className="text-red-600">Prizepool</span>
+                                </h2>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
+                            </div>
+
+                            <div className="max-w-lg mx-auto">
+                                <div
+                                    className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-500 border-2 border-red-500/50 hover:border-red-500"
+                                    data-aos="fade-up" data-aos-delay="100"
+                                >
+                                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-500 to-red-600"></div>
+                                    <div className="px-6 py-8 sm:px-8 sm:py-10">
+                                        <div className="flex flex-col items-center">
+                                            <div className="mb-3 rounded-full bg-red-50 p-3">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="text-sm font-medium text-gray-500 mb-1">Total Hadiah</p>
+                                                <h3 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3">Rp 10.000.000</h3>
+                                                <div className="flex items-center justify-center gap-2 text-gray-600">
+                                                    <span className="text-2xl">🏆</span>
+                                                    <p className="text-sm">Mobile Legends & Free Fire</p>
+                                                </div>
+                                            </div>
+                                            <Link
+                                                href={route('register')}
+                                                className="mt-6 inline-flex items-center px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-500 to-red-600 rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105"
+                                            >
+                                                Daftar Sekarang
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </section>
 
                     {/* Timeline Section */}
-                    <section className="bg-gradient-to-b from-white to-red-50/50 py-32">
-                        <div className="container mx-auto px-6">
-                            <div className="text-center mb-16">
-                                <h2 className="text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-down">
+                    <section className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
                                 Event <span className="text-red-600">Timeline</span>
                             </h2>
-                                <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-down"></div>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
                             <div className="relative mx-auto flex w-full flex-col items-center">
-                                <div className="bg-red-500 absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform" data-aos="fade-down" data-aos-duration="1500" />
+                                {/* Timeline Line */}
+                                <div 
+                                    className="bg-red-500 absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform md:block hidden" 
+                                    data-aos="fade-down" 
+                                    data-aos-duration="1500"
+                                    data-aos-delay="200"
+                                    data-aos-easing="ease-out-cubic"
+                                />
+                                {/* Mobile Timeline Line */}
+                                <div 
+                                    className="bg-red-500 absolute top-0 left-6 h-full w-1 md:hidden" 
+                                    data-aos="fade-down" 
+                                    data-aos-duration="1500"
+                                    data-aos-delay="200"
+                                    data-aos-easing="ease-out-cubic"
+                                />
                                 {[
                                     {
                                         date: 'January 1, 2025',
@@ -458,16 +461,17 @@ export default function Home() {
                                             whileInView={{ opacity: 1, x: 0 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.6, delay: index * 0.1 }}
-                                            className={`mb-16 flex w-full flex-col items-center md:w-1/2 ${isLeft ? 'pr-4 md:items-end md:self-start' : 'pl-4 md:items-start md:self-end'
-                                                }`}
+                                            className={`mb-8 md:mb-16 flex w-full flex-col ${
+                                                isLeft 
+                                                    ? 'md:pr-4 md:items-end md:self-start pl-12 md:pl-0' 
+                                                    : 'md:pl-4 md:items-start md:self-end pl-12 md:pl-0'
+                                            } md:w-1/2 items-start`}
                                         >
-                                            <div className="relative max-w-md rounded-xl border border-red-100 bg-white p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                                                {/* Animated Circle */}
-                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform">
+                                            <div className="relative max-w-md w-full rounded-xl border border-red-100 bg-white p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                                                {/* Animated Circle - Desktop */}
+                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform md:block hidden">
                                                     <div className="relative">
-                                                        {/* Outer pulse animation */}
                                                         <div className="absolute -inset-4 rounded-full bg-red-500/20 animate-pulse"></div>
-                                                        {/* Inner circle with icon */}
                                                         <div className="relative">
                                                             <div className="bg-red-500 h-10 w-10 rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-bounce">
                                                                 <div className="text-white">
@@ -477,9 +481,22 @@ export default function Home() {
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {/* Animated Circle - Mobile */}
+                                                <div className="absolute -left-[2.4rem] top-2 md:hidden">
+                                                    <div className="relative">
+                                                        <div className="absolute -inset-1 rounded-full bg-red-500/20 animate-pulse"></div>
+                                                        <div className="relative">
+                                                            <div className="bg-red-500 h-7 w-7 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
+                                                                <div className="text-white scale-75">
+                                                                    {item.icon}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <p className="mb-2 text-sm font-medium text-red-500">{item.date}</p>
-                                                <h4 className="text-red-600 mb-3 text-xl font-semibold">{item.title}</h4>
-                                                <p className="text-gray-600 leading-relaxed">{item.description}</p>
+                                                <h4 className="text-red-600 mb-2 text-lg sm:text-xl font-semibold">{item.title}</h4>
+                                                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.description}</p>
                                             </div>
                                         </motion.div>
                                     );
@@ -489,14 +506,15 @@ export default function Home() {
                     </section>
 
                     {/* FAQ Section */}
-                    <section id="faq" className="bg-white py-32">
-                        <div className="container mx-auto px-4">
+                    <section id="faq" className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-100/30 via-white to-red-50/40"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                             <div className="mx-auto max-w-3xl">
-                                <div className="text-center mb-10">
-                                    <h2 className="text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-down">
+                                <div className="text-center mb-8 md:mb-12">
+                                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
                                     Frequently <span className="text-red-600">Asked Questions</span>
                                 </h2>
-                                    <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-down"></div>
+                                    <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                                 </div>
                                 <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm" data-aos="fade-up" data-aos-delay="100">
                                     {faqs.map((faq, index) => (
@@ -531,45 +549,49 @@ export default function Home() {
                     </section>
 
                     {/* Contact Person Section */}
-                    <section id="contact" className="bg-gradient-to-b from-red-50 to-white py-32">
-                        <div className="container mx-auto px-4">
-                            <div className="text-center mb-16">
-                                <h2 className="text-4xl font-bold mb-4" data-aos="fade-down">
+                    <section id="contact" className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-red-100/30 to-white"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-bold mb-4" data-aos="fade-up">
                                     <span className="text-red-600">CONTACT</span>{" "}
                                     <span className="text-red-400">PERSON</span>
                                 </h2>
-                                <div className="w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-down"></div>
-                                <p className="text-gray-600 text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
+                                <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
                                     Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi narahubung yang tertera di bawah ini.
                                 </p>
                                 </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                                 {[
                                     {
                                         name: "Damar",
                                         wa: "-",
                                         line: "-",
-                                        animation: "fade-right"
+                                        animation: "fade-up",
+                                        delay: 0
                                     },
                                     {
                                         name: "Mita",
                                         wa: "-",
                                         line: "-",
-                                        animation: "fade-up"
+                                        animation: "fade-up",
+                                        delay: 100
                                     },
                                     {
                                         name: "Yoga",
                                         wa: "-",
                                         line: "-",
-                                        animation: "fade-left"
+                                        animation: "fade-up",
+                                        delay: 200
                                     }
                                 ].map((contact, index) => (
                                     <div 
                                         key={index} 
                                         className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-red-100"
                                         data-aos={contact.animation}
-                                        data-aos-delay={index * 100}
+                                        data-aos-delay={contact.delay}
                                     >
                                         <div className="flex items-center gap-4 mb-4">
                                             <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center shadow-md">
@@ -581,7 +603,7 @@ export default function Home() {
                                     </div>
                                         <div className="space-y-3">
                                             <a href={`https://wa.me/${contact.wa}`} target="_blank" rel="noopener noreferrer" 
-                                               className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
+                                            className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
                                                 <span className="font-semibold">WA:</span>
                                                 <span className="hover:underline">{contact.wa}</span>
                                             </a>
@@ -597,18 +619,7 @@ export default function Home() {
                     </section>
 
                     {/* Footer */}
-                    <Footer 
-                        logo={
-                            <img 
-                                src="/images/LogoEsega25.png" 
-                                alt="IT-ESEGA-25" 
-                                className="h-20 w-auto object-contain hover:scale-105 transition-transform duration-300" 
-                            />
-                        }
-                        description="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iure, sed mollitia at aperiam explicabo ullam odio temporibus obcaecati rerum dolorum."
-                        sections={footerSections}
-                        socialMedia={socialMedia}
-                    />
+                    <Footer />
                 </div>
             </div>
         </>

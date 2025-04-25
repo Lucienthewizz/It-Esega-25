@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { route } from 'ziggy-js';
 import React from 'react';
 
@@ -19,25 +19,138 @@ interface SocialMedia {
 }
 
 interface FooterProps {
-    description: string;
-    sections: FooterSection[];
-    socialMedia: SocialMedia[];
-    logo?: React.ReactNode;
+    customDescription?: string;
+    customSections?: FooterSection[];
+    customSocialMedia?: SocialMedia[];
+    customLogo?: React.ReactNode;
 }
 
-export function Footer({ description, sections, socialMedia, logo }: FooterProps) {
+// Default footer sections
+const defaultFooterSections: FooterSection[] = [
+    {
+        title: "Quick Links",
+        links: [
+            { title: "Home", href: route('home') },
+            { title: "About", href: route('about') },
+            { title: "FAQ", href: "#faq" },
+            { title: "Contact", href: "#contact" },
+        ]
+    },
+    {
+        title: "Competition",
+        links: [
+            { title: "Mobile Legends", href: "#" },
+            { title: "Free Fire", href: "#" }
+        ]
+    }
+];
+
+// Default social media links
+const defaultSocialMedia: SocialMedia[] = [
+    {
+        name: "TikTok",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+            </svg>
+        ),
+        href: "https://tiktok.com"
+    },
+    {
+        name: "Instagram",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+            </svg>
+        ),
+        href: "https://instagram.com"
+    },
+    {
+        name: "YouTube",
+        icon: (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+                <path d="m10 15 5-3-5-3z" />
+            </svg>
+        ),
+        href: "https://youtube.com"
+    }
+];
+
+// Default logo
+const defaultLogo = (
+    <img 
+        src="/images/LogoEsega25.png" 
+        alt="IT-ESEGA-25" 
+        className="h-20 w-auto object-contain hover:scale-105 transition-transform duration-300" 
+    />
+);
+
+// Default description
+const defaultDescription = "IT-ESEGA adalah kompetisi teknologi premier yang mempertemukan pikiran-pikiran cemerlang dari universitas-universitas di seluruh negeri. Kami berkomitmen untuk menciptakan platform yang memungkinkan para gamers dan tech enthusiast untuk menunjukkan bakat mereka dalam kompetisi yang seru dan menantang.";
+
+export function Footer({ 
+    customDescription,
+    customSections,
+    customSocialMedia,
+    customLogo
+}: FooterProps) {
     const currentYear = new Date().getFullYear();
 
+    // Use custom values if provided, otherwise use defaults
+    const description = customDescription || defaultDescription;
+    const sections = customSections || defaultFooterSections;
+    const socialMedia = customSocialMedia || defaultSocialMedia;
+    const logo = customLogo || defaultLogo;
+
+    const handleNavigation = (e: React.MouseEvent<Element, MouseEvent>, href: string, title: string) => {
+        // Jika link adalah FAQ atau Contact
+        if (title === 'FAQ' || title === 'Contact') {
+            e.preventDefault();
+            
+            // Jika bukan di halaman home, arahkan ke home dulu
+            if (window.location.pathname !== '/') {
+                router.visit('/', {
+                    onSuccess: () => {
+                        // Tunggu sebentar untuk memastikan halaman sudah ter-render
+                        setTimeout(() => {
+                            const element = document.getElementById(href.substring(1));
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 100);
+                    },
+                });
+            } else {
+                // Jika sudah di halaman home, langsung scroll
+                const element = document.getElementById(href.substring(1));
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        } else if (title === 'Home' && window.location.pathname === '/') {
+            // Jika di halaman home dan klik home, scroll ke atas
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     const scrollToTop = () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        if (window.location.pathname === '/') {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        } else {
+            router.visit('/');
+        }
     };
 
     return (
         <footer className="bg-gradient-to-b from-red-500 to-red-900 py-12 text-white">
-            <div className="container mx-auto px-6">
+            <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-[2.5fr_1fr_1fr]">
                     {/* Description Section */}
@@ -74,6 +187,7 @@ export function Footer({ description, sections, socialMedia, logo }: FooterProps
                                     <Link
                                         key={linkIndex}
                                         href={link.href}
+                                        onClick={(e: React.MouseEvent<Element, MouseEvent>) => handleNavigation(e, link.href, link.title)}
                                         className="text-gray-100 hover:text-white hover:bg-white/10 transition-all duration-300 flex items-center rounded-lg py-2 px-3 -mx-3 group w-fit"
                                     >
                                         <span>{link.title}</span>
@@ -102,7 +216,16 @@ export function Footer({ description, sections, socialMedia, logo }: FooterProps
                         {/* Logo */}
                         <div className="order-2 md:order-1">
                             {logo && (
-                                <Link href={route('home')} className="inline-block">
+                                <Link 
+                                    href={route('home')} 
+                                    onClick={(e) => {
+                                        if (window.location.pathname === '/') {
+                                            e.preventDefault();
+                                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                                        }
+                                    }}
+                                    className="inline-block"
+                                >
                                     {logo}
                                 </Link>
                             )}

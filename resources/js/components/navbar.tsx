@@ -1,9 +1,10 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuTrigger
+    DropdownMenuTrigger,
+    DropdownMenuPortal
 } from '@/components/ui/dropdown-menu';
 import { Menu, User } from 'lucide-react';
 import { UserType } from '@/types/user';
@@ -36,14 +37,44 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    const handleNavigation = (e: React.MouseEvent, href: string) => {
-        const isHomePage = window.location.pathname === '/';
-        if (isHomePage && (href === '#faq' || href === '#contact')) {
+    const handleNavigation = (e: React.MouseEvent, href: string, title: string) => {
+        // Jika link adalah FAQ atau Contact
+        if (title === 'FAQ' || title === 'Contact') {
             e.preventDefault();
-            const element = document.getElementById(href.substring(1));
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
+            
+            // Jika bukan di halaman home, arahkan ke home dulu
+            if (window.location.pathname !== '/') {
+                router.visit('/', {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () => {
+                        // Tunggu sebentar untuk memastikan halaman sudah ter-render
+                        setTimeout(() => {
+                            const element = document.getElementById(href.substring(1));
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 50);
+                    },
+                });
+            } else {
+                // Jika sudah di halaman home, langsung scroll
+                const element = document.getElementById(href.substring(1));
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
             }
+        } else if (title === 'Home' && window.location.pathname === '/') {
+            // Jika di halaman home dan klik home, scroll ke atas
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Untuk navigasi normal ke halaman lain
+            e.preventDefault();
+            router.visit(href, {
+                preserveScroll: true,
+                preserveState: false
+            });
         }
     };
 
@@ -67,29 +98,48 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     console.log('Navbar Data Role:', user?.data.name);
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
-            <div className="container px-6 py-1.5 mx-auto">
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+            isScrolled 
+                ? 'bg-white/90 backdrop-blur-md shadow-sm' 
+                : 'bg-transparent'
+        }`}>
+            <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 py-4">
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
-                    <div className="flex-shrink-0">
-                        <Link href={route('home')}>
+                    <div className="flex-shrink-0 transition-transform duration-300 hover:scale-105">
+                        <Link 
+                            href={route('home')} 
+                            onClick={(e) => {
+                                if (window.location.pathname === '/') {
+                                    e.preventDefault();
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }
+                            }}
+                            className="block"
+                        >
                             {logo}
                         </Link>
                     </div>
 
                     {/* Desktop Navigation - Centered */}
-                    <div className="hidden flex-grow justify-center md:flex">
+                    <div className="hidden flex-grow justify-center md:flex max-w-2xl">
                         {/* Center Navigation Links */}
-                        <div className="flex space-x-10">
+                        <div className="flex items-center space-x-12">
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.title}
                                     href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
-                                    onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href)}
-                                    className={`text-black transition-all duration-300 hover:text-secondary relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-secondary after:left-0 after:-bottom-1 after:rounded-full ${currentPath === item.href ? 'after:scale-x-100' : 'after:scale-x-0'
-                                        } after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                    onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href, item.title)}
+                                    className={`relative px-2 py-1 text-[15px] font-medium transition-all duration-300 
+                                        ${isScrolled ? 'text-gray-700' : 'text-gray-800'} 
+                                        hover:text-red-600 group overflow-hidden`}
                                 >
                                     {item.title}
+                                    <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-500 to-red-600
+                                        transform origin-left transition-all duration-300 ease-out
+                                        translate-x-[-100%] group-hover:translate-x-0
+                                        ${currentPath === item.href ? 'translate-x-0' : ''}`}>
+                                    </span>
                                 </Link>
                             ))}
                         </div>
@@ -104,7 +154,10 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                         ? route('admin.dashboard')
                                         : route('dashboard')
                                 }
-                                className="flex items-center justify-center w-10 h-10 rounded-full border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
+                                className="flex items-center justify-center w-10 h-10 rounded-full 
+                                    bg-gradient-to-r from-red-500 to-red-600 text-white
+                                    shadow-md hover:shadow-lg transform hover:-translate-y-0.5
+                                    transition-all duration-300 hover:from-red-600 hover:to-red-700"
                             >
                                 <User className="w-5 h-5" />
                             </Link>
@@ -112,7 +165,10 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                             actionItem && (
                                 <Link
                                     href={actionItem.href}
-                                    className="px-6 py-2 font-semibold rounded-lg border transition-colors duration-300 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
+                                    className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
+                                        bg-gradient-to-r from-red-500 to-red-600 text-white
+                                        shadow-md hover:shadow-lg transform hover:-translate-y-0.5
+                                        transition-all duration-300 hover:from-red-600 hover:to-red-700"
                                 >
                                     {actionItem.title}
                                 </Link>
@@ -124,46 +180,65 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     <div className="md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className={`${isScrolled ? 'text-black' : 'text-black'}`}>
-                                    <Menu className="w-5 h-5" />
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    className={`rounded-lg hover:bg-gray-100/50 transition-all duration-300 ${
+                                        isScrolled ? 'text-gray-700' : 'text-gray-800'
+                                    }`}
+                                >
+                                    <Menu className="w-6 h-6" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                                <div className="px-2 py-2">
-                                    {navigationItems.map((item) => (
-                                        <Link
-                                            key={item.title}
-                                            href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
-                                            onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href)}
-                                            className={`block px-4 py-2 text-sm rounded-md transition-colors ${currentPath === item.href ? 'bg-secondary/10 text-secondary' : 'text-black hover:bg-secondary/10'
-                                                }`}
-                                        >
-                                            {item.title}
-                                        </Link>
-                                    ))}
-                                    {user ? (
-                                        <Link
-                                            href={
-                                                user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
-                                                    ? route('admin.dashboard')
-                                                    : route('dashboard')
-                                            }
-                                            className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
-                                        >
-                                            <User className="w-5 h-5 inline-block mr-2" /> Profile
-                                        </Link>
-                                    ) : (
-                                        actionItem && (
+                            <DropdownMenuPortal>
+                                <DropdownMenuContent 
+                                    align="end" 
+                                    className="w-72 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100/50 mt-2 p-3 mr-2"
+                                    sideOffset={5}
+                                >
+                                    <div className="space-y-1">
+                                        {navigationItems.map((item) => (
                                             <Link
-                                                href={actionItem.href}
-                                                className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
+                                                key={item.title}
+                                                href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
+                                                onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href, item.title)}
+                                                className={`block px-4 py-3 text-[15px] rounded-lg transition-all duration-300 
+                                                    ${currentPath === item.href 
+                                                        ? 'bg-red-50 text-red-600 font-semibold' 
+                                                        : 'text-gray-700 hover:bg-red-50/50 hover:text-red-600'
+                                                    }`}
                                             >
-                                                {actionItem.title}
+                                                {item.title}
                                             </Link>
-                                        )
-                                    )}
-                                </div>
-                            </DropdownMenuContent>
+                                        ))}
+                                        {user ? (
+                                            <Link
+                                                href={
+                                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
+                                                        ? route('admin.dashboard')
+                                                        : route('dashboard')
+                                                }
+                                                className="flex items-center gap-2 px-4 py-3 mt-2 text-[15px] font-semibold text-white rounded-lg
+                                                    bg-gradient-to-r from-red-500 to-red-600
+                                                    hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                                            >
+                                                <User className="w-5 h-5" /> Profile
+                                            </Link>
+                                        ) : (
+                                            actionItem && (
+                                                <Link
+                                                    href={actionItem.href}
+                                                    className="block px-4 py-3 mt-2 text-[15px] font-semibold text-center text-white rounded-lg
+                                                        bg-gradient-to-r from-red-500 to-red-600
+                                                        hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                                                >
+                                                    {actionItem.title}
+                                                </Link>
+                                            )
+                                        )}
+                                    </div>
+                                </DropdownMenuContent>
+                            </DropdownMenuPortal>
                         </DropdownMenu>
                     </div>
                 </div>
