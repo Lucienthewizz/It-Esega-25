@@ -37,7 +37,7 @@ export function CustomDialog({
 
     const handleConfirm = () => {
         onConfirm?.()
-        if (type !== "form") {
+        if (type !== "form" && type !== "confirm" && type !== "delete") {
             setOpen(false)
         }
     }

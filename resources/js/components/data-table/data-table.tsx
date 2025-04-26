@@ -38,9 +38,10 @@ type Props<TData> = {
     restoreDialogContent?: React.ReactNode;
     onAddConfirm?: () => void;
     onRestoreConfirm?: () => void;
+    initialColumnVisibility?: Record<string, boolean>;
 };
 
-export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore, isButtonAdd, addDialogContent, restoreDialogContent, onAddConfirm, onRestoreConfirm }: Props<TData>) {
+export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore, isButtonAdd, addDialogContent, restoreDialogContent, onAddConfirm, onRestoreConfirm, initialColumnVisibility }: Props<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -64,6 +65,12 @@ export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore,
             rowSelection,
         },
     })
+
+    React.useEffect(() => {
+        if (initialColumnVisibility) {
+            table.setColumnVisibility(initialColumnVisibility);
+        }
+    }, [initialColumnVisibility, table]);
 
     return (
         <div className="w-full">
@@ -107,7 +114,7 @@ export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore,
                                 {restoreDialogContent}
                             </CustomDialog>
                         )}
-                        <TableColumnToggle table={table} />
+                        <TableColumnToggle table={table} initialColumnVisibility={initialColumnVisibility} />
                     </div>
                 </div>
             </div>

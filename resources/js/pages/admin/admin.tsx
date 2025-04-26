@@ -4,22 +4,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthenticatedAdminLayout from "@/layouts/admin/layout";
 import { UserType } from "@/types/user";
-import { Button } from "@headlessui/react";
 import { usePage } from "@inertiajs/react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
+import { initialColumnVisibility } from "@/components/data-table/coloumn/admin/visible-coloumn";
 
 export default function AdminUser() {
-    const { user, admin } = usePage<{
+    const { user, admin, flash } = usePage<{
         user: { data: UserType },
-        admin: { data: UserType[] }
+        admin: { data: UserType[] },
+        flash: { success?: string, error?: string }
     }>().props;
     const auth = user.data;
     const data = admin.data;
 
-    console.log(admin);
+    console.log(flash);
 
     return (
         <AuthenticatedAdminLayout title="Admin Management" headerTitle={'Admin Management'} user={auth}>
-            <DataTable isButtonAdd={true} isButtonRestore={true} data={data ?? []}
+            <DataTable isButtonAdd={true} initialColumnVisibility={initialColumnVisibility} isButtonRestore={true} data={data ?? []}
                 addDialogContent={
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -44,6 +47,15 @@ export default function AdminUser() {
 
 
 
+            {flash.success && (
+                <Alert variant="default" className="mb-4">
+                    <Terminal className="h-4 w-4" />
+                    <AlertTitle>Berhasil!</AlertTitle>
+                    <AlertDescription>
+                        {flash.success}
+                    </AlertDescription>
+                </Alert>
+            )}
 
 
         </AuthenticatedAdminLayout>

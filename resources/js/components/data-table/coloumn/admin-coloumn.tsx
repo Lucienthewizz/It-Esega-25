@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal, ShieldBan, ShieldCheck, ShieldX } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -11,7 +11,8 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { UserType } from "@/types/user"
-import { CustomDialog } from "@/components/dialog/custom-dialog";
+import { CustomDialog } from "@/components/dialog/custom-dialog"
+import { FormattedDate } from "@/utils/formated-date"
 
 export const Admincolumns: ColumnDef<UserType>[] = [
     {
@@ -40,6 +41,8 @@ export const Admincolumns: ColumnDef<UserType>[] = [
         accessorKey: "id",
         header: "ID",
         cell: ({ row }) => <div>{row.getValue("id") ?? "-"}</div>,
+        enableSorting: false,
+        enableHiding: true,
     },
     {
         accessorKey: "name",
@@ -53,11 +56,15 @@ export const Admincolumns: ColumnDef<UserType>[] = [
             </Button>
         ),
         cell: ({ row }) => <div>{row.getValue("name") ?? "-"}</div>,
+        enableSorting: true,
+        enableHiding: true,
     },
     {
         accessorKey: "email",
         header: "Email",
         cell: ({ row }) => <div className="lowercase">{row.getValue("email") ?? "-"}</div>,
+        enableSorting: true,
+        enableHiding: true,
     },
     {
         accessorKey: "address",
@@ -77,7 +84,7 @@ export const Admincolumns: ColumnDef<UserType>[] = [
     {
         accessorKey: "email_verified_at",
         header: "Verified At",
-        cell: ({ row }) => <div>{row.getValue("email_verified_at") ?? "-"}</div>,
+        cell: ({ row }) => <FormattedDate date={row.getValue("email_verified_at") ?? "-"} />,
     },
     {
         accessorKey: "status",
@@ -86,13 +93,19 @@ export const Admincolumns: ColumnDef<UserType>[] = [
             const status = row.getValue("status") as UserType["status"];
             return (
                 <span
-                    className={`px-2 py-1 rounded text-xs font-medium ${status === "active"
+                    className={`flex flex-row gap-1 items-center justify-center py-[0.11rem] rounded text-xs font-medium ${status === "active"
                         ? "bg-green-100 text-green-800"
                         : status === "inactive"
                             ? "bg-yellow-100 text-yellow-800"
                             : "bg-red-100 text-red-800"
                         }`}
                 >
+                    {status === "active"
+                        ? <ShieldCheck className="w-5 h-5" />
+                        : status === "inactive"
+                            ? <ShieldX className="w-5 h-5" />
+                            : <ShieldBan className="w-5 h-5" />
+                    }
                     {status ?? "-"}
                 </span>
             );
@@ -101,12 +114,12 @@ export const Admincolumns: ColumnDef<UserType>[] = [
     {
         accessorKey: "created_at",
         header: "Created At",
-        cell: ({ row }) => <div>{row.getValue("created_at") ?? "-"}</div>,
+        cell: ({ row }) => <FormattedDate date={row.getValue("created_at") ?? "-"} />,
     },
     {
         accessorKey: "updated_at",
         header: "Updated At",
-        cell: ({ row }) => <div>{row.getValue("updated_at") ?? "-"}</div>,
+        cell: ({ row }) => <FormattedDate date={row.getValue("updated_at") ?? "-"} />,
     },
     {
         accessorKey: "roles",
@@ -133,7 +146,7 @@ export const Admincolumns: ColumnDef<UserType>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const user = row.original;
+            const user = row.original
 
             return (
                 <DropdownMenu>
@@ -145,56 +158,55 @@ export const Admincolumns: ColumnDef<UserType>[] = [
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(user.email)}
-                        >
+                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(user.email)}>
                             Copy Email
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem >View</DropdownMenuItem>
-                        <CustomDialog
-                            title="Edit User"
-                            description={`Ubah data admin: ${user.name}`}
-                            trigger={
-                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                            }
-                            confirmText="Simpan"
-                            type="form"
-                            onConfirm={() => {
-                                console.log("Save edit for", user.id)
-                            }}
-                        >
-                            <div className="space-y-4">
-                                <input
-                                    defaultValue={user.name}
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Nama"
-                                />
-                                <input
-                                    defaultValue={user.email}
-                                    className="w-full border p-2 rounded"
-                                    placeholder="Email"
-                                />
-                            </div>
-                        </CustomDialog>
-                        <CustomDialog
-                            title="Hapus User"
-                            description={`Yakin ingin menghapus user ${user.name}?`}
-                            trigger={
-                                <DropdownMenuItem className="text-red-500">
-                                    Delete
-                                </DropdownMenuItem>
-                            }
-                            confirmText="Hapus"
-                            type="delete"
-                            onConfirm={() => {
-                                console.log("Delete user", user.id)
-                                //   logic BE
-                            }}
-                        />
+                        <DropdownMenuItem>View</DropdownMenuItem>
+
+                        {/* Edit Dialog Trigger */}
+                        <div className="px-2 py-1.5 cursor-pointer hover:bg-accent rounded-sm">
+                            <CustomDialog
+                                title="Edit User"
+                                description={`Ubah data admin: ${user.name}`}
+                                trigger={<span>Edit</span>}
+                                confirmText="Simpan"
+                                type="form"
+                                onConfirm={() => {
+                                    console.log("Save edit for", user.id)
+                                }}
+                            >
+                                <div className="space-y-4">
+                                    <input
+                                        defaultValue={user.name}
+                                        className="w-full border p-2 rounded"
+                                        placeholder="Nama"
+                                    />
+                                    <input
+                                        defaultValue={user.email}
+                                        className="w-full border p-2 rounded"
+                                        placeholder="Email"
+                                    />
+                                </div>
+                            </CustomDialog>
+                        </div>
+
+                        {/* Delete Dialog Trigger */}
+                        <div className="px-2 py-1.5 text-red-500 cursor-pointer hover:bg-accent rounded-sm">
+                            <CustomDialog
+                                title="Hapus User"
+                                description={`Yakin ingin menghapus user ${user.name}?`}
+                                trigger={<span>Delete</span>}
+                                confirmText="Hapus"
+                                type="delete"
+                                onConfirm={() => {
+                                    console.log("Delete user", user.id)
+                                }}
+                            />
+                        </div>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            );
+            )
         },
     },
 ]
