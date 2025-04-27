@@ -126,6 +126,74 @@ export default function Home() {
                         </div>
                     </section>
 
+                    {/* Event Teaser*/}
+                    <section className="bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
+                                Event <span className="text-red-600">Teaser</span>
+                            </h2>
+                            <div className="flex justify-center">
+                                <iframe
+                                    width="560"
+                                    height="315"
+                                    src="https://www.youtube.com/embed/your-video-id"
+                                    title="YouTube video player"
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    className="rounded-lg shadow-lg"
+                                ></iframe>
+                            </div>
+                            <div className="mt-8 text-center">
+                                <p className="text-lg text-[#333]">
+                                    Join us for an unforgettable experience filled with excitement, competition, and camaraderie.
+                                </p>
+                                <p className="text-lg text-[#333]">Stay tuned for more updates and get ready to showcase your skills!</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Prizepool Section */}
+                    <section className="bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
+                                Prize <span className="text-red-600">Pool</span>
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                {[
+                                    {
+                                        title: '1st Place',
+                                        amount: '$1000',
+                                        description: 'Champion of the tournament.',
+                                        delay: 100,
+                                    },
+                                    {
+                                        title: '2nd Place',
+                                        amount: '$500',
+                                        description: 'Runner-up of the tournament.',
+                                        delay: 200,
+                                    },
+                                    {
+                                        title: '3rd Place',
+                                        amount: '$250',
+                                        description: 'Third place in the tournament.',
+                                        delay: 300,
+                                    },
+                                ].map((prize, i) => (
+                                    <div
+                                        key={i}
+                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                        data-aos="fade-up"
+                                        data-aos-delay={prize.delay}
+                                    >
+                                        <h3 className="mb-4 text-2xl font-semibold text-gray-800">{prize.title}</h3>
+                                        <p className="mb-2 text-lg font-bold text-red-600">{prize.amount}</p>
+                                        <p className="text-sm text-gray-500">{prize.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
                     {/* Competition Section */}
                     <section className="bg-[#ffff] bg-cover bg-center py-24" data-aos="fade-up">
                         <div className="container mx-auto px-4">
@@ -295,7 +363,87 @@ export default function Home() {
                             </div>
                         </div>
                     </section>
-                    {/* Contact Section */}
+
+                    {/* Contact Person inti esega*/}
+                    <section className="bg-cover bg-center py-4" data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
+                                Contact <span className="text-red-600">Persons</span>
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                {[
+                                    {
+                                        name: 'John Doe',
+                                        role: 'Admin',
+                                        phone: '+1234567890',
+                                        delay: 100,
+                                    },
+                                    {
+                                        name: 'Jane Smith',
+                                        role: 'Admin',
+                                        phone: '+0987654321',
+                                        delay: 200,
+                                    },
+                                    {
+                                        name: 'Alice Johnson',
+                                        role: 'Admin',
+                                        phone: '+1122334455',
+                                        delay: 300,
+                                    },
+                                ].map((person, i) => (
+                                    <div
+                                        key={i}
+                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                        data-aos="fade-up"
+                                        data-aos-delay={person.delay}
+                                    >
+                                        <h3 className="mb-4 text-lg font-semibold text-gray-800">{person.name}</h3>
+                                        <p className="mb-2 text-sm text-gray-500">{person.role}</p>
+                                        <a href={`https://wa.me/${person.phone}`} className="text-blue-500 hover:text-blue-700">
+                                            {person.phone}
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/*sponsor section*/}
+                    <section className="bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
+                                Our <span className="text-red-600">Sponsors</span>
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                {[
+                                    {
+                                        name: 'Sponsor 1',
+                                        logo: '/images/sponsor1.png',
+                                        delay: 100,
+                                    },
+                                    {
+                                        name: 'Sponsor 2',
+                                        logo: '/images/sponsor2.png',
+                                        delay: 200,
+                                    },
+                                    {
+                                        name: 'Sponsor 3',
+                                        logo: '/images/sponsor3.png',
+                                        delay: 300,
+                                    },
+                                ].map((sponsor, i) => (
+                                    <div
+                                        key={i}
+                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                        data-aos="fade-up"
+                                        data-aos-delay={sponsor.delay}
+                                    >
+                                        <img src={sponsor.logo} alt={`${sponsor.name} Logo`} className="h-20 w-auto object-contain" />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
 
                     {/* Footer */}
                     <Footer />
