@@ -1,4 +1,3 @@
-import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 import { UserType } from '@/types/user';
 import { Disclosure } from '@headlessui/react';
@@ -304,7 +303,7 @@ export default function Home() {
                                     mode: "ONLINE",
                                     image: "/images/ML-logo.png",
                                     bgImage: "/images/ml-bg.png",
-                                delay: 0,
+                                    delay: 0,
                                     animation: "fade-up"
                                 }, {
                                     title: "Free Fire",
@@ -315,7 +314,7 @@ export default function Home() {
                                     mode: "ONLINE",
                                     image: "/images/FF-logo.png",
                                     bgImage: "/images/FF-bg.jpg",
-                                delay: 100,
+                                    delay: 100,
                                     animation: "fade-up"
                                 }].map((game, i) => (
                                     <div
@@ -507,8 +506,7 @@ export default function Home() {
                                     {
                                         date: 'January 1, 2025',
                                         title: 'Lorem Ipsum Dolor',
-                                        description:
-                                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula magna ut ante cursus.',
+                                        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula magna ut ante cursus.',
                                         icon: (
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -518,8 +516,7 @@ export default function Home() {
                                     {
                                         date: 'February 10, 2025',
                                         title: 'Sit Amet Consectetur',
-                                        description:
-                                            'Phasellus vitae sapien vel velit dapibus suscipit. Pellentesque habitant morbi tristique senectus.',
+                                        description: 'Phasellus vitae sapien vel velit dapibus suscipit. Pellentesque habitant morbi tristique senectus.',
                                         icon: (
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -529,8 +526,7 @@ export default function Home() {
                                     {
                                         date: 'March 20, 2025',
                                         title: 'Adipisicing Elit',
-                                        description:
-                                            'Mauris lacinia, nulla in fermentum blandit, urna leo laoreet nulla, eget sodales ligula erat ac elit.',
+                                        description: 'Mauris lacinia, nulla in fermentum blandit, urna leo laoreet nulla, eget sodales ligula erat ac elit.',
                                         icon: (
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -540,8 +536,7 @@ export default function Home() {
                                     {
                                         date: 'April 5, 2025',
                                         title: 'Dolore Magna Aliqua',
-                                        description:
-                                            'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+                                        description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
                                         icon: (
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -615,7 +610,7 @@ export default function Home() {
                                 <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm" data-aos="fade-up" data-aos-delay="100">
                                     {faqs.map((faq, index) => (
                                         <Disclosure key={index}>
-                                            {({ open }) => (
+                                            {({ open }: { open: boolean }) => (
                                                 <div className="px-6 py-5 transition-all hover:bg-gray-100">
                                                     <Disclosure.Button className="flex w-full items-center justify-between text-left text-lg font-medium text-gray-800 focus:outline-none">
                                                         <span>{faq.question}</span>
@@ -713,10 +708,6 @@ export default function Home() {
                                 ))}
                             </div>
                         </div>
-                    </section>
-
-                    {/* Footer */}
-                    <Footer />
                     </section>
 
                     {/* Footer */}
