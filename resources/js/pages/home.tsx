@@ -171,7 +171,7 @@ export default function Home() {
                                             {/* Hidden content until hover */}
                                             <div className="translate-y-2 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">
                                                 <h3 className="mb-4 text-center text-2xl font-semibold text-gray-800">
-                                                    <span className="text-primary">{game.title}</span> Tournament
+                                                    <span className="text-red-600">{game.title}</span> Tournament
                                                 </h3>
 
                                                 <p className="mb-6 text-center text-sm leading-relaxed text-gray-500">{game.description}</p>
@@ -179,7 +179,7 @@ export default function Home() {
                                                 <div className="flex justify-center">
                                                     <Link
                                                         href={route('register')}
-                                                        className="bg-primary hover:bg-primary/90 inline-block rounded-lg px-6 py-2.5 text-sm font-medium text-white transition hover:shadow-md"
+                                                        className="hover:bg-primary/90 inline-block rounded-lg bg-red-600 px-6 py-2.5 text-sm font-medium text-white transition hover:shadow-md"
                                                     >
                                                         Register Now
                                                     </Link>
