@@ -171,7 +171,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     shadow-md hover:shadow-lg transform hover:-translate-y-0.5
                                     transition-all duration-300 hover:from-red-600 hover:to-red-700"
                             >
-                                <User className="w-5 h-5" />
+                                <User className="h-5 w-5" />
                             </Link>
                         ) : (
                             registerItem && (

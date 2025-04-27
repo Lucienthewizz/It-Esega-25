@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
+use App\Http\Controllers\Admin\TimelineController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
@@ -10,6 +11,19 @@ use App\Http\Controllers\PageController;
 Route::get('/', function () {
     return Inertia::render('home');
 })->name('home');
+
+
+Route::get('/registerff', function () {
+    return Inertia::render('RegisterFF');
+})->name('registerff');
+
+
+Route::get('/registerml', function () {
+    return Inertia::render('RegisterML');
+})->name('registerml');
+
+
+
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('dashboard', function () {
@@ -22,6 +36,7 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
 Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-essega')->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('admins', AdminUserController::class);
+    Route::resource('timeline', TimelineController::class);
 
 
 

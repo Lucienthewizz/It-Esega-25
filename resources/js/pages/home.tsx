@@ -1,3 +1,4 @@
+import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 import { UserType } from '@/types/user';
 import { Disclosure } from '@headlessui/react';
@@ -15,12 +16,9 @@ export default function Home() {
     const [isOpen, setIsOpen] = useState(false);
     // const auth = user;
 
-
     console.log('Dari Home', user);
 
     // console.log(auth?.roles?.[0]?.name)
-
-
 
     const navItems = [
         { title: 'Home', href: route('home') },
@@ -623,8 +621,9 @@ export default function Home() {
                                                         <span>{faq.question}</span>
                                                         <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
                                                             <svg
-                                                                className={`h-5 w-5 transform transition-transform duration-300 ${open ? 'rotate-180' : ''
-                                                                    }`}
+                                                                className={`h-5 w-5 transform transition-transform duration-300 ${
+                                                                    open ? 'rotate-180' : ''
+                                                                }`}
                                                                 fill="none"
                                                                 stroke="currentColor"
                                                                 strokeWidth="2"
@@ -714,6 +713,10 @@ export default function Home() {
                                 ))}
                             </div>
                         </div>
+                    </section>
+
+                    {/* Footer */}
+                    <Footer />
                     </section>
 
                     {/* Footer */}

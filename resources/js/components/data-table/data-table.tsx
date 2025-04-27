@@ -25,14 +25,23 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { TableColumnToggle } from "./table-column-toggle"
+import { ArchiveRestore, PlusIcon } from "lucide-react"
+import { CustomDialog } from "../dialog/custom-dialog"
 
 type Props<TData> = {
     data: TData[];
     columns: ColumnDef<TData>[];
     filterColumn?: keyof TData;
+    isButtonAdd: boolean;
+    isButtonRestore: boolean;
+    addDialogContent?: React.ReactNode;
+    restoreDialogContent?: React.ReactNode;
+    onAddConfirm?: () => void;
+    onRestoreConfirm?: () => void;
+    initialColumnVisibility?: Record<string, boolean>;
 };
 
-export function DataTable<TData>({ data, columns, filterColumn }: Props<TData>) {
+export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore, isButtonAdd, addDialogContent, restoreDialogContent, onAddConfirm, onRestoreConfirm, initialColumnVisibility }: Props<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -57,20 +66,57 @@ export function DataTable<TData>({ data, columns, filterColumn }: Props<TData>) 
         },
     })
 
+    React.useEffect(() => {
+        if (initialColumnVisibility) {
+            table.setColumnVisibility(initialColumnVisibility);
+        }
+    }, [initialColumnVisibility, table]);
+
     return (
         <div className="w-full">
-            <div className="flex items-center py-4 gap-4">
-                {filterColumn && (
-                    <Input
-                        placeholder={`Filter ${String(filterColumn)}...`}
-                        value={(table.getColumn(filterColumn as string)?.getFilterValue() as string) ?? ""}
-                        onChange={(e) =>
-                            table.getColumn(filterColumn as string)?.setFilterValue(e.target.value)
-                        }
-                        className="max-w-sm"
-                    />
-                )}
-                <TableColumnToggle table={table} />
+            <div className="flex items-center py-4">
+                <div className="flex flex-row justify-between gap-1 items-center w-full">
+                    <div>
+                        {filterColumn && (
+                            <Input
+                                placeholder={`Filter ${String(filterColumn)}...`}
+                                value={(table.getColumn(filterColumn as string)?.getFilterValue() as string) ?? ""}
+                                onChange={(e) =>
+                                    table.getColumn(filterColumn as string)?.setFilterValue(e.target.value)
+                                }
+                                className="max-w-sm"
+                            />
+                        )}
+                    </div>
+                    <div className="flex flex-row items-center gap-3">
+                        {isButtonAdd && (
+                            <CustomDialog
+                                title="Tambah Data"
+                                description="Isi data baru di bawah ini."
+                                trigger={<Button variant="default"><PlusIcon /> Add New</Button>}
+                                confirmText="Simpan"
+                                onConfirm={onAddConfirm}
+                                type="form"
+                            >
+                                {addDialogContent}
+                            </CustomDialog>
+                        )}
+
+                        {isButtonRestore && (
+                            <CustomDialog
+                                title="Pulihkan Data"
+                                description="Konfirmasi untuk memulihkan data."
+                                trigger={<Button variant="secondary"><ArchiveRestore /> Restore</Button>}
+                                confirmText="Pulihkan"
+                                onConfirm={onRestoreConfirm}
+                                type="form"
+                            >
+                                {restoreDialogContent}
+                            </CustomDialog>
+                        )}
+                        <TableColumnToggle table={table} initialColumnVisibility={initialColumnVisibility} />
+                    </div>
+                </div>
             </div>
 
             <div className="rounded-md border">

@@ -1,4 +1,5 @@
-import { Settings } from "lucide-react"
+import { Settings, Loader2 } from "lucide-react"
+import { useForm } from "@inertiajs/react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,11 @@ type UserProfileProps = {
 }
 
 export function UserProfile({ user }: UserProfileProps) {
+    const { post, processing } = useForm()
+
+    const handleLogout = () => {
+        post(route('logout.admin'))
+    }
 
     const avatarUrl = user?.name
         ? `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(user.name)}`
@@ -23,8 +29,8 @@ export function UserProfile({ user }: UserProfileProps) {
         <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-2">
                 <Avatar className="h-8 w-8">
-                    <AvatarImage src={avatarUrl || "/placeholder.svg?height=32&width=32"} alt="Avatar" />
-                    <AvatarFallback>{initials || "JD"}</AvatarFallback>
+                    <AvatarImage src={avatarUrl} alt="Avatar" />
+                    <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
                 <div>
                     <p className="text-sm font-medium">{user?.name || "-"}</p>
@@ -34,13 +40,13 @@ export function UserProfile({ user }: UserProfileProps) {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
-                        <Settings className="h-4 w-4" />
+                        {processing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Settings className="h-4 w-4" />}
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={handleLogout}>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
