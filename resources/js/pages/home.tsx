@@ -19,10 +19,10 @@ export default function Home() {
 
     const navItems = [
         { title: 'Home', href: route('home') },
-        { title: 'About', href: route('about') },
-        { title: 'FAQ', href: route('faq') },
-        { title: 'Contact', href: route('contact') },
-        { title: 'Register', href: route('register') },
+        { title: 'About', href: '#about' },
+        { title: 'FAQ', href: '#faq' },
+        { title: 'Contact', href: '#contact' },
+        { title: 'Register', href: '#register' },
     ];
 
     useEffect(() => {
@@ -107,7 +107,7 @@ export default function Home() {
                     </div>
 
                     {/* About Section */}
-                    <section className="bg-white bg-cover bg-center py-16" data-aos="fade-up">
+                    <section id="about" className="bg-white bg-cover bg-center py-16" data-aos="fade-up">
                         <div className="container mx-auto px-6">
                             <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
                                 <div className="flex justify-center md:justify-start" data-aos="fade-right">
@@ -209,6 +209,7 @@ export default function Home() {
                                             "Compete in Esega's premier Mobile Legends tournament. Showcase your strategic gameplay and team coordination skills to become the champion.",
                                         image: '/images/ML-logo.png',
                                         delay: 100,
+                                        link: 'registerml', // Specify route for Mobile Legends
                                     },
                                     {
                                         title: 'Free Fire',
@@ -216,6 +217,7 @@ export default function Home() {
                                             'Battle it out in an intense Free Fire competition. Demonstrate your survival skills and tactical expertise to claim victory.',
                                         image: '/images/FF-logo.png',
                                         delay: 200,
+                                        link: 'registerff',
                                     },
                                 ].map((game, i) => (
                                     <div
@@ -246,7 +248,7 @@ export default function Home() {
 
                                                 <div className="flex justify-center">
                                                     <Link
-                                                        href={route('register')}
+                                                        href={route(game.link)} // Use dynamic route based on the game
                                                         className="hover:bg-primary/90 inline-block rounded-lg bg-red-600 px-6 py-2.5 text-sm font-medium text-white transition hover:shadow-md"
                                                     >
                                                         Register Now
@@ -365,8 +367,8 @@ export default function Home() {
                     </section>
 
                     {/* Contact Person inti esega*/}
-                    <section className="bg-cover bg-center py-4" data-aos="fade-up">
-                        <div className="container mx-auto px-6">
+                    <section id="contact" className="bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-4">
                             <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
                                 Contact <span className="text-red-600">Persons</span>
                             </h2>
@@ -402,43 +404,6 @@ export default function Home() {
                                         <a href={`https://wa.me/${person.phone}`} className="text-blue-500 hover:text-blue-700">
                                             {person.phone}
                                         </a>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/*sponsor section*/}
-                    <section className="bg-cover bg-center py-16" data-aos="fade-up">
-                        <div className="container mx-auto px-6">
-                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
-                                Our <span className="text-red-600">Sponsors</span>
-                            </h2>
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                                {[
-                                    {
-                                        name: 'Sponsor 1',
-                                        logo: '/images/sponsor1.png',
-                                        delay: 100,
-                                    },
-                                    {
-                                        name: 'Sponsor 2',
-                                        logo: '/images/sponsor2.png',
-                                        delay: 200,
-                                    },
-                                    {
-                                        name: 'Sponsor 3',
-                                        logo: '/images/sponsor3.png',
-                                        delay: 300,
-                                    },
-                                ].map((sponsor, i) => (
-                                    <div
-                                        key={i}
-                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
-                                        data-aos="fade-up"
-                                        data-aos-delay={sponsor.delay}
-                                    >
-                                        <img src={sponsor.logo} alt={`${sponsor.name} Logo`} className="h-20 w-auto object-contain" />
                                     </div>
                                 ))}
                             </div>

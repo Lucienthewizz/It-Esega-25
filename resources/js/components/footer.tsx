@@ -31,16 +31,17 @@ const defaultFooterSections: FooterSection[] = [
         title: 'Quick Links',
         links: [
             { title: 'Home', href: route('home') },
-            { title: 'About', href: route('about') },
+            { title: 'About', href: '#about' },
             { title: 'FAQ', href: '#faq' },
             { title: 'Contact', href: '#contact' },
+            { title: 'Register', href: '#register' },
         ],
     },
     {
         title: 'Competition',
         links: [
-            { title: 'Mobile Legends', href: '#' },
-            { title: 'Free Fire', href: '#' },
+            { title: 'Mobile Legends', href: 'registerml' },
+            { title: 'Free Fire', href: 'registerff' },
         ],
     },
 ];
