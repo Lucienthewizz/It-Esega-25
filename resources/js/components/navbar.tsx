@@ -1,12 +1,8 @@
-import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Menu, User } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { UserType } from '@/types/user';
+import { Link } from '@inertiajs/react';
+import { Menu, User } from 'lucide-react';
 
 interface NavItem {
     title: string;
@@ -24,69 +20,51 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     const actionItem = items.slice(-1)[0];
     const currentPath = window.location.pathname;
 
-
-    // const getRedirectPath = (user: UserType) => {
-    //     if (user === undefined) return '#';
-
-    //     console.log('User dari Navbar :', user?.updated_at)
-
-    //     const roles = user?.roles?.map((role) => role.name) || [];
-    //     console.log('User Role : ', roles)
-
-    //     if (roles.includes('admin') || roles.includes('super_admin')) {
-    //         return route('admin.dashboard');
-    //     }
-
-    //     return route('dashboard');
-    // };
-
-    console.log('Navbar props:', { logo, items, user });
-    console.log('Navbar user:', user);
-    console.log('Navbar Data Role:', user?.data.name);
-
-
-
     return (
-        <nav className="bg-transparent">
-            <div className="container px-6 py-1.5 mx-auto">
-                <div className="flex justify-between items-center">
-                    {/* Logo Section */}
-                    <div className="flex items-center">
-                        {logo}
-                    </div>
+        <nav className="border-opacity-30 sticky top-0 z-50 border border-gray-200 bg-white shadow-sm">
+            <div className="container mx-auto px-4 py-2">
+                {' '}
+                {/* Mengurangi padding untuk membuat navbar lebih ramping */}
+                <div className="flex items-center justify-between">
+                    {/* Logo */}
+                    <div className="flex items-center">{logo}</div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden gap-x-8 items-center md:flex">
-                        {/* Center Navigation Links */}
-                        <div className="flex space-x-6">
+                    <div className="hidden items-center gap-6 md:flex">
+                        {' '}
+                        {/* Menurunkan gap antar elemen */}
+                        <div className="flex gap-5">
+                            {' '}
+                            {/* Mengurangi jarak antar item navigasi */}
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.title}
                                     href={item.href}
-                                    className={`text-black transition-all duration-300 hover:text-secondary relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-secondary after:left-0 after:-bottom-1 after:rounded-full ${currentPath === item.href ? 'after:scale-x-100' : 'after:scale-x-0'
-                                        } after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100`}
+                                    className={`hover:text-secondary after:bg-secondary relative font-medium text-gray-700 transition-all after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:transition-transform after:duration-300 after:content-[''] hover:after:scale-x-100 ${
+                                        currentPath === item.href ? 'text-secondary after:scale-x-100' : ''
+                                    }`}
                                 >
                                     {item.title}
                                 </Link>
                             ))}
                         </div>
-
-                        {/* Action Button or User Icon */}
+                        {/* Action or User */}
                         {user ? (
                             <Link
                                 href={
-                                    user?.data.roles?.some(role => role.name === 'admin' || 'super_admin') ? route('admin.dashboard')
+                                    user?.data.roles?.some((role) => role.name === 'admin' || role.name === 'super_admin')
+                                        ? route('admin.dashboard')
                                         : route('dashboard')
                                 }
-                                className="flex items-center justify-center w-10 h-10 rounded-full border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
+                                className="border-secondary text-secondary hover:bg-secondary flex h-10 w-10 items-center justify-center rounded-full border transition-colors hover:text-white"
                             >
-                                <User className="w-5 h-5" />
+                                <User className="h-5 w-5" />
                             </Link>
                         ) : (
                             actionItem && (
                                 <Link
                                     href={actionItem.href}
-                                    className="px-6 py-2 font-semibold rounded-lg border transition-colors duration-300 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
+                                    className="text-secondary border-secondary hover:bg-secondary rounded-lg border px-4 py-1.5 font-semibold transition-colors hover:text-white"
                                 >
                                     {actionItem.title}
                                 </Link>
@@ -98,34 +76,36 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     <div className="md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="text-black">
-                                    <Menu className="w-5 h-5" />
+                                <Button variant="ghost" size="icon" className="text-gray-700">
+                                    <Menu className="h-6 w-6" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                                <div className="px-2 py-2">
+                            <DropdownMenuContent align="end" className="w-52 rounded-lg bg-white shadow-md">
+                                <div className="py-2">
                                     {navigationItems.map((item) => (
                                         <Link
                                             key={item.title}
                                             href={item.href}
-                                            className={`block px-4 py-2 text-sm rounded-md transition-colors ${currentPath === item.href ? 'bg-secondary/10 text-secondary' : 'text-black hover:bg-secondary/10'
-                                                }`}
+                                            className={`block rounded-md px-4 py-2 text-sm transition-colors ${
+                                                currentPath === item.href ? 'bg-secondary/10 text-secondary' : 'hover:bg-secondary/10 text-gray-700'
+                                            }`}
                                         >
                                             {item.title}
                                         </Link>
                                     ))}
+
                                     {user ? (
                                         <Link
                                             href="/profile"
-                                            className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
+                                            className="bg-secondary hover:bg-secondary/90 mt-3 flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm text-white transition-colors"
                                         >
-                                            <User className="w-5 h-5 inline-block" /> Profile
+                                            <User className="h-4 w-4" /> Profile
                                         </Link>
                                     ) : (
                                         actionItem && (
                                             <Link
                                                 href={actionItem.href}
-                                                className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
+                                                className="bg-secondary hover:bg-secondary/90 mt-3 block rounded-md px-4 py-2 text-center text-sm text-white transition-colors"
                                             >
                                                 {actionItem.title}
                                             </Link>
