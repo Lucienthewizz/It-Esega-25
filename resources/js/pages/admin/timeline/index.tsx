@@ -24,6 +24,7 @@ export default function AdminTimelinePage() {
 
     const events = timelines.data;
 
+    console.log(events);
     const { data, setData, post, put, delete: destroy, processing, reset } = useForm<Omit<Event, "id">>({
         title: '',
         description: '',
