@@ -32,18 +32,18 @@ export function formatDate(date: Date): string {
         day: "numeric",
         month: "short",
         year: "numeric",
-    }).format(date)
+    }).format(date);
 }
 
 export function formatTime(date: Date): string {
     return new Intl.DateTimeFormat("id-ID", {
         hour: "2-digit",
         minute: "2-digit",
-        hour12: false,
-    }).format(date)
+        second: "2-digit",
+        hour12: false, 
+    }).format(date);
 }
 
 export function formatDateTime(date: Date): string {
-    return `${formatDate(date)}, ${formatTime(date)}`
+    return `${formatDate(date)}, ${formatTime(date)}`;
 }
-
