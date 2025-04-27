@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3, Home, Package, Settings, ShoppingCart, Users } from "lucide-react"
+import { CalendarClock, Home, Settings, Users } from "lucide-react"
 
 import {
     Sidebar,
@@ -38,6 +38,12 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
             label: "Admin Management",
             icon: Users,
             link: route('admins.index')
+        },
+        {
+            id: "timeline",
+            label: "Timeline Management",
+            icon: CalendarClock,
+            link: route('timeline.index')
         },
         // {
         //     id: "settings",

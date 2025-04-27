@@ -26,3 +26,24 @@ export const FormattedDate: React.FC<FormattedDateProps> = ({ date }) => {
 
     return <span>{formatted}</span>;
 };
+
+export function formatDate(date: Date): string {
+    return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+    }).format(date)
+}
+
+export function formatTime(date: Date): string {
+    return new Intl.DateTimeFormat("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    }).format(date)
+}
+
+export function formatDateTime(date: Date): string {
+    return `${formatDate(date)}, ${formatTime(date)}`
+}
+
