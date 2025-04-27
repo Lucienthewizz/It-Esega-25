@@ -126,7 +126,7 @@ export default function Home() {
                     </section>
 
                     {/* Competition Section */}
-                    <section className="bg-[#f9f9f9] bg-cover bg-center py-24" data-aos="fade-up">
+                    <section className="bg-[#ffff] bg-cover bg-center py-24" data-aos="fade-up">
                         <div className="container mx-auto px-4">
                             <h2 className="mb-16 text-center text-4xl font-bold tracking-tight text-gray-800" data-aos="fade-up">
                                 Upcoming <span className="text-secondary">Tournament</span>
@@ -252,12 +252,7 @@ export default function Home() {
                     </section>
 
                     {/* FAQ Section */}
-                    <section
-                        id="faq"
-                        className="bg-cover bg-center py-40"
-                        style={{ backgroundImage: 'url(/images/backrground.jpg)' }}
-                        data-aos="fade-up"
-                    >
+                    <section id="faq" className="bg-cover bg-center py-40" data-aos="fade-up">
                         <div className="container mx-auto px-4">
                             <div className="mx-auto max-w-3xl">
                                 <h2 className="mb-10 text-center text-4xl font-extrabold text-gray-900">
