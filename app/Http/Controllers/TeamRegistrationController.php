@@ -6,6 +6,8 @@ use App\Http\Requests\StoreMLTeamRegistrationRequest;
 use App\Models\ML_Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class TeamRegistrationController extends Controller
@@ -15,6 +17,7 @@ class TeamRegistrationController extends Controller
         $validated = $request->validated();
 
         $team = new ML_Team();
+
         $team->team_name = $validated['team_name'];
 
         if ($request->hasFile('team_logo')) {
@@ -27,10 +30,11 @@ class TeamRegistrationController extends Controller
 
         $team->save();
 
+        $encryptedTeamName = encrypt($team->team_name);
+
         Session::flash('success', 'Selamat anda berhasil mendaftar sebagai team ' . $validated['team_name']);
-        return Inertia::location(route('player-registration.form', parameters: [
-            'team' => $team->id,
-            // 'gameType' => $validated['game_type']
-        ]));
+
+        return redirect()->route('player-registration.form', ['encryptedTeamName' => $encryptedTeamName]);
     }
+
 }

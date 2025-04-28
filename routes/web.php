@@ -29,11 +29,9 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/player-registration', [PlayerRegistrationController::class, 'store'])->name('player-registration.store');
 
-    Route::get('/player-registration-ml/form/{team}', function ($team) {
-        return inertia('player-regis/player-registration-form', [
-            'teamData' => \App\Models\ML_Team::findOrFail($team),
-        ]);
-    })->name('player-registration.form');
+    Route::get('/player-registration-ml/form/{encryptedTeamName}', [PlayerRegistrationController::class, 'showRegistrationForm'])
+        ->name('player-registration.form');
+
 });
 
 

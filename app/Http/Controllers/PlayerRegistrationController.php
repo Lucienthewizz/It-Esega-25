@@ -4,10 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePlayerMLRegistrationRequest;
 use App\Models\ML_Participant;
+use App\Models\ML_Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use Inertia\Inertia;
 
 class PlayerRegistrationController extends Controller
 {
+
+    public function showRegistrationForm($encryptedTeamName)
+    {
+        try {
+            $teamName = decrypt($encryptedTeamName);
+
+            $team = ML_Team::where('team_name', $teamName)->firstOrFail();
+
+        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            abort(403, 'This URL is no longer valid or was tampered with.');
+        }
+
+        return Inertia::render('player-regis/player-registration-form', [
+            'teamData' => $team,
+            'gameType' => 'ml',
+        ]);
+    }
+
+
     public function store(StorePlayerMLRegistrationRequest $request)
     {
         $validated = $request->validated();
@@ -26,6 +48,6 @@ class PlayerRegistrationController extends Controller
             }
         }
 
-        return redirect()->route('home')->with('success', 'Pendaftaran pemain berhasil!');
+        return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfrimasi dari Humas IT-ESSEGA!');
     }
 }

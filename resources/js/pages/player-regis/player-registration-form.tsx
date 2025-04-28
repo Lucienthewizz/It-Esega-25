@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { MLPlayerForm } from "@/components/registration/ml-player-form"
 import type { PlayerRegistrationFormProps } from "@/types/register"
 
-export function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
+export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isML = gameType === "ml"
     const themeColor = isML ? "purple" : "orange"
     const gameTitle = isML ? "Mobile Legends" : "Free Fire"
@@ -48,7 +48,7 @@ export function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistratio
                     <div className="mb-8 text-center">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">{gameTitle} Player Registration</h1>
                         <p className="text-gray-600">
-                            Team: <span className="font-medium">{teamData.teamName}</span> - Register your team members
+                            Team: <span className="font-medium">{teamData.team_name}</span> - Register your team members
                         </p>
                     </div>
 
