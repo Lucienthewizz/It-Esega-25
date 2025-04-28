@@ -21,7 +21,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "name", e.target.value)}
                         required
                         placeholder="Player's full name"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -35,7 +35,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "id", e.target.value)}
                         required
                         placeholder="Mobile Legends ID"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -49,7 +49,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "server", e.target.value)}
                         required
                         placeholder="Server ID"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -63,7 +63,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "role", e.target.value)}
                         required
                         placeholder="Player role (e.g., Tank, Marksman)"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -77,7 +77,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "phone", e.target.value)}
                         required
                         placeholder="Phone number"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -92,7 +92,7 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "email", e.target.value)}
                         required
                         placeholder="Email address"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
             </div>

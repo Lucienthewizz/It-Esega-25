@@ -1,9 +1,9 @@
 export interface TeamData {
-    teamName: string
-    paymentProof: File | null
-    teamLogo: File | null
+    id?: number | null
+    team_name: string
+    proof_of_payment: File | null
+    team_logo: File | null
 }
-
 export interface MLPlayer {
     name: string
     id: string
@@ -35,7 +35,9 @@ export interface TeamRegistrationFormProps {
     teamData: TeamData
     gameType: "ml" | "ff"
     onSubmit: (data: TeamData) => void
+    resetStep: () => void
 }
+
 
 export interface PlayerRegistrationFormProps {
     teamData: TeamData
@@ -48,6 +50,7 @@ export interface QRCodeSectionProps {
     instructions: string[]
     amount: string
     gameType: "ml" | "ff"
+    resetStep: () => void
 }
 
 export interface FileUploadFieldProps {

@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
 use App\Http\Controllers\Admin\TimelineController;
+use App\Http\Controllers\PlayerRegistrationController;
+use App\Http\Controllers\TeamRegistrationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
@@ -22,6 +24,25 @@ Route::get('/registerml', function () {
     return Inertia::render('RegisterML');
 })->name('registerml');
 
+Route::middleware('guest')->group(function () {
+    Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
+
+    Route::post('/player-registration', [PlayerRegistrationController::class, 'store'])->name('player-registration.store');
+
+    Route::get('/player-registration-ml/form/{team}', function ($team) {
+        return inertia('player-regis/player-registration-form', [
+            'teamData' => \App\Models\ML_Team::findOrFail($team),
+        ]);
+    })->name('player-registration.form');
+});
+
+
+Route::get('/team-cek', function () {
+    $team = \App\Models\ML_Team::all();
+
+    dd($team);
+
+});
 
 
 

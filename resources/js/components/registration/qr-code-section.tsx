@@ -1,7 +1,8 @@
-import { CreditCard } from "lucide-react"
+import { ArrowLeft, CreditCard } from "lucide-react"
 import type { QRCodeSectionProps } from "@/types/register"
+import { Button } from "../ui/button"
 
-export function QRCodeSection({ title, description, instructions, amount, gameType }: QRCodeSectionProps) {
+export function QRCodeSection({ title, description, instructions, amount, gameType, resetStep }: QRCodeSectionProps) {
     const isML = gameType === "ml"
     const themeColor = isML ? "purple" : "orange"
     const gradientFrom = isML ? "purple-50" : "orange-50"
@@ -13,7 +14,16 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
 
     return (
         <div className="w-full lg:w-2/5 p-8 flex flex-col items-center justify-center bg-white shadow-lg lg:shadow-none">
+
             <div className="max-w-md w-full space-y-8">
+                <Button
+                    type="button"
+                    onClick={resetStep}
+                    variant='destructive'
+                >
+                    <ArrowLeft />
+                    Back
+                </Button>
                 <div className="text-center">
                     <div className="flex items-center justify-center mb-4">
                         <CreditCard className={`h-8 w-8 text-${themeColor}-600`} />

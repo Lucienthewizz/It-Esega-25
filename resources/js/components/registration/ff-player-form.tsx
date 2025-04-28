@@ -21,7 +21,7 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "name", e.target.value)}
                         required
                         placeholder="Player's full name"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -35,7 +35,7 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "id", e.target.value)}
                         required
                         placeholder="Free Fire ID"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -49,7 +49,7 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "nickname", e.target.value)}
                         required
                         placeholder="In-game nickname"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -63,7 +63,7 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "phone", e.target.value)}
                         required
                         placeholder="Phone number"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
 
@@ -78,7 +78,7 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                         onChange={(e) => onChange(index, "email", e.target.value)}
                         required
                         placeholder="Email address"
-                        className="bg-white border-gray-200 rounded-lg"
+                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
                     />
                 </div>
             </div>
