@@ -1,9 +1,12 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
-import { MLPlayerForm } from "@/components/registration/ml-player-form"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import type { PlayerRegistrationFormProps } from "@/types/register"
+import { MLPlayerForm } from "@/components/registration/ml-player-form"
+import { Trash2, X } from "lucide-react"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isML = gameType === "ml"
@@ -17,12 +20,15 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         team_id: teamData.id,
     })
 
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
         if (data.ml_players.length < minPlayers) {
-            alert(`You need at least ${minPlayers} players to submit the form.`);
-            return;
+            alert(`You need at least ${minPlayers} players to submit the form.`)
+            return
         }
 
         post(route("player-registration.store"))
@@ -41,6 +47,24 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         }
     }
 
+    const openDeleteDialog = (index: number) => {
+        setPlayerToDelete(index)
+        setDeleteDialogOpen(true)
+    }
+
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setPlayerToDelete(null)
+    }
+
+    const deletePlayer = () => {
+        if (playerToDelete !== null) {
+            const updatedPlayers = data.ml_players.filter((_, index) => index !== playerToDelete)
+            setData("ml_players", updatedPlayers)
+            closeDeleteDialog()
+        }
+    }
+
     return (
         <div className="container mx-auto py-8 px-4">
             <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -55,7 +79,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-6">
                             {data.ml_players.map((player, index) => (
-                                <MLPlayerForm key={index} player={player} index={index} onChange={(field, value) => handlePlayerChange(index, field, value)} />
+                                <div key={index} className="flex justify-between items-center">
+                                    <MLPlayerForm player={player} index={index} onChange={(field, value) => handlePlayerChange(index, field, value)} onDelete={() => openDeleteDialog(index)} />
+
+                                </div>
                             ))}
                             <Button type="button" onClick={addPlayer} disabled={data.ml_players.length >= maxPlayers}>
                                 Add Player
@@ -68,6 +95,25 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </form>
                 </div>
             </div>
+
+            {/* Dialog for Deletion */}
+            <Dialog open={isDeleteDialogOpen}>
+                {/* <DialogTrigger asChild>
+                    <Button variant="outline">Delete Player</Button>
+                </DialogTrigger> */}
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Are you sure?</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete this player form? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex flex-row justify-between w-full">
+                        <Button onClick={closeDeleteDialog} variant="outline"><X /> Cancel</Button>
+                        <Button onClick={deletePlayer} variant="destructive"><Trash2 /> Delete</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

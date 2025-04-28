@@ -25,6 +25,7 @@ export interface PlayerFormProps {
     player: MLPlayer | FFPlayer
     index: number
     onChange: (index: number, field: string, value: string) => void
+    onDelete: () => void
 }
 
 export interface GameSelectionFormProps {

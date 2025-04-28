@@ -3,13 +3,24 @@
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import type { MLPlayer, PlayerFormProps } from "@/types/register"
+import { Button } from "../ui/button"
+import { Trash2 } from "lucide-react"
 
-export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
+export function MLPlayerForm({ player, index, onChange, onDelete }: PlayerFormProps) {
     const mlPlayer = player as MLPlayer
 
     return (
-        <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Player {index + 1}</h3>
+        <div className="border border-gray-200 rounded-xl p-6 bg-gray-50 w-full">
+            <div className="flex flex-row items-center justify-between w-full">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Player {index + 1}</h3>
+
+                <Button
+                    type="button"
+                    onClick={onDelete}
+                >
+                    <Trash2 />
+                </Button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <Label htmlFor={`ml-name-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
@@ -96,6 +107,6 @@ export function MLPlayerForm({ player, index, onChange }: PlayerFormProps) {
                     />
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
