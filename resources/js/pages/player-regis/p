@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/dialog"
 import type { MLPlayer, PlayerRegistrationFormProps } from "@/types/register"
 import { MLPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, CheckCircle2, HelpCircle, Info, Loader2, PlusCircle, Trash2, X } from 'lucide-react'
+import { AlertCircle, CheckCircle2, HelpCircle, Info, Loader2, PlusCircle, Trash2, X } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from "framer-motion"
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
@@ -28,6 +30,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const gameTitle = isML ? "Mobile Legends" : "Free Fire"
     const minPlayers = isML ? 5 : 5
     const maxPlayers = 7
+    const { toast } = useToast()
 
     const themeColors = {
         primary: isML ? "bg-purple-600 hover:bg-purple-700 text-white" : "bg-orange-600 hover:bg-orange-700 text-white",
@@ -49,36 +52,24 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
     const [showValidationError, setShowValidationError] = useState(false)
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
-    const [showDeleteAlert, setShowDeleteAlert] = useState(false)
     const [progress, setProgress] = useState(0)
-    const [alertMessage, setAlertMessage] = useState("")
 
     useEffect(() => {
+        // Calculate progress based on number of players added
         const currentProgress = Math.min((data.ml_players.length / minPlayers) * 100, 100)
         setProgress(currentProgress)
     }, [data.ml_players.length, minPlayers])
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout
-        if (showSuccessAlert || showDeleteAlert) {
-            timer = setTimeout(() => {
-                setShowSuccessAlert(false)
-                setShowDeleteAlert(false)
-            }, 3000)
-        }
-        return () => clearTimeout(timer)
-    }, [showSuccessAlert, showDeleteAlert])
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
         if (data.ml_players.length < minPlayers) {
             setShowValidationError(true)
-            setAlertMessage(`Kamu Butuh minilam ${minPlayers} Pemain untuk melakukan Submit Form.`)
-            setTimeout(() => {
-                setShowValidationError(false)
-            }, 5000)
+            toast({
+                variant: "destructive",
+                title: "Not enough players",
+                description: `You need at least ${minPlayers} players to submit the form.`,
+            })
             return
         }
 
@@ -107,9 +98,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             }
             setData("ml_players", [...data.ml_players, newPlayer])
 
-            setShowSuccessAlert(true)
-            setAlertMessage("Form Player baru Berhasil di tambahkan.")
-
+            // Scroll to the newly added player form
             setTimeout(() => {
                 window.scrollTo({
                     top: document.body.scrollHeight,
@@ -135,89 +124,29 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setData("ml_players", updatedPlayers)
             closeDeleteDialog()
 
-            setShowDeleteAlert(true)
-            setAlertMessage("Player telah di hapus dari Team anda.")
+            toast({
+                title: "Player removed",
+                description: "The player has been removed from your team.",
+            })
         }
     }
 
     return (
         <>
             <Head title={`${gameTitle} Player Registration`} />
+            <Toaster />
 
             <div className="container mx-auto py-12 px-4">
-                {/* Alerts Section */}
-                <div className="fixed top-4 right-4 z-50 w-full max-w-md space-y-2">
-                    <AnimatePresence>
-                        {showValidationError && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <Alert variant="destructive">
-                                    <AlertCircle className="h-4 w-4" />
-                                    <AlertTitle>Error</AlertTitle>
-                                    <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>
-                                </Alert>
-                            </motion.div>
-                        )}
-
-                        {showSuccessAlert && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
-                                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                    <AlertTitle>Success</AlertTitle>
-                                    <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>
-                                </Alert>
-                            </motion.div>
-                        )}
-
-                        {showDeleteAlert && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                transition={{ duration: 0.2 }}
-                            >
-                                <Alert variant="default" className="bg-blue-50 text-blue-800 border-blue-200">
-                                    <Info className="h-4 w-4 text-blue-500" />
-                                    <AlertTitle>Information</AlertTitle>
-                                    <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>
-                                </Alert>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
                 <Card className="max-w-5xl mx-auto overflow-hidden border-0 shadow-xl rounded-2xl">
                     <CardHeader
                         className={`p-8 ${isML ? "bg-gradient-to-r from-purple-700 to-indigo-800" : "bg-gradient-to-r from-orange-600 to-amber-600"} text-white`}
                     >
                         <div className="flex justify-between items-center">
-                            <div className="flex flex-row gap-2 items-center">
-                                <img
-                                    src={
-                                        teamData.team_logo
-                                            ? teamData.team_logo instanceof File
-                                                ? URL.createObjectURL(teamData.team_logo)
-                                                : `/storage/${teamData.team_logo}`
-                                            : undefined
-                                    }
-                                    alt={`Team ${teamData.team_name} Logo`}
-                                    className="max-w-32 rounded-2xl"
-                                />
-                                <div>
-                                    <CardTitle className="text-3xl font-bold mb-2">{gameTitle} Player Registration</CardTitle>
-                                    <CardDescription className="text-white/90 text-lg font-black">
-                                        Team: <span className="font-medium">{teamData.team_name}</span>
-                                    </CardDescription>
-                                </div>
+                            <div>
+                                <CardTitle className="text-3xl font-bold mb-2">{gameTitle} Player Registration</CardTitle>
+                                <CardDescription className="text-white/80 text-lg">
+                                    Team: <span className="font-medium">{teamData.team_name}</span>
+                                </CardDescription>
                             </div>
 
                             <Dialog>
@@ -314,6 +243,23 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </div>
 
                     <CardContent className="p-8">
+                        <AnimatePresence>
+                            {showValidationError && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="mb-6"
+                                >
+                                    <Alert variant="destructive">
+                                        <AlertCircle className="h-4 w-4" />
+                                        <AlertTitle>Not enough players</AlertTitle>
+                                        <AlertDescription>You need at least {minPlayers} players to submit the form.</AlertDescription>
+                                    </Alert>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         <form onSubmit={handleSubmit}>
                             <div className="space-y-6">
                                 <AnimatePresence>
@@ -325,13 +271,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                             exit={{ opacity: 0, y: -20 }}
                                             transition={{ duration: 0.3 }}
                                         >
-                                            <MLPlayerForm
-                                                player={player}
-                                                index={index}
-                                                allPlayers={data.ml_players}
-                                                onChange={(field, value) => handlePlayerChange(index, field, value)}
-                                                onDelete={() => openDeleteDialog(index)}
-                                            />
+                                            <MLPlayerForm player={player} index={index} allPlayers={data.ml_players} onChange={(field, value) => handlePlayerChange(index, field, value)} onDelete={() => openDeleteDialog(index)} />
+
                                         </motion.div>
                                     ))}
                                 </AnimatePresence>
@@ -341,6 +282,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         type="button"
                                         onClick={addPlayer}
                                         disabled={data.ml_players.length >= maxPlayers}
+                                        className="w-full sm:w-auto border border-dashed bg-background hover:bg-muted"
                                     >
                                         <PlusCircle className="mr-2 h-4 w-4" />
                                         Add Player {data.ml_players.length < maxPlayers && `(${data.ml_players.length}/${maxPlayers})`}

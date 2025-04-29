@@ -1,112 +1,159 @@
-"use client"
+    "use client"
 
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import type { MLPlayer, PlayerFormProps } from "@/types/register"
-import { Button } from "../ui/button"
-import { Trash2 } from "lucide-react"
+    import { useState, useEffect } from "react"
+    import { Label } from "@/components/ui/label"
+    import { Input } from "@/components/ui/input"
+    import { Button } from "@/components/ui/button"
+    import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+    import { Trash2 } from "lucide-react"
+    import { MLPlayer, PlayerFormProps } from "@/types/register"
 
-export function MLPlayerForm({ player, index, onChange, onDelete }: PlayerFormProps) {
-    const mlPlayer = player as MLPlayer
 
-    return (
-        <div className="border border-gray-200 rounded-xl p-6 bg-gray-50 w-full">
-            <div className="flex flex-row items-center justify-between w-full">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">Player {index + 1}</h3>
 
-                <Button
-                    type="button"
-                    onClick={onDelete}
-                >
-                    <Trash2 />
-                </Button>
+    export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: PlayerFormProps) {
+        const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+        const [signaturePreview, setSignaturePreview] = useState<string | null>(null)
+        const [roleError, setRoleError] = useState<string | null>(null)
+
+        useEffect(() => {
+            setPhotoPreview(player.foto || null)
+            setSignaturePreview(player.tanda_tangan || null)
+        }, [player.foto, player.tanda_tangan])
+
+        const handleInputChange = <K extends keyof MLPlayer>(field: K) => (
+            e: React.ChangeEvent<HTMLInputElement>
+        ) => {
+            onChange(index, field, e.target.value as MLPlayer[K])
+        }
+
+        const handleFileChange = (field: "foto" | "tanda_tangan") => (
+            e: React.ChangeEvent<HTMLInputElement>
+        ) => {
+            const file = e.target.files?.[0]
+            if (!file) return
+
+            const reader = new FileReader()
+            reader.onload = () => {
+                const result = reader.result as string
+                if (field === "foto") {
+                    setPhotoPreview(result)
+                } else {
+                    setSignaturePreview(result)
+                }
+            }
+            reader.readAsDataURL(file)
+            onChange(index, field, file as unknown as MLPlayer[typeof field])
+        }
+
+        const handleRoleChange = (value: MLPlayer["role"]) => {
+            const ketuaCount = allPlayers.filter((p: MLPlayer) => p.role === "ketua").length
+            const cadanganCount = allPlayers.filter((p: MLPlayer) => p.role === "cadangan").length
+
+            if (value === "ketua" && ketuaCount >= 1) {
+                setRoleError("Only one Ketua is allowed.")
+            } else if (value === "cadangan" && cadanganCount >= 2) {
+                setRoleError("Only two Cadangan are allowed.")
+            } else {
+                setRoleError(null)
+            }
+
+            onChange(index, "role", value)
+        }
+
+        return (
+            <div className="border border-gray-200 rounded-xl p-6 bg-gray-50 w-full">
+                <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-lg font-medium text-gray-900">Player {index + 1}</h3>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={onDelete}
+                        className="text-red-700 hover:text-red-200 bg-red-50 hover:bg-red-500"
+                    >
+                        <Trash2 className="w-5 h-5" />
+                    </Button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                        ["name", "Full Name", "Player's full name"],
+                        ["nickname", "Nickname", "In-game nickname"],
+                        ["id", "ML ID", "Mobile Legends ID"],
+                        ["id_server", "Server ID", "Server ID"],
+                        ["no_hp", "Phone Number", "Phone number"],
+                        ["email", "Email", "Email address"],
+                    ].map(([field, label, placeholder]) => (
+                        <div key={field}>
+                            <Label htmlFor={`ml-${field}-${index}`} className="block mb-1">
+                                {label}
+                            </Label>
+                            <Input
+                                id={`ml-${field}-${index}`}
+                                value={player[field as keyof MLPlayer] as string}
+                                onChange={handleInputChange(field as keyof MLPlayer)}
+                                placeholder={placeholder}
+                                className="bg-white text-slate-900 border-gray-200 rounded-lg"
+                                required
+                            />
+                        </div>
+                    ))}
+
+                    <div>
+                        <Label htmlFor={`ml-role-${index}`} className="block mb-1">Role</Label>
+                        <Select
+                            value={player.role}
+                            onValueChange={handleRoleChange}
+                        >
+                            <SelectTrigger className="bg-white text-slate-900 border-gray-200 rounded-lg">
+                                <SelectValue placeholder="Select role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="ketua">Ketua</SelectItem>
+                                <SelectItem value="anggota">Anggota</SelectItem>
+                                <SelectItem value="cadangan">Cadangan</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {roleError && <p className="text-red-500 text-sm mt-2">{roleError}</p>}
+                    </div>
+
+                    <div className="md:col-span-2">
+                        <Label htmlFor={`ml-alamat-${index}`} className="block mb-1">Address</Label>
+                        <Input
+                            id={`ml-alamat-${index}`}
+                            value={player.alamat}
+                            onChange={handleInputChange("alamat")}
+                            placeholder="Full address"
+                            className="bg-white text-slate-900 border-gray-200 rounded-lg"
+                            required
+                        />
+                    </div>
+
+                    {[
+                        ["foto", "Photo", photoPreview],
+                        ["tanda_tangan", "Signature", signaturePreview],
+                    ].map(([field, label, preview]) => (
+                        <div key={field}>
+                            <Label htmlFor={`ml-${field}-${index}`} className="block mb-1">{label}</Label>
+                            <Input
+                                id={`ml-${field}-${index}`}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange(field as "foto" | "tanda_tangan")}
+                            />
+                            {preview && (
+                                <img
+                                    src={preview}
+                                    alt={`${label} Preview`}
+                                    className="mt-2 max-h-32 object-contain border rounded"
+                                />
+                            )}
+                        </div>
+                    ))}
+                </div>
+
+
+
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor={`ml-name-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name
-                    </Label>
-                    <Input
-                        id={`ml-name-${index}`}
-                        value={mlPlayer.name}
-                        onChange={(e) => onChange(index, "name", e.target.value)}
-                        required
-                        placeholder="Player's full name"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor={`ml-id-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        ML ID
-                    </Label>
-                    <Input
-                        id={`ml-id-${index}`}
-                        value={mlPlayer.id}
-                        onChange={(e) => onChange(index, "id", e.target.value)}
-                        required
-                        placeholder="Mobile Legends ID"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor={`ml-server-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        Server ID
-                    </Label>
-                    <Input
-                        id={`ml-server-${index}`}
-                        value={mlPlayer.server}
-                        onChange={(e) => onChange(index, "server", e.target.value)}
-                        required
-                        placeholder="Server ID"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor={`ml-role-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        Role
-                    </Label>
-                    <Input
-                        id={`ml-role-${index}`}
-                        value={mlPlayer.role}
-                        onChange={(e) => onChange(index, "role", e.target.value)}
-                        required
-                        placeholder="Player role (e.g., Tank, Marksman)"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor={`ml-phone-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number
-                    </Label>
-                    <Input
-                        id={`ml-phone-${index}`}
-                        value={mlPlayer.phone}
-                        onChange={(e) => onChange(index, "phone", e.target.value)}
-                        required
-                        placeholder="Phone number"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor={`ml-email-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
-                        Email
-                    </Label>
-                    <Input
-                        id={`ml-email-${index}`}
-                        type="email"
-                        value={mlPlayer.email}
-                        onChange={(e) => onChange(index, "email", e.target.value)}
-                        required
-                        placeholder="Email address"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
-                    />
-                </div>
-            </div>
-        </div >
-    )
-}
+        )
+    }
