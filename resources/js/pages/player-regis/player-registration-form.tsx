@@ -144,7 +144,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         <>
             <Head title={`${gameTitle} Player Registration`} />
 
-            <div className="container mx-auto py-12 px-4">
+            <div className="container py-12 px-4 min-h-[100vh]">
                 {/* Alerts Section */}
                 <div className="fixed top-4 right-4 z-50 w-full max-w-md space-y-2">
                     <AnimatePresence>
