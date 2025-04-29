@@ -226,7 +226,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         <HelpCircle className="mr-2 h-4 w-4" /> Help
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[500px]">
+                                <DialogContent className="sm:max-w-[40rem]">
                                     <DialogHeader>
                                         <DialogTitle className="flex items-center text-xl">
                                             <Info className="mr-2 h-5 w-5 text-blue-500" />
@@ -289,6 +289,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                 </Badge>
                                                 <Badge variant="outline" className="flex items-center gap-1">
                                                     <CheckCircle2 className="h-3 w-3" /> Signature required
+                                                </Badge>
+                                                <Badge variant="outline" className="flex items-center gap-1">
+                                                    <CheckCircle2 className="h-3 w-3" /> Cadangan Maximum 2 Player (Choose Maximum 2 Player for Cadangan - Optional)
+                                                </Badge>
+                                                <Badge variant="outline" className="flex items-center gap-1">
+                                                    <CheckCircle2 className="h-3 w-3" /> Choose 1 Player For Ketua Role
                                                 </Badge>
                                             </div>
                                         </div>
