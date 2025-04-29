@@ -70,6 +70,30 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         return () => clearTimeout(timer)
     }, [showSuccessAlert, showDeleteAlert])
 
+    // Local Storage Push > for Onfile or Reload ga sengaja
+    useEffect(() => {
+        const savedPlayers = localStorage.getItem("ml_players_data")
+        if (savedPlayers && data.ml_players.length === 0) {
+            try {
+                const parsed = JSON.parse(savedPlayers)
+                if (Array.isArray(parsed)) {
+                    setData("ml_players", parsed)
+                    return
+                }
+            } catch (e) {
+                console.error("Gagal memuat data dari localStorage:", e)
+            }
+        }
+
+        localStorage.setItem("ml_players_data", JSON.stringify(data.ml_players))
+
+        const currentProgress = Math.min((data.ml_players.length / minPlayers) * 100, 100)
+        setProgress(currentProgress)
+    }, [data.ml_players, minPlayers, setData])
+
+
+
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -257,11 +281,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                     </li>
                                                     <li className="flex items-center gap-2">
                                                         <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                                        <span>Photo: Photo cannot be contain negative things and Porn.</span>
+                                                        <span>Photo: Photo cannot be contain negative things and Porn (Max: 1MB).</span>
                                                     </li>
                                                     <li className="flex items-center gap-2">
                                                         <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                                        <span>Signature: Make sure your Signature is Correct.</span>
+                                                        <span>Signature: Make sure your Signature is Correct  (Max: 1MB).</span>
                                                     </li>
                                                 </ul>
                                             </div>
