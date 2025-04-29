@@ -255,6 +255,14 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                         <CheckCircle2 className="h-4 w-4 text-green-500" />
                                                         <span>Email: Your contact email address</span>
                                                     </li>
+                                                    <li className="flex items-center gap-2">
+                                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                                        <span>Photo: Photo cannot be contain negative things and Porn.</span>
+                                                    </li>
+                                                    <li className="flex items-center gap-2">
+                                                        <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                                        <span>Signature: Make sure your Signature is Correct.</span>
+                                                    </li>
                                                 </ul>
                                             </div>
                                             <div className="space-y-2">
