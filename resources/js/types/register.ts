@@ -6,12 +6,22 @@ export interface TeamData {
 }
 export interface MLPlayer {
     name: string
+    nickname: string
     id: string
-    server: string
-    role: string
-    phone: string
+    id_server: string
+    no_hp: string
     email: string
+    alamat: string
+    tanda_tangan: string | null
+    foto: string | null
+    ml_team_id?: number | null
+    role: 'ketua' | 'anggota' | 'cadangan'
+    created_at?: string;
+    updated_at?: string;
 }
+
+
+
 
 export interface FFPlayer {
     name: string
@@ -22,9 +32,20 @@ export interface FFPlayer {
 }
 
 export interface PlayerFormProps {
-    player: MLPlayer | FFPlayer
+    player: MLPlayer
+    allPlayers: MLPlayer[]
     index: number
-    onChange: (index: number, field: string, value: string) => void
+    onChange: <K extends keyof MLPlayer>(index: number, field: K, value: MLPlayer[K]) => void
+    onDelete: () => void
+    errorsBE: Record<string, string>
+}
+
+
+export interface FFPlayerFormProps {
+    player: FFPlayer
+    index: number
+    onChange: <K extends keyof FFPlayer>(index: number, field: K, value: FFPlayer[K]) => void
+    onDelete: () => void
 }
 
 export interface GameSelectionFormProps {
