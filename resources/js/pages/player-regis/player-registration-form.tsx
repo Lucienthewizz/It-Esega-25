@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Head, useForm } from "@inertiajs/react"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,77 +22,64 @@ import { Progress } from "@/components/ui/progress"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useProgress } from "@/hooks/use-progress"
+import { useTimedAlert } from "@/hooks/use-timed-alert"
+import { useMLPlayers } from "@/hooks/use-ml-player"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isML = gameType === "ml"
     const gameTitle = isML ? "Mobile Legends" : "Free Fire"
-    const minPlayers = isML ? 5 : 5
+    const minPlayers = 5
     const maxPlayers = 7
 
     const themeColors = {
         primary: isML ? "bg-purple-600 hover:bg-purple-700 text-white" : "bg-orange-600 hover:bg-orange-700 text-white",
-        secondary: isML ? "text-purple-600" : "text-orange-600",
-        accent: isML ? "border-purple-200 bg-purple-50" : "border-orange-200 bg-orange-50",
         badge: isML ? "bg-purple-100 text-purple-800" : "bg-orange-100 text-orange-800",
         progress: isML ? "bg-purple-600" : "bg-orange-600",
         progressBg: isML ? "bg-purple-100" : "bg-orange-100",
     }
 
-    const { data, setData, post, processing, errors } = useForm<{
-        ml_players: MLPlayer[]
-        team_id: number
-    }>({
+    const { data, setData, post, processing } = useForm<Record<string, any>>({
         ml_players: [],
-        team_id: teamData.id,
+        team_id: teamData.id ?? 0,
     })
 
-    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
-    const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
+    const [alertMessage, setAlertMessage] = useState("")
     const [showValidationError, setShowValidationError] = useState(false)
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [showDeleteAlert, setShowDeleteAlert] = useState(false)
-    const [progress, setProgress] = useState(0)
-    const [alertMessage, setAlertMessage] = useState("")
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
+
+    const progress = useProgress(data.ml_players, minPlayers)
+    useTimedAlert(setShowSuccessAlert, setShowDeleteAlert)
+
+    const hasLoadedPlayersFromStorage = useRef(false)
 
     useEffect(() => {
-        const currentProgress = Math.min((data.ml_players.length / minPlayers) * 100, 100)
-        setProgress(currentProgress)
-    }, [data.ml_players.length, minPlayers])
-
-    useEffect(() => {
-        let timer: NodeJS.Timeout
-        if (showSuccessAlert || showDeleteAlert) {
-            timer = setTimeout(() => {
-                setShowSuccessAlert(false)
-                setShowDeleteAlert(false)
-            }, 3000)
-        }
-        return () => clearTimeout(timer)
-    }, [showSuccessAlert, showDeleteAlert])
-
-    // Local Storage Push > for Onfile or Reload ga sengaja
-    useEffect(() => {
-        const savedPlayers = localStorage.getItem("ml_players_data")
-        if (savedPlayers && data.ml_players.length === 0) {
-            try {
-                const parsed = JSON.parse(savedPlayers)
-                if (Array.isArray(parsed)) {
-                    setData("ml_players", parsed)
-                    return
+        if (!hasLoadedPlayersFromStorage.current) {
+            const saved = localStorage.getItem("ml_players_data")
+            if (saved && data.ml_players.length === 0) {
+                try {
+                    const parsed = JSON.parse(saved)
+                    if (Array.isArray(parsed)) setData("ml_players", parsed)
+                } catch (e) {
+                    console.error("Failed to parse saved players", e)
                 }
-            } catch (e) {
-                console.error("Gagal memuat data dari localStorage:", e)
             }
+            hasLoadedPlayersFromStorage.current = true
         }
+    }, [data.ml_players, setData])
 
+    useEffect(() => {
         localStorage.setItem("ml_players_data", JSON.stringify(data.ml_players))
+    }, [data.ml_players])
 
-        const currentProgress = Math.min((data.ml_players.length / minPlayers) * 100, 100)
-        setProgress(currentProgress)
-    }, [data.ml_players, minPlayers, setData])
-
-
-
+    const { updatePlayer, addPlayer, deletePlayer } = useMLPlayers(
+        { ml_players: data.ml_players as MLPlayer[] },
+        setData,
+        teamData.id
+    )
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -109,37 +96,20 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         post(route("player-registration.store"))
     }
 
-    const handlePlayerChange = (index: number, field: keyof MLPlayer, value: string) => {
-        const updatedPlayers = [...data.ml_players]
-        updatedPlayers[index] = { ...updatedPlayers[index], [field]: value }
-        setData("ml_players", updatedPlayers)
+    const handlePlayerChange = (
+        index: number,
+        field: keyof MLPlayer,
+        value: string | number | null | undefined
+    ) => {
+        const newValue = value != null ? String(value) : ""
+        updatePlayer(index, field, newValue)
     }
 
-    const addPlayer = () => {
+    const addNewPlayer = () => {
         if (data.ml_players.length < maxPlayers) {
-            const newPlayer: MLPlayer = {
-                name: "",
-                nickname: "",
-                id: "",
-                id_server: "",
-                no_hp: "",
-                email: "",
-                alamat: "",
-                tanda_tangan: null,
-                ml_team_id: teamData.id,
-                role: "anggota",
-            }
-            setData("ml_players", [...data.ml_players, newPlayer])
-
+            addPlayer()
             setShowSuccessAlert(true)
             setAlertMessage("Form Player baru Berhasil di tambahkan.")
-
-            setTimeout(() => {
-                window.scrollTo({
-                    top: document.body.scrollHeight,
-                    behavior: "smooth",
-                })
-            }, 100)
         }
     }
 
@@ -153,16 +123,15 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         setPlayerToDelete(null)
     }
 
-    const deletePlayer = () => {
+    const deletePlayerHandler = () => {
         if (playerToDelete !== null) {
-            const updatedPlayers = data.ml_players.filter((_, index) => index !== playerToDelete)
-            setData("ml_players", updatedPlayers)
+            deletePlayer(playerToDelete)
             closeDeleteDialog()
-
             setShowDeleteAlert(true)
-            setAlertMessage("Player telah di hapus dari Team anda.")
+            setAlertMessage("Player telah dihapus dari Team anda.")
         }
     }
+
 
     return (
         <>
@@ -355,7 +324,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                         <form onSubmit={handleSubmit}>
                             <div className="space-y-6">
                                 <AnimatePresence>
-                                    {data.ml_players.map((player, index) => (
+                                    {(data.ml_players as MLPlayer[]).map((player, index) => (
                                         <motion.div
                                             key={index}
                                             initial={{ opacity: 0, y: 20 }}
@@ -367,7 +336,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                 player={player}
                                                 index={index}
                                                 allPlayers={data.ml_players}
-                                                onChange={(field, value) => handlePlayerChange(index, field, value)}
+                                                onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
                                                 onDelete={() => openDeleteDialog(index)}
                                             />
                                         </motion.div>
@@ -377,7 +346,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4">
                                     <Button
                                         type="button"
-                                        onClick={addPlayer}
+                                        onClick={addNewPlayer}
                                         disabled={data.ml_players.length >= maxPlayers}
                                     >
                                         <PlusCircle className="mr-2 h-4 w-4" />
@@ -420,7 +389,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                             <Button onClick={closeDeleteDialog} variant="outline" className="w-full sm:w-auto">
                                 <X className="mr-2 h-4 w-4" /> Cancel
                             </Button>
-                            <Button onClick={deletePlayer} variant="destructive" className="w-full sm:w-auto">
+                            <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto">
                                 <Trash2 className="mr-2 h-4 w-4" /> Remove Player
                             </Button>
                         </DialogFooter>

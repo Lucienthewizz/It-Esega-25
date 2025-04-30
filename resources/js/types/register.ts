@@ -13,7 +13,7 @@ export interface MLPlayer {
     email: string
     alamat: string
     tanda_tangan: string | null
-    foto?: string | null
+    foto: string | null
     ml_team_id?: number | null
     role: 'ketua' | 'anggota' | 'cadangan'
     created_at?: string;
