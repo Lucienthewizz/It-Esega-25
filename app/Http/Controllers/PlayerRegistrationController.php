@@ -33,6 +33,7 @@ class PlayerRegistrationController extends Controller
     public function store(StorePlayerMLRegistrationRequest $request)
     {
         $validated = $request->validated();
+        dd($request->all());
 
         if (!empty($validated['ml_players'])) {
             foreach ($validated['ml_players'] as $player) {
@@ -48,6 +49,6 @@ class PlayerRegistrationController extends Controller
             }
         }
 
-        return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfrimasi dari Humas IT-ESSEGA!');
+        return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESSEGA!');
     }
 }

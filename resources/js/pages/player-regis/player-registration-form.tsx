@@ -148,7 +148,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <Alert variant="destructive">
+                                <Alert variant="destructive" className="bg-red-600/90  border-red-200">
                                     <AlertCircle className="h-4 w-4" />
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>

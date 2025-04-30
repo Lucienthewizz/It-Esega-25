@@ -13,17 +13,39 @@ import { MLPlayer, PlayerFormProps } from "@/types/register"
 export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: PlayerFormProps) {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null)
     const [signaturePreview, setSignaturePreview] = useState<string | null>(null)
-    const [errors, setErrors] = useState<{ role?: string; foto?: string; tanda_tangan?: string }>({})
+    const [errors, setErrors] = useState<{ nickname?: string; id_server?: string; email?: string; alamat?: string; role?: string; foto?: string; tanda_tangan?: string }>({})
+
+    const validateField = (field: keyof MLPlayer, value: string) => {
+        switch (field) {
+            case 'nickname':
+                return /^[a-zA-Z0-9_]+$/.test(value) ? undefined : 'Nickname hanya boleh alfanumerik dan underscore.'
+            case 'id_server':
+                return /^[\d()]+$/.test(value) ? undefined : 'Server ID hanya boleh angka dan tanda kurung ().'
+            case 'email':
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'Format email tidak valid.'
+            case 'alamat':
+                return value.trim().length >= 10 ? undefined : 'Alamat harus minimal 10 karakter.'
+            case 'no_hp':
+                return /^\d{1,15}$/.test(value)
+                    ? undefined
+                    : 'No HP harus berupa angka dan maksimal 15 digit.'
+            default:
+                return undefined
+        }
+    }
+
+
 
     useEffect(() => {
         setPhotoPreview(player.foto || null)
         setSignaturePreview(player.tanda_tangan || null)
     }, [player.foto, player.tanda_tangan])
 
-    const handleInputChange = <K extends keyof MLPlayer>(field: K) => (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        onChange(index, field, e.target.value as MLPlayer[K])
+    const handleInputChange = <K extends keyof MLPlayer>(field: K) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value
+        const err = validateField(field, val)
+        setErrors(prev => ({ ...prev, [field]: err }))
+        onChange(index, field, val as MLPlayer[K])
     }
 
     const handleFileChange = (field: "foto" | "tanda_tangan") => (
@@ -91,7 +113,6 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                 {[
                     ["name", "Full Name", "Player's full name"],
                     ["nickname", "Nickname", "In-game nickname"],
-                    ["id", "ML ID", "Mobile Legends ID"],
                     ["id_server", "Server ID", "Server ID"],
                     ["no_hp", "Phone Number", "Phone number"],
                     ["email", "Email", "Email address"],
@@ -105,12 +126,14 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             value={player[field as keyof MLPlayer] as string}
                             onChange={handleInputChange(field as keyof MLPlayer)}
                             placeholder={placeholder}
-                            className="   rounded-lg"
+                            className="rounded-lg"
                             required
                         />
+                        {["nickname", "id_server", "email", "alamat", "no_hp"].includes(field) && errors[field as keyof typeof errors] && (
+                            <p className="text-red-500 text-sm mt-1">{errors[field as keyof typeof errors]}</p>
+                        )}
                     </div>
                 ))}
-
                 <div>
                     <Label htmlFor={`ml-role-${index}`} className="block mb-1">Role</Label>
                     <Select
@@ -142,8 +165,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                 </div>
 
                 {[
-                    ["foto", "Photo", photoPreview],
-                    ["tanda_tangan", "Signature", signaturePreview],
+                    ["foto", "Foto Selfie (wajib terlihat wajah peserta, bukan gambar acak)", photoPreview],
+                    ["tanda_tangan", "Tanda Tangan", signaturePreview],
                 ].map(([field, label, preview]) => (
                     <div key={field}>
                         <Label htmlFor={`ml-${field}-${index}`} className="block mb-1">{label}</Label>
