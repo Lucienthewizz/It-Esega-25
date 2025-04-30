@@ -1,3 +1,5 @@
+"use client"
+
 import { Navbar } from '@/components/navbar';
 import { UserType } from '@/types/user';
 import { Disclosure } from '@headlessui/react';
@@ -103,21 +105,24 @@ export default function Home() {
                                     </Link>
                                     <button
                                         onClick={() => setIsOpen(true)}
-                                        className="group inline-flex items-center px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-semibold
-                                            bg-white text-red-600 rounded-lg transform transition-all duration-300
-                                            hover:bg-red-50 hover:scale-105 hover:shadow-lg border-2 border-red-600"
+                                        className="group inline-flex items-center px-5 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-medium
+                                            text-red-600 rounded-lg transition-all duration-300 relative
+                                            hover:text-red-700 border border-red-200 hover:border-red-300 hover:shadow-md
+                                            after:absolute after:inset-0 after:bg-red-50/0 hover:after:bg-red-50/80 after:transition-colors after:duration-300 after:rounded-lg overflow-hidden"
                                     >
-                                        <span className="mr-2">How to Register</span>
-                                        <div className="relative w-6 h-6">
-                                            <div className="absolute inset-0 bg-red-600 rounded-full opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
-                                            <svg
-                                                className="relative w-6 h-6 text-red-600 group-hover:text-red-700 transition-colors duration-300"
-                                                fill="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path d="M8 5v14l11-7z" />
-                                            </svg>
-                                        </div>
+                                        <span className="relative z-10 flex items-center">
+                                            <span className="mr-2">How to Register</span>
+                                            <div className="relative w-6 h-6">
+                                                <div className="absolute inset-0 bg-red-100 rounded-full transition-opacity duration-300 group-hover:bg-red-200"></div>
+                                                <svg
+                                                    className="relative w-6 h-6 text-red-600 group-hover:text-red-700 transition-colors duration-300"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                            </div>
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -126,14 +131,20 @@ export default function Home() {
                                     src="/images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
                                     className="w-auto h-[420px] object-contain"
-                                    style={{ maxWidth: '100%' }}
+                                    style={{ 
+                                        maxWidth: '100%',
+                                        willChange: 'transform',
+                                        backfaceVisibility: 'hidden',
+                                        transform: 'translateZ(0)'
+                                    }}
                                     animate={{
-                                        y: [0, -20, 0],
+                                        y: [0, -10, 0],
                                     }}
                                     transition={{
-                                        duration: 4,
+                                        duration: 3,
                                         repeat: Infinity,
-                                        ease: "easeInOut"
+                                        ease: "easeInOut",
+                                        type: "tween"
                                     }}
                                 />
                             </div>
