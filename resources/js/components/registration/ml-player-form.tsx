@@ -93,10 +93,27 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
     console.log('Error ', errors)
     console.log('Error be', errorsBE)
+
     const renderError = (field: keyof MLPlayer) => {
-        const error = errors[field] || errorsBE[field]
-        return error ? <p className="text-red-500 text-sm mt-1">{error}</p> : null
-    }
+        const beKey = `ml_players.${index}.ml_players.${index}.${field}`;
+
+        console.log(beKey)
+
+
+        const backendError = errorsBE?.[beKey];
+        const frontendError = errors[field];
+
+        const errorMessage = frontendError ?? backendError;
+
+        if (typeof errorMessage === "string" && errorMessage.trim() !== "") {
+            return <p className="text-red-500 text-sm mt-1">{errorMessage}</p>;
+        }
+
+        return null;
+    };
+
+
+
 
 
     return (

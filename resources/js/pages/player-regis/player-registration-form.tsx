@@ -136,6 +136,46 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         }
     }
 
+    // const extractErrorsForPlayer = (
+    //     allErrors: Partial<Record<string, string>>,
+    //     playerIndex: number
+    // ): Partial<Record<keyof MLPlayer, string>> => {
+    //     const prefix = `ml_players.${playerIndex}.`
+    //     const result: Partial<Record<keyof MLPlayer, string>> = {}
+
+    //     Object.keys(allErrors).forEach(key => {
+    //         if (key.startsWith(prefix)) {
+    //             const field = key.replace(prefix, "") as keyof MLPlayer
+    //             result[field] = allErrors[key]!
+    //         }
+    //     })
+
+    //     return result
+    // }
+
+    const normalizePlayerErrors = (
+        rawErrors: Partial<Record<string, string>>,
+        playerCount: number
+    ): Record<string, string> => {
+        const normalizedErrors: Record<string, string> = {};
+
+        for (let i = 0; i < playerCount; i++) {
+            for (const key in rawErrors) {
+                if (rawErrors[key] !== undefined) {
+                    normalizedErrors[`ml_players.${i}.${key}`] = rawErrors[key]!;
+                }
+            }
+        }
+
+        return normalizedErrors;
+    };
+
+
+    const normalizedErrors = normalizePlayerErrors(errors, data.ml_players.length);
+
+
+
+
 
     return (
         <>
@@ -338,8 +378,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         >
                                             <MLPlayerForm
                                                 player={player}
-                                                errorsBE={(errors[index] || {}) as Partial<Record<keyof MLPlayer, string>>}
                                                 index={index}
+                                                errorsBE={normalizedErrors}
                                                 allPlayers={data.ml_players}
                                                 onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
                                                 onDelete={() => openDeleteDialog(index)}
