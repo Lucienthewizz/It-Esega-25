@@ -73,9 +73,9 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
 
 
     return (
-        <div className="border border-gray-200 rounded-xl p-6 bg-gray-50 w-full">
+        <div className="border  rounded-xl p-6 w-full">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">Player {index + 1}</h3>
+                <h3 className="text-lg font-medium ">Player {index + 1}</h3>
                 <Button
                     type="button"
                     variant="outline"
@@ -105,7 +105,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             value={player[field as keyof MLPlayer] as string}
                             onChange={handleInputChange(field as keyof MLPlayer)}
                             placeholder={placeholder}
-                            className="bg-white text-slate-900 border-gray-200 rounded-lg"
+                            className=" text-slate-900  rounded-lg"
                             required
                         />
                     </div>
@@ -117,7 +117,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                         value={player.role}
                         onValueChange={handleRoleChange}
                     >
-                        <SelectTrigger className="bg-white text-slate-900 border-gray-200 rounded-lg">
+                        <SelectTrigger className="rounded-lg">
                             <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                         <SelectContent>
@@ -136,7 +136,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                         value={player.alamat}
                         onChange={handleInputChange("alamat")}
                         placeholder="Full address"
-                        className="bg-white text-slate-900 border-gray-200 rounded-lg"
+                        className=" text-slate-900  rounded-lg"
                         required
                     />
                 </div>
