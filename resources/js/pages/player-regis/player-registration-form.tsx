@@ -163,10 +163,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <Alert variant="default" className="bg-green-50 text-green-800 border-green-200">
-                                    <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                <Alert variant="default" className="bg-green-600/90  border-green-200">
+                                    <CheckCircle2 className="h-4 w-4" />
                                     <AlertTitle>Success</AlertTitle>
-                                    <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>
+                                    <AlertDescription>{alertMessage}</AlertDescription>
                                 </Alert>
                             </motion.div>
                         )}
@@ -178,10 +178,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ duration: 0.2 }}
                             >
-                                <Alert variant="default" className="bg-blue-50 text-blue-800 border-blue-200">
-                                    <Info className="h-4 w-4 text-blue-500" />
+                                <Alert variant="default" className="bg-blue-500/90  border-blue-200">
+                                    <Info className="h-4 w-4 " />
                                     <AlertTitle>Information</AlertTitle>
-                                    <AlertDescription className="text-slate-900">{alertMessage}</AlertDescription>
+                                    <AlertDescription >{alertMessage}</AlertDescription>
                                 </Alert>
                             </motion.div>
                         )}
