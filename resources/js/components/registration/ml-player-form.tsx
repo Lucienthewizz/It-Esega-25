@@ -105,7 +105,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             value={player[field as keyof MLPlayer] as string}
                             onChange={handleInputChange(field as keyof MLPlayer)}
                             placeholder={placeholder}
-                            className=" text-slate-900  rounded-lg"
+                            className="   rounded-lg"
                             required
                         />
                     </div>
@@ -136,7 +136,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                         value={player.alamat}
                         onChange={handleInputChange("alamat")}
                         placeholder="Full address"
-                        className=" text-slate-900  rounded-lg"
+                        className="   rounded-lg"
                         required
                     />
                 </div>
