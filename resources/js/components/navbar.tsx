@@ -1,13 +1,26 @@
+<<<<<<< HEAD
 import { Link } from '@inertiajs/react';
+=======
+import { Link, router } from '@inertiajs/react';
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
+<<<<<<< HEAD
     DropdownMenuTrigger
+=======
+    DropdownMenuTrigger,
+    DropdownMenuPortal
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 } from '@/components/ui/dropdown-menu';
 import { Menu, User } from 'lucide-react';
 import { UserType } from '@/types/user';
 import { useEffect, useState } from 'react';
+<<<<<<< HEAD
+=======
+import { route } from 'ziggy-js';
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 
 interface NavItem {
     title: string;
@@ -22,8 +35,14 @@ interface NavbarProps {
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
     const [isScrolled, setIsScrolled] = useState(false);
+<<<<<<< HEAD
     const navigationItems = items.slice(0, -1);
     const actionItem = items.slice(-1)[0];
+=======
+    // Memisahkan item Register dari items lainnya
+    const navigationItems = items.filter(item => item.title !== 'Register');
+    const registerItem = items.find(item => item.title === 'Register');
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
     const currentPath = window.location.pathname;
 
     useEffect(() => {
@@ -32,9 +51,61 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         };
 
         window.addEventListener('scroll', handleScroll);
+<<<<<<< HEAD
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+=======
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleNavigation = (e: React.MouseEvent, href: string, title: string) => {
+        // Jika link adalah FAQ atau Contact
+        if (title === 'FAQ' || title === 'Contact') {
+            e.preventDefault();
+            
+            // Jika bukan di halaman home, arahkan ke home dulu
+            if (window.location.pathname !== '/') {
+                router.visit('/', {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onSuccess: () => {
+                        // Tunggu sebentar untuk memastikan halaman sudah ter-render
+                        setTimeout(() => {
+                            const element = document.getElementById(href.substring(1));
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }, 50);
+                    },
+                });
+            } else {
+                // Jika sudah di halaman home, langsung scroll
+                const element = document.getElementById(href.substring(1));
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        } else if (title === 'Home' && window.location.pathname === '/') {
+            // Jika di halaman home dan klik home, scroll ke atas
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Untuk navigasi normal ke halaman lain
+            e.preventDefault();
+            router.visit(href, {
+                preserveScroll: false,
+                preserveState: false,
+                onSuccess: () => {
+                    // Reset scroll position setelah navigasi
+                    window.scrollTo(0, 0);
+                }
+            });
+        }
+    };
+
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
     // const getRedirectPath = (user: UserType) => {
     //     if (user === undefined) return '#';
 
@@ -55,17 +126,48 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     console.log('Navbar Data Role:', user?.data.name);
 
     return (
+<<<<<<< HEAD
         <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
             <div className="container px-6 py-1.5 mx-auto">
                 <div className="flex items-center justify-between">
                     {/* Logo Section */}
                     <div className="flex-shrink-0">
                         {logo}
+=======
+        <nav 
+            className={`fixed top-0 left-0 right-0 z-[999] transform-gpu transition-all duration-300 ${
+                isScrolled 
+                    ? 'bg-white/95 backdrop-blur-md shadow-sm translate-y-0' 
+                    : 'bg-transparent translate-y-0'
+            }`}
+            style={{
+                willChange: 'transform, opacity, background-color',
+                backfaceVisibility: 'hidden'
+            }}
+        >
+            <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 py-4">
+                <div className="flex items-center justify-between">
+                    {/* Logo Section */}
+                    <div className="w-[180px] flex-shrink-0 transition-transform duration-300 hover:scale-105">
+                        <Link 
+                            href={route('home')} 
+                            onClick={(e) => {
+                                if (window.location.pathname === '/') {
+                                    e.preventDefault();
+                                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }
+                            }}
+                            className="block"
+                        >
+                            {logo}
+                        </Link>
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                     </div>
 
                     {/* Desktop Navigation - Centered */}
                     <div className="hidden flex-grow justify-center md:flex">
                         {/* Center Navigation Links */}
+<<<<<<< HEAD
                         <div className="flex space-x-8">
                             {navigationItems.map((item) => (
                                 <Link
@@ -75,12 +177,31 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                         } after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100`}
                                 >
                                     {item.title}
+=======
+                        <div className="flex items-center justify-center space-x-12 w-full max-w-2xl">
+                            {navigationItems.map((item) => (
+                                <Link
+                                    key={item.title}
+                                    href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
+                                    onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href, item.title)}
+                                    className={`relative px-2 py-1 text-[15px] font-medium transition-all duration-300 
+                                        ${isScrolled ? 'text-gray-700' : 'text-gray-800'} 
+                                        hover:text-red-600 group overflow-hidden`}
+                                >
+                                    {item.title}
+                                    <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-500 to-red-600
+                                        transform origin-left transition-all duration-300 ease-out
+                                        translate-x-[-100%] group-hover:translate-x-0
+                                        ${currentPath === item.href ? 'translate-x-0' : ''}`}>
+                                    </span>
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                                 </Link>
                             ))}
                         </div>
                     </div>
 
                     {/* Action Button or User Icon */}
+<<<<<<< HEAD
                     <div className="flex-shrink-0">
                         {user ? (
                             <Link
@@ -99,6 +220,33 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     className="px-6 py-2 font-semibold rounded-lg border transition-colors duration-300 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
                                 >
                                     {actionItem.title}
+=======
+                    <div className="w-[180px] hidden md:flex justify-end flex-shrink-0">
+                        {user ? (
+                            <Link
+                                href={
+                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin') 
+                                        ? route('admin.dashboard')
+                                        : route('dashboard')
+                                }
+                                className="flex items-center justify-center w-10 h-10 rounded-full 
+                                    bg-gradient-to-r from-red-500 to-red-600 text-white
+                                    shadow-md hover:shadow-lg transform hover:-translate-y-0.5
+                                    transition-all duration-300 hover:from-red-600 hover:to-red-700"
+                            >
+                                <User className="h-5 w-5" />
+                            </Link>
+                        ) : (
+                            registerItem && (
+                                <Link
+                                    href={registerItem.href}
+                                    className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
+                                        bg-gradient-to-r from-red-500 to-red-600 text-white
+                                        shadow-md hover:shadow-lg transform hover:-translate-y-0.5
+                                        transition-all duration-300 hover:from-red-600 hover:to-red-700"
+                                >
+                                    {registerItem.title}
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                                 </Link>
                             )
                         )}
@@ -108,6 +256,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     <div className="md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
+<<<<<<< HEAD
                                 <Button variant="ghost" size="icon" className="text-black">
                                     <Menu className="w-5 h-5" />
                                 </Button>
@@ -143,10 +292,75 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     )}
                                 </div>
                             </DropdownMenuContent>
+=======
+                                <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    className={`rounded-lg hover:bg-gray-100/50 transition-all duration-300 ${
+                                        isScrolled ? 'text-gray-700' : 'text-gray-800'
+                                    }`}
+                                >
+                                    <Menu className="w-6 h-6" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuPortal>
+                                <DropdownMenuContent 
+                                    align="end" 
+                                    className="w-72 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100/50 mt-2 p-3 mr-2"
+                                    sideOffset={5}
+                                >
+                                    <div className="space-y-1">
+                                        {navigationItems.map((item) => (
+                                            <Link
+                                                key={item.title}
+                                                href={item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href}
+                                                onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href, item.title)}
+                                                className={`block px-4 py-3 text-[15px] rounded-lg transition-all duration-300 
+                                                    ${currentPath === item.href 
+                                                        ? 'bg-red-50 text-red-600 font-semibold' 
+                                                        : 'text-gray-700 hover:bg-red-50/50 hover:text-red-600'
+                                                    }`}
+                                            >
+                                                {item.title}
+                                            </Link>
+                                        ))}
+                                        {user ? (
+                                            <Link
+                                                href={
+                                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
+                                                        ? route('admin.dashboard')
+                                                        : route('dashboard')
+                                                }
+                                                className="flex items-center gap-2 px-4 py-3 mt-2 text-[15px] font-semibold text-white rounded-lg
+                                                    bg-gradient-to-r from-red-500 to-red-600
+                                                    hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                                            >
+                                                <User className="w-5 h-5" /> Profile
+                                            </Link>
+                                        ) : (
+                                            registerItem && (
+                                                <Link
+                                                    href={registerItem.href}
+                                                    className="block px-4 py-3 mt-2 text-[15px] font-semibold text-center text-white rounded-lg
+                                                        bg-gradient-to-r from-red-500 to-red-600
+                                                        hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                                                >
+                                                    {registerItem.title}
+                                                </Link>
+                                            )
+                                        )}
+                                    </div>
+                                </DropdownMenuContent>
+                            </DropdownMenuPortal>
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                         </DropdownMenu>
                     </div>
                 </div>
             </div>
         </nav>
     );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e

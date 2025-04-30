@@ -9,13 +9,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-
 body {
     scroll-behavior: smooth;
+    overflow-y: scroll;
 }
 
 @theme {
-    --font-sans: 'Poppins', 'Akira', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans:
+        'Poppins', 'Akira', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -66,7 +67,7 @@ body {
 }
 
 /*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  The default border color has changed to currentColor in Tailwind CSS v4,
   so we've added these compatibility styles to make sure everything still
   looks the same as it did with Tailwind CSS v3.
 
@@ -74,7 +75,6 @@ body {
   color utility to any element that depends on these defaults.
 */
 @layer base {
-
     *,
     ::after,
     ::before,
@@ -85,77 +85,79 @@ body {
 }
 
 :root {
-    --background: #FFFFFF;
+    --background: #ffffff;
     --foreground: #252525;
-    --card: #FEEC9C;
+    --card: #feec9c;
     --card-foreground: #252525;
-    --popover: #FEEC9C;
+    --popover: #feec9c;
     --popover-foreground: #252525;
-    --primary: #EABB2B;
+    --primary: #eabb2b;
     --primary-foreground: #252525;
-    --secondary: #FEEC9C;
+    --secondary: #feec9c;
     --secondary-foreground: #252525;
-    --muted: #FEEC9C;
+    --muted: #feec9c;
     --muted-foreground: #252525;
-    --accent: #EABB2B;
+    --accent: #eabb2b;
     --accent-foreground: #252525;
-    --destructive: #BA0000;
-    --destructive-foreground: #FEEC9C;
-    --border: #EABB2B;
-    --input: #EABB2B;
-    --ring: #EABB2B;
-    --chart-1: #EABB2B;
-    --chart-2: #BA0000;
+    --destructive: #ba0000;
+    --destructive-foreground: #feec9c;
+    --border: #eabb2b;
+    --input: #eabb2b;
+    --ring: #eabb2b;
+    --chart-1: #eabb2b;
+    --chart-2: #ba0000;
     --chart-3: #252525;
-    --chart-4: #FEEC9C;
-    --chart-5: #EABB2B;
+    --chart-4: #feec9c;
+    --chart-5: #eabb2b;
     --radius: 0.625rem;
     --sidebar: #252525;
-    --sidebar-foreground: #FEEC9C;
-    --sidebar-primary: #EABB2B;
+    --sidebar-foreground: #feec9c;
+    --sidebar-primary: #eabb2b;
     --sidebar-primary-foreground: #252525;
-    --sidebar-accent: #BA0000;
-    --sidebar-accent-foreground: #FEEC9C;
-    --sidebar-border: #EABB2B;
-    --sidebar-ring: #EABB2B;
+    --sidebar-accent: #ba0000;
+    --sidebar-accent-foreground: #feec9c;
+    --sidebar-border: #eabb2b;
+    --sidebar-ring: #eabb2b;
     --custom: #333;
 }
 
 .dark {
-    --background: #FFFFFF;
-    --foreground: #FEEC9C;
+    --background: #252525;
+    --foreground: #feec9c;
     --card: #252525;
-    --card-foreground: #FEEC9C;
+    --card-foreground: #feec9c;
     --popover: #252525;
-    --popover-foreground: #FEEC9C;
-    --primary: #EABB2B;
+    --popover-foreground: #feec9c;
+    --primary: #eabb2b;
     --primary-foreground: #252525;
-    --secondary: #BA0000;
-    --secondary-foreground: #FEEC9C;
+    --secondary: #ba0000;
+    --secondary-foreground: #feec9c;
     --muted: #252525;
-    --muted-foreground: #FEEC9C;
-    --accent: #EABB2B;
-    --accent-foreground: #FEEC9C;
-    --destructive: #BA0000;
-    --destructive-foreground: #FEEC9C;
-    --border: #EABB2B;
-    --input: #EABB2B;
-    --ring: #EABB2B;
-    --chart-1: #EABB2B;
-    --chart-2: #BA0000;
+    --muted-foreground: #feec9c;
+    --accent: #eabb2b;
+    --accent-foreground: #feec9c;
+    --destructive: #ba0000;
+    --destructive-foreground: #feec9c;
+    --border: #eabb2b;
+    --input: #eabb2b;
+    --ring: #eabb2b;
+    --chart-1: #eabb2b;
+    --chart-2: #ba0000;
     --chart-3: #252525;
-    --chart-4: #FEEC9C;
-    --chart-5: #EABB2B;
+    --chart-4: #feec9c;
+    --chart-5: #eabb2b;
     --sidebar: #252525;
-    --sidebar-foreground: #FEEC9C;
-    --sidebar-primary: #EABB2B;
-    --sidebar-primary-foreground: #FEEC9C;
-    --sidebar-accent: #BA0000;
-    --sidebar-accent-foreground: #FEEC9C;
-    --sidebar-border: #EABB2B;
-    --sidebar-ring: #EABB2B;
+    --sidebar-foreground: #feec9c;
+    --sidebar-primary: #eabb2b;
+    --sidebar-primary-foreground: #feec9c;
+    --sidebar-accent: #ba0000;
+    --sidebar-accent-foreground: #feec9c;
+    --sidebar-border: #eabb2b;
+    --sidebar-ring: #8f8f8f;
     --custom: #333;
+    --white: #ffffff; /* Added white color variable */
 }
+
 
 @layer base {
     * {
@@ -187,7 +189,8 @@ body {
 
 @font-face {
     font-family: Akira;
-    src: url('/fonts/AkiraExpanded-SuperBold.woff') format('woff'),
+    src:
+        url('/fonts/AkiraExpanded-SuperBold.woff') format('woff'),
         url('/fonts/AkiraExpanded-SuperBold.woff2') format('woff2');
     font-weight: bold;
     font-style: normal;
@@ -199,3 +202,70 @@ body {
     margin: 0 auto;
     padding: 0 1rem;
 } */
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(239, 68, 68, 0.5);
+    border-radius: 100vh;
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(239, 68, 68, 0.8);
+}
+
+/* Smooth Scroll Behavior */
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Optimisasi Performa */
+* {
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    backface-visibility: hidden;
+}
+
+/* Optimisasi Transisi Halaman */
+.page-transition-enter {
+    opacity: 0;
+    transform: translate3d(0, 15px, 0);
+}
+
+.page-transition-enter-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.page-transition-exit {
+    opacity: 1;
+}
+
+.page-transition-exit-active {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+}
+
+/* Mengoptimalkan Scrolling */
+html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Mengurangi Layout Shifts */
+body {
+    overflow-y: scroll;
+}
+
