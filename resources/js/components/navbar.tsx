@@ -1,26 +1,15 @@
-<<<<<<< HEAD
-import { Link } from '@inertiajs/react';
-=======
 import { Link, router } from '@inertiajs/react';
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
-<<<<<<< HEAD
-    DropdownMenuTrigger
-=======
     DropdownMenuTrigger,
     DropdownMenuPortal
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 } from '@/components/ui/dropdown-menu';
 import { Menu, User } from 'lucide-react';
 import { UserType } from '@/types/user';
 import { useEffect, useState } from 'react';
-<<<<<<< HEAD
-=======
 import { route } from 'ziggy-js';
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
 
 interface NavItem {
     title: string;
@@ -35,14 +24,9 @@ interface NavbarProps {
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
     const [isScrolled, setIsScrolled] = useState(false);
-<<<<<<< HEAD
-    const navigationItems = items.slice(0, -1);
-    const actionItem = items.slice(-1)[0];
-=======
     // Memisahkan item Register dari items lainnya
     const navigationItems = items.filter(item => item.title !== 'Register');
     const registerItem = items.find(item => item.title === 'Register');
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
     const currentPath = window.location.pathname;
 
     useEffect(() => {
@@ -51,11 +35,6 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         };
 
         window.addEventListener('scroll', handleScroll);
-<<<<<<< HEAD
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-=======
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -105,7 +84,6 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         }
     };
 
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
     // const getRedirectPath = (user: UserType) => {
     //     if (user === undefined) return '#';
 
@@ -126,14 +104,6 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
     console.log('Navbar Data Role:', user?.data.name);
 
     return (
-<<<<<<< HEAD
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
-            <div className="container px-6 py-1.5 mx-auto">
-                <div className="flex items-center justify-between">
-                    {/* Logo Section */}
-                    <div className="flex-shrink-0">
-                        {logo}
-=======
         <nav 
             className={`fixed top-0 left-0 right-0 z-[999] transform-gpu transition-all duration-300 ${
                 isScrolled 
@@ -161,23 +131,11 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                         >
                             {logo}
                         </Link>
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                     </div>
 
                     {/* Desktop Navigation - Centered */}
                     <div className="hidden flex-grow justify-center md:flex">
                         {/* Center Navigation Links */}
-<<<<<<< HEAD
-                        <div className="flex space-x-8">
-                            {navigationItems.map((item) => (
-                                <Link
-                                    key={item.title}
-                                    href={item.href}
-                                    className={`text-black transition-all duration-300 hover:text-secondary relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-secondary after:left-0 after:-bottom-1 after:rounded-full ${currentPath === item.href ? 'after:scale-x-100' : 'after:scale-x-0'
-                                        } after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100`}
-                                >
-                                    {item.title}
-=======
                         <div className="flex items-center justify-center space-x-12 w-full max-w-2xl">
                             {navigationItems.map((item) => (
                                 <Link
@@ -194,33 +152,12 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                         translate-x-[-100%] group-hover:translate-x-0
                                         ${currentPath === item.href ? 'translate-x-0' : ''}`}>
                                     </span>
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                                 </Link>
                             ))}
                         </div>
                     </div>
 
                     {/* Action Button or User Icon */}
-<<<<<<< HEAD
-                    <div className="flex-shrink-0">
-                        {user ? (
-                            <Link
-                                href={
-                                    user?.data.roles?.some(role => role.name === 'admin' || 'super_admin') ? route('admin.dashboard')
-                                        : route('dashboard')
-                                }
-                                className="flex items-center justify-center w-10 h-10 rounded-full border border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
-                            >
-                                <User className="w-5 h-5" />
-                            </Link>
-                        ) : (
-                            actionItem && (
-                                <Link
-                                    href={actionItem.href}
-                                    className="px-6 py-2 font-semibold rounded-lg border transition-colors duration-300 border-secondary text-secondary bg-transparent hover:bg-secondary hover:text-white"
-                                >
-                                    {actionItem.title}
-=======
                     <div className="w-[180px] hidden md:flex justify-end flex-shrink-0">
                         {user ? (
                             <Link
@@ -246,7 +183,6 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                         transition-all duration-300 hover:from-red-600 hover:to-red-700"
                                 >
                                     {registerItem.title}
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                                 </Link>
                             )
                         )}
@@ -256,43 +192,6 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     <div className="md:hidden">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-<<<<<<< HEAD
-                                <Button variant="ghost" size="icon" className="text-black">
-                                    <Menu className="w-5 h-5" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48 bg-white">
-                                <div className="px-2 py-2">
-                                    {navigationItems.map((item) => (
-                                        <Link
-                                            key={item.title}
-                                            href={item.href}
-                                            className={`block px-4 py-2 text-sm rounded-md transition-colors ${currentPath === item.href ? 'bg-secondary/10 text-secondary' : 'text-black hover:bg-secondary/10'
-                                                }`}
-                                        >
-                                            {item.title}
-                                        </Link>
-                                    ))}
-                                    {user ? (
-                                        <Link
-                                            href="/profile"
-                                            className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
-                                        >
-                                            <User className="w-5 h-5 inline-block" /> Profile
-                                        </Link>
-                                    ) : (
-                                        actionItem && (
-                                            <Link
-                                                href={actionItem.href}
-                                                className="block px-4 py-2 mt-2 text-sm text-center text-white rounded-md bg-secondary hover:bg-secondary/90"
-                                            >
-                                                {actionItem.title}
-                                            </Link>
-                                        )
-                                    )}
-                                </div>
-                            </DropdownMenuContent>
-=======
                                 <Button 
                                     variant="ghost" 
                                     size="icon"
@@ -352,15 +251,10 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                     </div>
                                 </DropdownMenuContent>
                             </DropdownMenuPortal>
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
                         </DropdownMenu>
                     </div>
                 </div>
             </div>
         </nav>
     );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
