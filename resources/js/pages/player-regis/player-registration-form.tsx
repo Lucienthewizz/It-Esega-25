@@ -32,6 +32,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const minPlayers = 5
     const maxPlayers = 7
 
+
+
     const themeColors = {
         primary: isML ? "bg-purple-600 hover:bg-purple-700 text-white" : "bg-orange-600 hover:bg-orange-700 text-white",
         badge: isML ? "bg-purple-100 text-purple-800" : "bg-orange-100 text-orange-800",
@@ -39,10 +41,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         progressBg: isML ? "bg-purple-100" : "bg-orange-100",
     }
 
-    const { data, setData, post, processing } = useForm<Record<string, any>>({
+    const { data, setData, post, processing, errors } = useForm<Record<string, any>>({
         ml_players: [],
         team_id: teamData.id ?? 0,
     })
+    console.log(errors)
+
 
     const [alertMessage, setAlertMessage] = useState("")
     const [showValidationError, setShowValidationError] = useState(false)
@@ -334,6 +338,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         >
                                             <MLPlayerForm
                                                 player={player}
+                                                errorsBE={(errors[index] || {}) as Partial<Record<keyof MLPlayer, string>>}
                                                 index={index}
                                                 allPlayers={data.ml_players}
                                                 onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
@@ -355,7 +360,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                                     <Button
                                         type="submit"
-                                        disabled={processing || data.ml_players.length < minPlayers}
+                                        disabled={processing || data.ml_players.length < minPlayers || Object.keys(errors).length > 0}
                                         className={`w-full sm:w-auto ${themeColors.primary}`}
                                     >
                                         {processing ? (
