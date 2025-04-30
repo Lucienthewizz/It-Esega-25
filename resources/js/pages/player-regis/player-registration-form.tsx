@@ -404,7 +404,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                                     <Button
                                         type="submit"
-                                        disabled={processing || data.ml_players.length < minPlayers || Object.keys(errors).length > 0}
+                                        disabled={processing || data.ml_players.length < minPlayers}
                                         className={`w-full sm:w-auto ${themeColors.primary}`}
                                     >
                                         {processing ? (
