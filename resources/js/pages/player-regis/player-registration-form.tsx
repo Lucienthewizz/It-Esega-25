@@ -32,6 +32,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const minPlayers = 5
     const maxPlayers = 7
 
+
+
     const themeColors = {
         primary: isML ? "bg-purple-600 hover:bg-purple-700 text-white" : "bg-orange-600 hover:bg-orange-700 text-white",
         badge: isML ? "bg-purple-100 text-purple-800" : "bg-orange-100 text-orange-800",
@@ -39,10 +41,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         progressBg: isML ? "bg-purple-100" : "bg-orange-100",
     }
 
-    const { data, setData, post, processing } = useForm<Record<string, any>>({
+    const { data, setData, post, processing, errors } = useForm<Record<string, any>>({
         ml_players: [],
         team_id: teamData.id ?? 0,
     })
+    console.log(errors)
+
 
     const [alertMessage, setAlertMessage] = useState("")
     const [showValidationError, setShowValidationError] = useState(false)
@@ -93,7 +97,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
-        post(route("player-registration.store"))
+        post(route("player-registration.store"), {
+            onError: () => {
+
+            },
+        });
     }
 
     const handlePlayerChange = (
@@ -131,6 +139,46 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setAlertMessage("Player telah dihapus dari Team anda.")
         }
     }
+
+    // const extractErrorsForPlayer = (
+    //     allErrors: Partial<Record<string, string>>,
+    //     playerIndex: number
+    // ): Partial<Record<keyof MLPlayer, string>> => {
+    //     const prefix = `ml_players.${playerIndex}.`
+    //     const result: Partial<Record<keyof MLPlayer, string>> = {}
+
+    //     Object.keys(allErrors).forEach(key => {
+    //         if (key.startsWith(prefix)) {
+    //             const field = key.replace(prefix, "") as keyof MLPlayer
+    //             result[field] = allErrors[key]!
+    //         }
+    //     })
+
+    //     return result
+    // }
+
+    const normalizePlayerErrors = (
+        rawErrors: Partial<Record<string, string>>,
+        playerCount: number
+    ): Record<string, string> => {
+        const normalizedErrors: Record<string, string> = {};
+
+        for (let i = 0; i < playerCount; i++) {
+            for (const key in rawErrors) {
+                if (rawErrors[key] !== undefined) {
+                    normalizedErrors[`ml_players.${i}.${key}`] = rawErrors[key]!;
+                }
+            }
+        }
+
+        return normalizedErrors;
+    };
+
+
+    const normalizedErrors = normalizePlayerErrors(errors, data.ml_players.length);
+
+
+
 
 
     return (
@@ -335,6 +383,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                             <MLPlayerForm
                                                 player={player}
                                                 index={index}
+                                                errorsBE={normalizedErrors}
                                                 allPlayers={data.ml_players}
                                                 onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
                                                 onDelete={() => openDeleteDialog(index)}
@@ -355,7 +404,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                                     <Button
                                         type="submit"
-                                        disabled={processing || data.ml_players.length < minPlayers}
+                                        disabled={processing || data.ml_players.length < minPlayers || Object.keys(errors).length > 0}
                                         className={`w-full sm:w-auto ${themeColors.primary}`}
                                     >
                                         {processing ? (

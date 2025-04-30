@@ -8,12 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trash2 } from "lucide-react"
 import { MLPlayer, PlayerFormProps } from "@/types/register"
 
-
-
-export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: PlayerFormProps) {
+export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, errorsBE }: PlayerFormProps) {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null)
     const [signaturePreview, setSignaturePreview] = useState<string | null>(null)
-    const [errors, setErrors] = useState<{ nickname?: string; id_server?: string; email?: string; alamat?: string; role?: string; foto?: string; tanda_tangan?: string }>({})
+    const [errors, setErrors] = useState<Partial<Record<keyof MLPlayer, string>>>({})
 
     const validateField = (field: keyof MLPlayer, value: string) => {
         switch (field) {
@@ -34,12 +32,21 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
         }
     }
 
-
-
     useEffect(() => {
         setPhotoPreview(player.foto || null)
         setSignaturePreview(player.tanda_tangan || null)
-    }, [player.foto, player.tanda_tangan])
+    }, [player.foto, player.tanda_tangan, index])
+
+    useEffect(() => {
+        if (errorsBE) {
+            const newErrors = { ...errors }
+            Object.keys(errorsBE).forEach(key => {
+                newErrors[key as keyof MLPlayer] = errorsBE[key]
+            })
+            setErrors(newErrors)
+        }
+    }, [errorsBE])
+
 
     const handleInputChange = <K extends keyof MLPlayer>(field: K) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value
@@ -52,7 +59,10 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const file = e.target.files?.[0]
-        if (!file) return
+        if (!file) {
+            setErrors(prev => ({ ...prev, [field]: "File harus berupa gambar." }))
+            return
+        }
 
         const maxSize = 1 * 1024 * 1024 // 1MB
         if (file.size > maxSize) {
@@ -67,16 +77,14 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
             const result = reader.result as string
             if (field === "foto") {
                 setPhotoPreview(result)
-            } else {
+            } else if (field === "tanda_tangan") {
                 setSignaturePreview(result)
             }
+
+            onChange(index, field, result)
         }
         reader.readAsDataURL(file)
-
-        onChange(index, field, file as unknown as MLPlayer[typeof field])
     }
-
-
 
     const handleRoleChange = (value: MLPlayer["role"]) => {
         const ketuaCount = allPlayers.filter((p: MLPlayer) => p.role === "ketua").length
@@ -93,11 +101,24 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
         onChange(index, "role", value)
     }
 
+    const renderError = (field: keyof MLPlayer) => {
+        const beKey = `ml_players.${index}.ml_players.${index}.${field}`;
+        const backendError = errorsBE?.[beKey];
+        const frontendError = errors[field];
+
+        const errorMessage = frontendError ?? backendError;
+
+        if (typeof errorMessage === "string" && errorMessage.trim() !== "") {
+            return <p className="text-red-500 text-sm mt-1">{errorMessage}</p>;
+        }
+
+        return null;
+    };
 
     return (
-        <div className="border  rounded-xl p-6 w-full">
+        <div className="border rounded-xl p-6 w-full">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium ">Player {index + 1}</h3>
+                <h3 className="text-lg font-medium">Player {index + 1}</h3>
                 <Button
                     type="button"
                     variant="outline"
@@ -118,9 +139,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                     ["email", "Email", "Email address"],
                 ].map(([field, label, placeholder]) => (
                     <div key={field}>
-                        <Label htmlFor={`ml-${field}-${index}`} className="block mb-1">
-                            {label}
-                        </Label>
+                        <Label htmlFor={`ml-${field}-${index}`} className="block mb-1">{label}</Label>
                         <Input
                             id={`ml-${field}-${index}`}
                             value={player[field as keyof MLPlayer] as string}
@@ -129,11 +148,10 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             className="rounded-lg"
                             required
                         />
-                        {["nickname", "id_server", "email", "alamat", "no_hp"].includes(field) && errors[field as keyof typeof errors] && (
-                            <p className="text-red-500 text-sm mt-1">{errors[field as keyof typeof errors]}</p>
-                        )}
+                        {renderError(field as keyof MLPlayer)}
                     </div>
                 ))}
+
                 <div>
                     <Label htmlFor={`ml-role-${index}`} className="block mb-1">Role</Label>
                     <Select
@@ -149,7 +167,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             <SelectItem value="cadangan">Cadangan</SelectItem>
                         </SelectContent>
                     </Select>
-                    {errors.role && <p className="text-red-500 text-sm mt-2">{errors.role}</p>}
+                    {renderError("role")}
                 </div>
 
                 <div className="md:col-span-2">
@@ -159,9 +177,10 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                         value={player.alamat}
                         onChange={handleInputChange("alamat")}
                         placeholder="Full address"
-                        className="   rounded-lg"
+                        className="rounded-lg"
                         required
                     />
+                    {renderError("alamat")}
                 </div>
 
                 {[
@@ -176,10 +195,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                             accept="image/*"
                             onChange={handleFileChange(field as "foto" | "tanda_tangan")}
                         />
-                        {errors[field as "foto" | "tanda_tangan"] && (
-                            <p className="text-red-500 text-sm mt-1">{errors[field as "foto" | "tanda_tangan"]}</p>
-                        )}
-
+                        {renderError(field as keyof MLPlayer)}
                         {preview && (
                             <img
                                 src={preview}
@@ -190,9 +206,6 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers }: 
                     </div>
                 ))}
             </div>
-
-
-
         </div>
     )
 }

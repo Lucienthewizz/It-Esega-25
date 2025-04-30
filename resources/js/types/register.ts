@@ -37,7 +37,7 @@ export interface PlayerFormProps {
     index: number
     onChange: <K extends keyof MLPlayer>(index: number, field: K, value: MLPlayer[K]) => void
     onDelete: () => void
-    // errors: Partial<Record<keyof MLPlayer | 'role' | 'foto' | 'tanda_tangan' | "id_server" | 'nickname' | 'email' | 'alamat', string>>
+    errorsBE: Record<string, string>
 }
 
 
