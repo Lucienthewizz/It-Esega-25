@@ -97,7 +97,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
-        post(route("player-registration.store"))
+        post(route("player-registration.store"), {
+            onError: () => {
+
+            },
+        });
     }
 
     const handlePlayerChange = (

@@ -37,6 +37,17 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
         setSignaturePreview(player.tanda_tangan || null)
     }, [player.foto, player.tanda_tangan, index])
 
+    useEffect(() => {
+        if (errorsBE) {
+            const newErrors = { ...errors }
+            Object.keys(errorsBE).forEach(key => {
+                newErrors[key as keyof MLPlayer] = errorsBE[key]
+            })
+            setErrors(newErrors)
+        }
+    }, [errorsBE])
+
+
     const handleInputChange = <K extends keyof MLPlayer>(field: K) => (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value
         const err = validateField(field, val)
@@ -75,7 +86,6 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
         reader.readAsDataURL(file)
     }
 
-
     const handleRoleChange = (value: MLPlayer["role"]) => {
         const ketuaCount = allPlayers.filter((p: MLPlayer) => p.role === "ketua").length
         const cadanganCount = allPlayers.filter((p: MLPlayer) => p.role === "cadangan").length
@@ -91,15 +101,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
         onChange(index, "role", value)
     }
 
-    console.log('Error ', errors)
-    console.log('Error be', errorsBE)
-
     const renderError = (field: keyof MLPlayer) => {
         const beKey = `ml_players.${index}.ml_players.${index}.${field}`;
-
-        console.log(beKey)
-
-
         const backendError = errorsBE?.[beKey];
         const frontendError = errors[field];
 
@@ -111,10 +114,6 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
         return null;
     };
-
-
-
-
 
     return (
         <div className="border rounded-xl p-6 w-full">
