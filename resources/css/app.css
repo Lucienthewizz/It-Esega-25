@@ -168,7 +168,8 @@ body {
 }
 
 @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
         transform: translateY(0);
     }
     50% {
@@ -242,7 +243,9 @@ html {
 .page-transition-enter-active {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition: opacity 200ms ease-out, transform 200ms ease-out;
+    transition:
+        opacity 200ms ease-out,
+        transform 200ms ease-out;
 }
 
 .page-transition-exit {
@@ -264,5 +267,3 @@ html {
 body {
     overflow-y: scroll;
 }
-
-
