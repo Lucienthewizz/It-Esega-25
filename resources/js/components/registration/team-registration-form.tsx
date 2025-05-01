@@ -170,7 +170,7 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                             Team Name
                                         </Label>
                                         <div className="relative group">
-                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-red-500 transition-colors duration-200">
+                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-hover:text-gray-700 transition-colors duration-200">
                                                 <Users className="h-5 w-5" />
                                             </div>
                                             <Input
@@ -181,8 +181,9 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                 onChange={(e) => setData("team_name", e.target.value)}
                                                 placeholder="Enter your team name"
                                                 className={`pl-10 py-5 bg-white/50 backdrop-blur border-gray-200 text-gray-900 rounded-xl 
-                                                focus:border-red-400 focus:ring focus:ring-red-200 focus:ring-opacity-50
-                                                transition-all duration-200 hover:border-red-300 shadow-sm`}
+                                                focus:border-[#ba0000] focus:ring focus:ring-[#ba0000]/20 focus:ring-opacity-50
+                                                transition-all duration-200 hover:border-[#ba0000] shadow-sm
+                                                placeholder:text-gray-400 placeholder:group-hover:text-[#ba0000]`}
                                             />
                                         </div>
                                         {formErrors.team_name && (
@@ -261,9 +262,9 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                         <Button
                                             type="submit"
                                             disabled={processing}
-                                            className={`w-full py-6 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 
+                                            className={`w-full py-6 bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 hover:from-[#ba0000]/90 hover:to-[#ba0000] 
                                             text-white rounded-xl font-medium text-lg transition-all duration-300 
-                                            shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.5)]
+                                            shadow-[0_0_15px_rgba(186,0,0,0.3)] hover:shadow-[0_0_25px_rgba(186,0,0,0.5)]
                                             flex items-center justify-center gap-2 relative overflow-hidden group`}
                                         >
                                             <span className="relative z-10 flex items-center gap-2">
@@ -282,9 +283,9 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
             {/* Emergency Contact Button */}
             <button
                 onClick={handleEmergencyContact}
-                className="fixed bottom-6 right-6 bg-white hover:bg-red-50 text-red-500 p-4 rounded-full
-                shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(220,38,38,0.2)]
-                transform hover:scale-110 transition-all duration-300 group z-50 border border-red-100"
+                className="fixed bottom-6 right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-4 rounded-full
+                shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(186,0,0,0.2)]
+                transform hover:scale-110 transition-all duration-300 group z-50 border border-[#ba0000]/20"
                 title="Need help? Contact committee"
             >
                 <div className="relative">
@@ -296,12 +297,12 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
 
             {/* File Size Limit Dialog */}
             <Dialog open={openDialog} onOpenChange={(open) => setOpenDialog(open)}>
-                <DialogContent className="sm:max-w-md bg-[#1a1a1a] border border-red-500/20 shadow-2xl p-0 overflow-hidden">
+                <DialogContent className="sm:max-w-md bg-[#1a1a1a] border border-[#ba0000]/20 shadow-2xl p-0 overflow-hidden">
                     {/* Header */}
-                    <div className="p-6 border-b border-red-500/10 bg-gradient-to-r from-red-500/10 to-transparent">
+                    <div className="p-6 border-b border-[#ba0000]/10 bg-gradient-to-r from-[#ba0000]/10 to-transparent">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-red-500/10 rounded-full">
-                                <FileWarning className="h-5 w-5 text-red-500" />
+                            <div className="p-2 bg-[#ba0000]/10 rounded-full">
+                                <FileWarning className="h-5 w-5 text-[#ba0000]" />
                             </div>
                             <DialogTitle className="text-lg font-semibold text-white m-0">
                                 File Terlalu Besar
@@ -334,10 +335,10 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                         <div className="mt-6 flex justify-end">
                             <DialogClose asChild>
                                 <Button 
-                                    className="bg-gradient-to-r from-red-500 to-red-600 text-white 
-                                    hover:from-red-600 hover:to-red-700 px-6 py-2.5 rounded-lg 
+                                    className="bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 text-white 
+                                    hover:from-[#ba0000]/90 hover:to-[#ba0000] px-6 py-2.5 rounded-lg 
                                     text-sm font-medium transition-all duration-300 
-                                    shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_25px_rgba(239,68,68,0.5)]"
+                                    shadow-[0_0_15px_rgba(186,0,0,0.3)] hover:shadow-[0_0_25px_rgba(186,0,0,0.5)]"
                                 >
                                     Mengerti
                                 </Button>

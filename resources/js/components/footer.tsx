@@ -178,14 +178,18 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-[2.5fr_1fr_1fr]">
                     {/* Description Section */}
                     <div className="space-y-6">
-                        <h3 className="text-2xl font-bold transition-colors duration-300 hover:text-red-300">IT-ESEGA {currentYear}</h3>
-                        <p className="max-w-md leading-relaxed text-gray-100">{description}</p>
+                        <h3 className="text-2xl font-bold">
+                            IT-ESEGA {currentYear}
+                        </h3>
+                        <p className="text-gray-100 max-w-md leading-relaxed">
+                            {description}
+                        </p>
                         <div className="flex space-x-4">
                             {socialMedia.map((social, index) => (
                                 <a
                                     key={index}
                                     href={social.href}
-                                    className="transform rounded-full p-2 transition-all duration-300 hover:scale-110 hover:bg-white/10"
+                                    className="p-2 rounded-full hover:bg-white/10 transition-all duration-300"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -198,8 +202,10 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                     {/* Footer Sections */}
                     {sections.map((section, index) => (
                         <div key={index} className="space-y-6">
-                            <h3 className="text-xl font-semibold transition-colors duration-300 hover:text-red-300">{section.title}</h3>
-                            <div className="space-y-0.3 flex flex-col">
+                            <h3 className="text-xl font-semibold">
+                                {section.title}
+                            </h3>
+                            <div className="flex flex-col space-y-0.3">
                                 {section.links.map((link, linkIndex) => (
                                     <Link
                                         key={linkIndex}
@@ -231,7 +237,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                 <div className="mt-12 border-t border-white/20 pt-8">
                     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                         {/* Logo */}
-                        <div className="order-2 md:order-1">
+                        <div className="order-1">
                             {logo && (
                                 <Link
                                     href={route('home')}
@@ -249,14 +255,14 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                         </div>
 
                         {/* Copyright */}
-                        <p className="order-1 text-center text-gray-100 transition-colors duration-300 hover:text-white md:order-2">
+                        <p className="text-gray-100 text-center order-2">
                             &copy; {currentYear} IT-ESEGA. All rights reserved.
                         </p>
 
                         {/* Scroll to Top Button */}
                         <button
                             onClick={scrollToTop}
-                            className="group order-3 flex items-center gap-2 rounded-full bg-white/10 p-4 transition-all duration-300 hover:scale-110 hover:bg-white/20"
+                            className="group bg-white/10 hover:bg-white/20 p-4 rounded-full transition-all duration-300 flex items-center gap-2 order-3"
                             aria-label="Scroll to top"
                         >
                             <svg

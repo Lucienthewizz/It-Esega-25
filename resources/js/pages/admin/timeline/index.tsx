@@ -24,16 +24,7 @@ export default function AdminTimelinePage() {
 
     const events = timelines.data;
 
-    console.log(events);
-    const {
-        data,
-        setData,
-        post,
-        put,
-        delete: destroy,
-        processing,
-        reset,
-    } = useForm<Omit<Event, 'id'>>({
+    const { setData, post, put, delete: destroy, processing, reset } = useForm<Omit<Event, "id">>({
         title: '',
         description: '',
         due_date: new Date(),
@@ -42,7 +33,7 @@ export default function AdminTimelinePage() {
         status: true,
     });
 
-    const handleAddEvent = (event: Omit<Event, 'id'>) => {
+    const handleAddEvent = (event: Omit<Event, "id">) => {
         setData(event);
         post(route('timeline.store'), {
             onSuccess: () => {
