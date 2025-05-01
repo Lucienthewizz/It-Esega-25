@@ -10,6 +10,8 @@ import { UserType } from '@/types/user';
 import { useEffect, useState, useRef } from 'react';
 import { route } from 'ziggy-js';
 import { createPortal } from 'react-dom';
+import { Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 
 interface NavItem {
     title: string;
@@ -23,30 +25,16 @@ interface NavbarProps {
 }
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
-    const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
     const dropdownContentRef = useRef<HTMLDivElement>(null);
-    // Memisahkan item Register dari items lainnya
     const navigationItems = items.filter(item => item.title !== 'Register');
     const registerItem = items.find(item => item.title === 'Register');
     const currentPath = window.location.pathname;
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 0);
-        };
-
-        window.addEventListener('scroll', handleScroll);
-
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    useEffect(() => {
         if (isDropdownOpen && dropdownTriggerRef.current && dropdownContentRef.current) {
             const triggerRect = dropdownTriggerRef.current.getBoundingClientRect();
-            
-            // Calculate position
             const top = triggerRect.bottom + 5;
             const right = window.innerWidth - triggerRect.right;
             
@@ -56,18 +44,15 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
         }
     }, [isDropdownOpen]);
 
-    const handleNavigation = (e: React.MouseEvent, href: string, title: string) => {
-        // Jika link adalah FAQ atau Contact
+    const handleNavigation = (e: React.MouseEvent<Element>, href: string, title: string) => {
         if (title === 'FAQ' || title === 'Contact') {
             e.preventDefault();
             
-            // Jika bukan di halaman home, arahkan ke home dulu
             if (window.location.pathname !== '/') {
                 router.visit('/', {
                     preserveScroll: true,
                     preserveState: true,
                     onSuccess: () => {
-                        // Tunggu sebentar untuk memastikan halaman sudah ter-render
                         setTimeout(() => {
                             const element = document.getElementById(href.substring(1));
                             if (element) {
@@ -77,44 +62,25 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     },
                 });
             } else {
-                // Jika sudah di halaman home, langsung scroll
                 const element = document.getElementById(href.substring(1));
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
                 }
             }
         } else if (title === 'Home' && window.location.pathname === '/') {
-            // Jika di halaman home dan klik home, scroll ke atas
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            // Untuk navigasi normal ke halaman lain
             e.preventDefault();
             router.visit(href, {
                 preserveScroll: false,
                 preserveState: false,
                 onSuccess: () => {
-                    // Reset scroll position setelah navigasi
                     window.scrollTo(0, 0);
                 }
             });
         }
     };
-
-    // const getRedirectPath = (user: UserType) => {
-    //     if (user === undefined) return '#';
-
-    //     console.log('User dari Navbar :', user?.updated_at)
-
-    //     const roles = user?.roles?.map((role) => role.name) || [];
-    //     console.log('User Role : ', roles)
-
-    //     if (roles.includes('admin') || roles.includes('super_admin')) {
-    //         return route('admin.dashboard');
-    //     }
-
-    //     return route('dashboard');
-    // };
 
     console.log('Navbar props:', { logo, items, user });
     console.log('Navbar user:', user);
@@ -207,7 +173,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                 )}
                             </div>
                         ) : (
-                            actionItem && (
+                            registerItem && (
                                 <Link
                                     href={registerItem.href}
                                     className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
@@ -215,7 +181,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                         shadow-md hover:shadow-lg transform hover:-translate-y-0.5
                                         transition-all duration-300 hover:from-[#ba0000]/90 hover:to-[#ba0000]"
                                 >
-                                    {actionItem.title}
+                                    {registerItem.title}
                                 </Link>
                             )
                         )}

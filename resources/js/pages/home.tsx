@@ -9,14 +9,15 @@ import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { route } from 'ziggy-js';
+import { ChevronLeft, ArrowLeft } from 'lucide-react';
+
+// Import Footer component
+import { Footer } from '@/components/footer';
 
 export default function Home() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
-    // const auth = user;
 
     console.log('Dari Home', user);
-
-    // console.log(auth?.roles?.[0]?.name)
 
     const navItems = [
         { title: 'Home', href: route('home') },
@@ -96,7 +97,6 @@ export default function Home() {
                                         Register Now!
                                     </Link>
                                     <button
-                                        onClick={() => setIsOpen(true)}
                                         className="group inline-flex items-center px-5 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-medium
                                             text-red-600 rounded-lg transition-all duration-300 relative
                                             hover:text-red-700 border border-red-200 hover:border-red-300 hover:shadow-md
@@ -128,15 +128,6 @@ export default function Home() {
                                         willChange: 'transform',
                                         backfaceVisibility: 'hidden',
                                         transform: 'translateZ(0)'
-                                    }}
-                                    animate={{
-                                        y: [0, -10, 0],
-                                    }}
-                                    transition={{
-                                        duration: 3,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        type: "tween"
                                     }}
                                 />
                             </div>
