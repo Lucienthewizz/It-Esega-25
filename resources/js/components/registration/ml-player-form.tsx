@@ -9,9 +9,12 @@ import { Trash2 } from "lucide-react"
 import { MLPlayer, PlayerFormProps } from "@/types/register"
 
 export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, errorsBE }: PlayerFormProps) {
-    const [photoPreview, setPhotoPreview] = useState<string | null>(null)
-    const [signaturePreview, setSignaturePreview] = useState<string | null>(null)
+    const [photoFile, setPhotoFile] = useState<File | null>(null);
+    const [signatureFile, setSignatureFile] = useState<File | null>(null);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [signaturePreview, setSignaturePreview] = useState<string | null>(null);
     const [errors, setErrors] = useState<Partial<Record<keyof MLPlayer, string>>>({})
+    
 
     const validateField = (field: keyof MLPlayer, value: string) => {
         switch (field) {
@@ -33,17 +36,32 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
     }
 
     useEffect(() => {
-        setPhotoPreview(player.foto || null)
-        setSignaturePreview(player.tanda_tangan || null)
+        if (typeof player.foto === 'string' && player.foto.startsWith('data:image')) {
+            setPhotoPreview(player.foto)
+        } else if (player.foto instanceof File) {
+            setPhotoPreview(URL.createObjectURL(player.foto))
+        }
+
+        if (typeof player.tanda_tangan === 'string' && player.tanda_tangan.startsWith('data:image')) {
+            setSignaturePreview(player.tanda_tangan)
+        } else if (player.tanda_tangan instanceof File) {
+            setSignaturePreview(URL.createObjectURL(player.tanda_tangan))
+        }
     }, [player.foto, player.tanda_tangan, index])
 
     useEffect(() => {
         if (errorsBE) {
-            const newErrors = { ...errors }
+            // Extract errors specific to this player
+            const playerErrors: Partial<Record<keyof MLPlayer, string>> = {}
             Object.keys(errorsBE).forEach(key => {
-                newErrors[key as keyof MLPlayer] = errorsBE[key]
+                // Match pattern: ml_players.{index}.{field}
+                const match = key.match(new RegExp(`ml_players\\.${index}\\.(.+)`))
+                if (match && match[1]) {
+                    const field = match[1] as keyof MLPlayer
+                    playerErrors[field] = errorsBE[key]
+                }
             })
-            setErrors(newErrors)
+            setErrors(current => ({ ...current, ...playerErrors }))
         }
     }, [errorsBE])
 
@@ -72,18 +90,23 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
         setErrors(prev => ({ ...prev, [field]: undefined }))
 
-        const reader = new FileReader()
-        reader.onload = () => {
-            const result = reader.result as string
-            if (field === "foto") {
-                setPhotoPreview(result)
-            } else if (field === "tanda_tangan") {
-                setSignaturePreview(result)
+        const previewUrl = URL.createObjectURL(file)
+        if (field === "foto") {
+            // Revoke old preview URL if it exists and is not a data URL
+            if (photoPreview && !photoPreview.startsWith('data:image')) {
+                URL.revokeObjectURL(photoPreview)
             }
-
-            onChange(index, field, file)
+            setPhotoPreview(previewUrl)
+        } else if (field === "tanda_tangan") {
+            // Revoke old preview URL if it exists and is not a data URL
+            if (signaturePreview && !signaturePreview.startsWith('data:image')) {
+                URL.revokeObjectURL(signaturePreview)
+            }
+            setSignaturePreview(previewUrl)
         }
-        reader.readAsDataURL(file)
+
+        // Pass the file object to parent component
+        onChange(index, field, file)
     }
 
     const handleRoleChange = (value: MLPlayer["role"]) => {
