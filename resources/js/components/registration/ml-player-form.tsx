@@ -16,7 +16,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
     const validateField = (field: keyof MLPlayer, value: string) => {
         if (!value) return undefined; // Don't show error for empty fields initially
-        
+
         switch (field) {
             case 'nickname':
                 return /^[a-zA-Z0-9_]+$/.test(value) ? undefined : 'Nickname hanya boleh alfanumerik dan underscore.'
@@ -137,7 +137,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
         }
         setFileNames(prev => ({ ...prev, [field]: '' }))
         onChange(index, field, null)
-        
+
         // Clear error if exists
         setErrors(prev => {
             const newErrors = { ...prev }
@@ -262,9 +262,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.role}
                                 onValueChange={handleRoleChange}
                             >
-                                <SelectTrigger className={`rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white ${
-                                    errors.role ? 'border-red-500' : ''
-                                }`}>
+                                <SelectTrigger className={`rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white ${errors.role ? 'border-red-500' : ''
+                                    }`}>
                                     <SelectValue placeholder="Pilih role pemain" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -371,23 +370,22 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                         />
                                         <label
                                             htmlFor={`ml-${field}-${index}`}
-                                            className={`w-full py-2.5 px-3 bg-red-50/80 hover:bg-red-50 text-red-700 rounded-md border ${
-                                                errors[field as keyof MLPlayer] ? 'border-red-500' : 'border-gray-200'
-                                            } cursor-pointer transition-colors duration-200 flex items-center gap-2 text-sm min-h-[40px]`}
+                                            className={`w-full py-2.5 px-3 bg-red-50/80 hover:bg-red-50 text-red-700 rounded-md border ${errors[field as keyof MLPlayer] ? 'border-red-500' : 'border-gray-200'
+                                                } cursor-pointer transition-colors duration-200 flex items-center gap-2 text-sm min-h-[40px]`}
                                         >
                                             <div className="flex items-center gap-2 w-full">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                                                 </svg>
                                                 <span className="truncate flex-1">
-                                                    {fileNames[field as "foto" | "tanda_tangan"] 
+                                                    {fileNames[field as "foto" | "tanda_tangan"]
                                                         ? (
                                                             <span className="flex items-center gap-1">
                                                                 <span className="truncate max-w-[150px]">{fileNames[field as "foto" | "tanda_tangan"]}</span>
                                                                 <span className="text-red-400 shrink-0">•</span>
                                                                 <span className="text-xs text-red-400 shrink-0">Klik untuk mengganti</span>
                                                             </span>
-                                                        ) 
+                                                        )
                                                         : 'Pilih File'
                                                     }
                                                 </span>

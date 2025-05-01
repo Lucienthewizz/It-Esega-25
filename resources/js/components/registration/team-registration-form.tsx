@@ -24,12 +24,16 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
         [key: string]: string | undefined;
     }>({})
 
+
     const { data, setData, post, processing } = useForm({
         team_name: teamData.team_name || "",
         team_logo: teamData.team_logo || null,
         proof_of_payment: teamData.proof_of_payment || null,
         game_type: gameType,
     })
+
+
+    console.log('game type', gameType);
 
     const [teamLogoPreview, setTeamLogoPreview] = useState<string | null>(null)
     const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null)
@@ -207,10 +211,10 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                             {paymentProofPreview && (
                                                 <div className="mt-2 flex justify-center">
                                                     <div className="relative group">
-                                                        <img 
-                                                            src={paymentProofPreview} 
-                                                            alt="Payment Proof Preview" 
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105" 
+                                                        <img
+                                                            src={paymentProofPreview}
+                                                            alt="Payment Proof Preview"
+                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105"
                                                         />
                                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
                                                             <p className="text-white text-sm">Preview</p>
@@ -238,10 +242,10 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                             {teamLogoPreview && (
                                                 <div className="mt-2 flex justify-center">
                                                     <div className="relative group">
-                                                        <img 
-                                                            src={teamLogoPreview} 
-                                                            alt="Team Logo Preview" 
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105" 
+                                                        <img
+                                                            src={teamLogoPreview}
+                                                            alt="Team Logo Preview"
+                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105"
                                                         />
                                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
                                                             <p className="text-white text-sm">Preview</p>
@@ -334,7 +338,7 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
 
                         <div className="mt-6 flex justify-end">
                             <DialogClose asChild>
-                                <Button 
+                                <Button
                                     className="bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 text-white 
                                     hover:from-[#ba0000]/90 hover:to-[#ba0000] px-6 py-2.5 rounded-lg 
                                     text-sm font-medium transition-all duration-300 
