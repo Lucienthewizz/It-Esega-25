@@ -81,7 +81,7 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 setSignaturePreview(result)
             }
 
-            onChange(index, field, result)
+            onChange(index, field, file)
         }
         reader.readAsDataURL(file)
     }

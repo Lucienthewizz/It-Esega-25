@@ -22,8 +22,8 @@ class StorePlayerMLRegistrationRequest extends FormRequest
             'ml_players.*.no_hp' => 'required|string',
             'ml_players.*.email' => 'required|email',
             'ml_players.*.alamat' => 'nullable|string',
-            'ml_players.*.tanda_tangan' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:1024',
-            'ml_players.*.foto' => 'nullable|file|mimes:jpg,jpeg,png,webp|max:1024',
+            'ml_players.*.tanda_tangan' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
+            'ml_players.*.foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:1024',
             'ml_players.*.role' => 'required|string|in:ketua,anggota,cadangan',
         ];
     }
@@ -41,10 +41,10 @@ class StorePlayerMLRegistrationRequest extends FormRequest
             'ml_players.*.email.required' => 'Email pemain ML wajib diisi.',
             'ml_players.*.email.email' => 'Format email pemain ML tidak valid.',
             'ml_players.*.alamat.string' => 'Alamat pemain ML harus berupa string.',
-            'ml_players.*.tanda_tangan.file' => 'Tanda tangan harus berupa file Image, Coba Upload Ulang Tanda Tangan anda.',
+            'ml_players.*.tanda_tangan.image' => 'Tanda tangan harus berupa file Image, Coba Upload Ulang Tanda Tangan anda.',
             'ml_players.*.tanda_tangan.mimes' => 'Tanda tangan harus berupa file JPG atau PNG.',
             'ml_players.*.tanda_tangan.max' => 'Ukuran file tanda tangan tidak boleh lebih dari 1MB.',
-            'ml_players.*.foto.file' => 'Foto harus berupa file Image, Coba Upload Ulang foto anda.',
+            'ml_players.*.foto.image' => 'Foto harus berupa file Image, Coba Upload Ulang foto anda.',
             'ml_players.*.foto.mimes' => 'Foto harus berupa file JPG atau PNG.',
             'ml_players.*.foto.max' => 'Ukuran file foto tidak boleh lebih dari 1MB.',
             'ml_players.*.role.required' => 'Role pemain ML wajib diisi.',
