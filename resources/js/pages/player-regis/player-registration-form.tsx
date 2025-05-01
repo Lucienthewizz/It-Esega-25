@@ -243,17 +243,23 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                             {/* Progress Indicator */}
                             <div className="flex items-center gap-6">
-                                <div className="flex items-center gap-3">
-                                    {[1, 2, 3].map((s) => (
-                                        <div
-                                            key={s}
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                                                s === 3 
-                                                    ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
-                                                    : 'bg-gray-100 text-gray-400'
-                                            }`}
-                                        >
-                                            <span className="text-sm font-semibold">{s}</span>
+                                <div className="flex items-center">
+                                    {[1, 2, 3].map((s, index) => (
+                                        <div key={s} className="flex items-center">
+                                            <div
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                                                    s < 3 
+                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
+                                                        : s === 3
+                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200'
+                                                        : 'bg-red-100 text-red-400'
+                                                }`}
+                                            >
+                                                <span className="text-sm font-semibold">{s}</span>
+                                            </div>
+                                            {index < 2 && (
+                                                <div className="w-8 h-0.5 bg-red-200"></div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
@@ -262,7 +268,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         <span className="text-sm font-medium text-gray-700">Step</span>
                                         <span className="text-sm font-semibold text-red-600">3</span>
                                         <span className="text-sm font-medium text-gray-700">of</span>
-                                        <span className="text-sm font-semibold text-gray-700">3</span>
+                                        <span className="text-sm font-semibold text-red-600">3</span>
                                     </div>
                                 </div>
                             </div>
