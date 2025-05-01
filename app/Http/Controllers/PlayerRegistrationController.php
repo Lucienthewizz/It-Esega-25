@@ -7,7 +7,9 @@ use App\Models\ML_Participant;
 use App\Models\ML_Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class PlayerRegistrationController extends Controller
 {
@@ -32,23 +34,51 @@ class PlayerRegistrationController extends Controller
 
     public function store(StorePlayerMLRegistrationRequest $request)
     {
-        dd($request->all());
         $validated = $request->validated();
 
         if (!empty($validated['ml_players'])) {
-            foreach ($validated['ml_players'] as $player) {
+            $teamId = $validated['team_id'];
+            $team = ML_Team::findOrFail($teamId);
+            $teamSlug = Str::slug($team->team_name);
+            
+            // Buat folder player jika belum ada
+            $playerBasePath = "ml_teams/{$teamId}_{$teamSlug}/player";
+            $playerBaseStoragePath = storage_path("app/public/" . $playerBasePath);
+            if (!file_exists($playerBaseStoragePath)) {
+                mkdir($playerBaseStoragePath, 0777, true);
+            }
+            
+            foreach ($validated['ml_players'] as $index => $player) {
                 $photoPath = null;
-                if ($request->hasFile('ml_players.*.foto') && $request->file('ml_players.*.foto')->isValid()) {
-                    $photoPath = $request->file('ml_players.*.foto')->store('photos', 'public');
+                if ($request->hasFile("ml_players_{$index}_foto")) {
+                    $file = $request->file("ml_players_{$index}_foto");
+                    if ($file && $file->isValid()) {
+                        // Simpan foto sementara di folder temp
+                        $photoPath = $file->store("ml_teams/temp/player_photos", 'public');
+                    }
                 }
 
                 $signaturePath = null;
-                if ($request->hasFile('ml_players.*.tanda_tangan') && $request->file('ml_players.*.tanda_tangan')->isValid()) {
-                    $signaturePath = $request->file('ml_players.*.tanda_tangan')->store('signatures', 'public');
+                if ($request->hasFile("ml_players_{$index}_tanda_tangan")) {
+                    $file = $request->file("ml_players_{$index}_tanda_tangan");
+                    if ($file && $file->isValid()) {
+                        // Simpan tanda tangan sementara di folder temp
+                        $signaturePath = $file->store("ml_teams/temp/player_signatures", 'public');
+                    }
                 }
 
-                ML_Participant::create([
-                    'ml_team_id' => $validated['team_id'],
+                // Debug: Log file information
+                Log::info("Processing player {$index}", [
+                    'has_foto' => $request->hasFile("ml_players_{$index}_foto"),
+                    'has_tanda_tangan' => $request->hasFile("ml_players_{$index}_tanda_tangan"),
+                    'foto_path' => $photoPath,
+                    'tanda_tangan_path' => $signaturePath,
+                    'all_files' => $request->allFiles(),
+                    'player_data' => $player
+                ]);
+
+                $player = ML_Participant::create([
+                    'ml_team_id' => $teamId,
                     'name' => $player['name'],
                     'nickname' => $player['nickname'],
                     'id_server' => $player['id_server'],
@@ -57,8 +87,38 @@ class PlayerRegistrationController extends Controller
                     'alamat' => $player['alamat'] ?? '-',
                     'tanda_tangan' => $signaturePath,
                     'foto' => $photoPath,
-                    'role' => $player['role'],
+                    'role' => $player['role']
                 ]);
+
+                // Setelah mendapatkan player ID, pindahkan file ke folder yang benar
+                if ($player->foto) {
+                    $newPath = "{$playerBasePath}/player_{$player->id}_foto." . pathinfo($player->foto, PATHINFO_EXTENSION);
+                    $destinationDir = dirname(storage_path("app/public/" . $newPath));
+                    if (!file_exists($destinationDir)) {
+                        mkdir($destinationDir, 0777, true);
+                    }
+                    rename(
+                        storage_path("app/public/" . $player->foto),
+                        storage_path("app/public/" . $newPath)
+                    );
+                    $player->foto = $newPath;
+                }
+
+                if ($player->tanda_tangan) {
+                    $newPath = "{$playerBasePath}/player_{$player->id}_ttd." . pathinfo($player->tanda_tangan, PATHINFO_EXTENSION);
+                    $destinationDir = dirname(storage_path("app/public/" . $newPath));
+                    if (!file_exists($destinationDir)) {
+                        mkdir($destinationDir, 0777, true);
+                    }
+                    rename(
+                        storage_path("app/public/" . $player->tanda_tangan),
+                        storage_path("app/public/" . $newPath)
+                    );
+                    $player->tanda_tangan = $newPath;
+                }
+
+                // Update player dengan path yang baru
+                $player->save();
             }
         }
 

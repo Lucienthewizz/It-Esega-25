@@ -155,7 +155,7 @@ export function Footer({
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-[2.5fr_1fr_1fr]">
                     {/* Description Section */}
                     <div className="space-y-6">
-                        <h3 className="text-2xl font-bold hover:text-red-300 transition-colors duration-300">
+                        <h3 className="text-2xl font-bold">
                             IT-ESEGA {currentYear}
                         </h3>
                         <p className="text-gray-100 max-w-md leading-relaxed">
@@ -166,7 +166,7 @@ export function Footer({
                                 <a
                                     key={index}
                                     href={social.href}
-                                    className="p-2 rounded-full hover:bg-white/10 transition-all duration-300 transform hover:scale-110"
+                                    className="p-2 rounded-full hover:bg-white/10 transition-all duration-300"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -179,7 +179,7 @@ export function Footer({
                     {/* Footer Sections */}
                     {sections.map((section, index) => (
                         <div key={index} className="space-y-6">
-                            <h3 className="text-xl font-semibold hover:text-red-300 transition-colors duration-300">
+                            <h3 className="text-xl font-semibold">
                                 {section.title}
                             </h3>
                             <div className="flex flex-col space-y-0.3">
@@ -214,7 +214,7 @@ export function Footer({
                 <div className="mt-12 pt-8 border-t border-white/20">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         {/* Logo */}
-                        <div className="order-2 md:order-1">
+                        <div className="order-1">
                             {logo && (
                                 <Link 
                                     href={route('home')} 
@@ -232,14 +232,14 @@ export function Footer({
                         </div>
 
                         {/* Copyright */}
-                        <p className="text-gray-100 hover:text-white transition-colors duration-300 text-center order-1 md:order-2">
+                        <p className="text-gray-100 text-center order-2">
                             &copy; {currentYear} IT-ESEGA. All rights reserved.
                         </p>
 
                         {/* Scroll to Top Button */}
                         <button 
                             onClick={scrollToTop}
-                            className="group bg-white/10 hover:bg-white/20 p-4 rounded-full transition-all duration-300 flex items-center gap-2 hover:scale-110 order-3"
+                            className="group bg-white/10 hover:bg-white/20 p-4 rounded-full transition-all duration-300 flex items-center gap-2 order-3"
                             aria-label="Scroll to top"
                         >
                             <svg 

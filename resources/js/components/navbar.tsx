@@ -6,10 +6,11 @@ import {
     DropdownMenuTrigger,
     DropdownMenuPortal
 } from '@/components/ui/dropdown-menu';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, LogOut, LayoutDashboard } from 'lucide-react';
 import { UserType } from '@/types/user';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { route } from 'ziggy-js';
+import { createPortal } from 'react-dom';
 
 interface NavItem {
     title: string;
@@ -24,6 +25,9 @@ interface NavbarProps {
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
+    const dropdownContentRef = useRef<HTMLDivElement>(null);
     // Memisahkan item Register dari items lainnya
     const navigationItems = items.filter(item => item.title !== 'Register');
     const registerItem = items.find(item => item.title === 'Register');
@@ -38,6 +42,20 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    useEffect(() => {
+        if (isDropdownOpen && dropdownTriggerRef.current && dropdownContentRef.current) {
+            const triggerRect = dropdownTriggerRef.current.getBoundingClientRect();
+            
+            // Calculate position
+            const top = triggerRect.bottom + 5;
+            const right = window.innerWidth - triggerRect.right;
+            
+            dropdownContentRef.current.style.position = 'fixed';
+            dropdownContentRef.current.style.top = `${top}px`;
+            dropdownContentRef.current.style.right = `${right}px`;
+        }
+    }, [isDropdownOpen]);
 
     const handleNavigation = (e: React.MouseEvent, href: string, title: string) => {
         // Jika link adalah FAQ atau Contact
@@ -160,33 +178,85 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                     {/* Action Button or User Icon */}
                     <div className="w-[180px] hidden md:flex justify-end flex-shrink-0">
                         {user ? (
-                            <Link
-                                href={
-                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin') 
-                                        ? route('admin.dashboard')
-                                        : route('dashboard')
-                                }
-                                className="flex items-center justify-center w-10 h-10 rounded-full 
-                                    bg-gradient-to-r from-red-500 to-red-600 text-white
-                                    shadow-md hover:shadow-lg transform hover:-translate-y-0.5
-                                    transition-all duration-300 hover:from-red-600 hover:to-red-700"
-                            >
-                                <User className="h-5 w-5" />
-                            </Link>
+                            <div>
+                                <button 
+                                    ref={dropdownTriggerRef}
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    className="flex items-center justify-center w-10 h-10 rounded-full 
+                                        bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 text-white
+                                        shadow-md hover:shadow-lg transform hover:-translate-y-0.5
+                                        transition-all duration-300 hover:from-[#ba0000]/90 hover:to-[#ba0000]
+                                        focus:outline-none focus:ring-2 focus:ring-[#ba0000]/20 focus:ring-offset-2"
+                                >
+                                    <User className="h-5 w-5" />
+                                </button>
+
+                                {isDropdownOpen && createPortal(
+                                    <div 
+                                        ref={dropdownContentRef}
+                                        className="w-56 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100/50 p-2 z-[1000]"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <div className="px-2 py-1.5">
+                                            <p className="text-sm font-medium text-gray-900 truncate">
+                                                {user.data.name}
+                                            </p>
+                                            <p className="text-xs text-gray-500 truncate">
+                                                {user.data.roles?.map(role => role.name).join(', ')}
+                                            </p>
+                                        </div>
+                                        <div className="my-2 h-px bg-gray-100/50"></div>
+                                        <Link
+                                            href={
+                                                user.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
+                                                    ? route('admin.dashboard')
+                                                    : route('dashboard')
+                                            }
+                                            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 rounded-lg
+                                                hover:bg-[#ba0000]/5 hover:text-[#ba0000] cursor-pointer
+                                                transition-colors duration-200"
+                                        >
+                                            <LayoutDashboard className="h-4 w-4" />
+                                            Dashboard
+                                        </Link>
+                                        <Link
+                                            href={route('logout')}
+                                            method="post"
+                                            as="button"
+                                            className="flex items-center gap-2 px-2 py-1.5 text-sm text-gray-700 rounded-lg
+                                                hover:bg-[#ba0000]/5 hover:text-[#ba0000] cursor-pointer
+                                                transition-colors duration-200 w-full"
+                                        >
+                                            <LogOut className="h-4 w-4" />
+                                            Logout
+                                        </Link>
+                                    </div>,
+                                    document.body
+                                )}
+                            </div>
                         ) : (
                             registerItem && (
                                 <Link
                                     href={registerItem.href}
                                     className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
-                                        bg-gradient-to-r from-red-500 to-red-600 text-white
+                                        bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 text-white
                                         shadow-md hover:shadow-lg transform hover:-translate-y-0.5
-                                        transition-all duration-300 hover:from-red-600 hover:to-red-700"
+                                        transition-all duration-300 hover:from-[#ba0000]/90 hover:to-[#ba0000]"
                                 >
                                     {registerItem.title}
                                 </Link>
                             )
                         )}
                     </div>
+
+                    {/* Add click outside handler */}
+                    {isDropdownOpen && createPortal(
+                        <div 
+                            className="fixed inset-0 z-[999]"
+                            onClick={() => setIsDropdownOpen(false)}
+                        />,
+                        document.body
+                    )}
 
                     {/* Mobile Menu */}
                     <div className="md:hidden">
@@ -205,8 +275,18 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                             <DropdownMenuPortal>
                                 <DropdownMenuContent 
                                     align="end" 
-                                    className="w-72 bg-white/95 backdrop-blur-md rounded-xl shadow-lg border border-gray-100/50 mt-2 p-3 mr-2"
+                                    className="w-72 bg-white rounded-xl shadow-lg border border-gray-100/50 p-3"
                                     sideOffset={5}
+                                    alignOffset={5}
+                                    avoidCollisions={true}
+                                    collisionPadding={10}
+                                    style={{
+                                        position: 'fixed',
+                                        right: '1rem',
+                                        top: '4rem',
+                                        transform: 'none',
+                                        willChange: 'transform'
+                                    }}
                                 >
                                     <div className="space-y-1">
                                         {navigationItems.map((item) => (
@@ -216,33 +296,53 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                                 onClick={(e) => handleNavigation(e, item.title === 'FAQ' ? '#faq' : item.title === 'Contact' ? '#contact' : item.href, item.title)}
                                                 className={`block px-4 py-3 text-[15px] rounded-lg transition-all duration-300 
                                                     ${currentPath === item.href 
-                                                        ? 'bg-red-50 text-red-600 font-semibold' 
-                                                        : 'text-gray-700 hover:bg-red-50/50 hover:text-red-600'
+                                                        ? 'bg-[#ba0000]/5 text-[#ba0000] font-semibold' 
+                                                        : 'text-gray-700 hover:bg-[#ba0000]/5 hover:text-[#ba0000]'
                                                     }`}
                                             >
                                                 {item.title}
                                             </Link>
                                         ))}
                                         {user ? (
-                                            <Link
-                                                href={
-                                                    user?.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
-                                                        ? route('admin.dashboard')
-                                                        : route('dashboard')
-                                                }
-                                                className="flex items-center gap-2 px-4 py-3 mt-2 text-[15px] font-semibold text-white rounded-lg
-                                                    bg-gradient-to-r from-red-500 to-red-600
-                                                    hover:from-red-600 hover:to-red-700 transition-all duration-300"
-                                            >
-                                                <User className="w-5 h-5" /> Profile
-                                            </Link>
+                                            <>
+                                                <div className="px-4 py-3 border-t border-gray-100/50">
+                                                    <p className="text-sm font-medium text-gray-900 truncate">
+                                                        {user.data.name}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 truncate">
+                                                        {user.data.roles?.map(role => role.name).join(', ')}
+                                                    </p>
+                                                </div>
+                                                <Link
+                                                    href={
+                                                        user.data.roles?.some(role => role.name === 'admin' || role.name === 'super_admin')
+                                                            ? route('admin.dashboard')
+                                                            : route('dashboard')
+                                                    }
+                                                    className="flex items-center gap-2 px-4 py-3 text-[15px] rounded-lg
+                                                        bg-[#ba0000]/5 text-[#ba0000] font-semibold
+                                                        hover:bg-[#ba0000]/10 transition-all duration-300"
+                                                >
+                                                    <LayoutDashboard className="w-5 h-5" /> Dashboard
+                                                </Link>
+                                                <Link
+                                                    href={route('logout')}
+                                                    method="post"
+                                                    as="button"
+                                                    className="flex items-center gap-2 px-4 py-3 text-[15px] rounded-lg
+                                                        text-gray-700 hover:bg-[#ba0000]/5 hover:text-[#ba0000]
+                                                        transition-all duration-300"
+                                                >
+                                                    <LogOut className="w-5 h-5" /> Logout
+                                                </Link>
+                                            </>
                                         ) : (
                                             registerItem && (
                                                 <Link
                                                     href={registerItem.href}
                                                     className="block px-4 py-3 mt-2 text-[15px] font-semibold text-center text-white rounded-lg
-                                                        bg-gradient-to-r from-red-500 to-red-600
-                                                        hover:from-red-600 hover:to-red-700 transition-all duration-300"
+                                                        bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90
+                                                        hover:from-[#ba0000]/90 hover:to-[#ba0000] transition-all duration-300"
                                                 >
                                                     {registerItem.title}
                                                 </Link>

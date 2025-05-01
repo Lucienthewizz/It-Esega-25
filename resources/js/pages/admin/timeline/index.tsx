@@ -24,8 +24,7 @@ export default function AdminTimelinePage() {
 
     const events = timelines.data;
 
-    console.log(events);
-    const { data, setData, post, put, delete: destroy, processing, reset } = useForm<Omit<Event, "id">>({
+    const { setData, post, put, delete: destroy, processing, reset } = useForm<Omit<Event, "id">>({
         title: '',
         description: '',
         due_date: new Date(),
@@ -33,8 +32,6 @@ export default function AdminTimelinePage() {
         location: '',
         status: true,
     });
-
-
 
     const handleAddEvent = (event: Omit<Event, "id">) => {
         setData(event);
@@ -63,8 +60,6 @@ export default function AdminTimelinePage() {
             },
         });
     };
-
-
 
     const handleDeleteEvent = (id: number) => {
         if (confirm("Are you sure you want to delete this event?")) {
