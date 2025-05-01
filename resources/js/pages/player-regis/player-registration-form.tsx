@@ -97,8 +97,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
-        console.log(data);
-
         post(route("player-registration.store"), {
             onError: () => {
 
@@ -109,7 +107,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const handlePlayerChange = (
         index: number,
         field: keyof MLPlayer,
-        value: string | File | number | null | undefined
+        value: string | number | null | undefined
     ) => {
         const newValue = value != null ? String(value) : ""
         updatePlayer(index, field, newValue)

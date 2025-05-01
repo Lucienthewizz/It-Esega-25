@@ -12,8 +12,8 @@ export interface MLPlayer {
     no_hp: string
     email: string
     alamat: string
-    tanda_tangan: File | null
-    foto: File | null
+    tanda_tangan: string | null
+    foto: string | null
     ml_team_id?: number | null
     role: 'ketua' | 'anggota' | 'cadangan'
     created_at?: string;
