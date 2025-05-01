@@ -43,16 +43,16 @@ export default function Home() {
 
     const faqs = [
         {
-            question: 'What is IT-ESEGA?',
-            answer: 'IT-ESEGA is the premier technology competition that brings together the brightest minds from universities across the nation.',
+            question: 'Apa itu  IT-ESEGA?',
+            answer: 'IT-ESEGA adalah ajang kompetisi teknologi bergengsi yang jadi tempat berkumpulnya para mahasiswa terbaik dari berbagai universitas di seluruh Indonesia.',
         },
         {
-            question: 'How can I register?',
-            answer: 'You can register for the tournament by clicking the "Register Now" button on our homepage.',
+            question: 'Bagaimana saya bisa mendaftar?',
+            answer: 'Kamu bisa mendaftar untuk turnamen ini dengan mengklik tombol "Daftar Sekarang" di halaman utama kami.',
         },
         {
-            question: 'What games are included in the tournament?',
-            answer: 'The tournament features popular games like Mobile Legends and Free Fire.',
+            question: 'Game apa saja yang dimainkan dalam turnamen ini?',
+            answer: 'Turnamen ini menghadirkan game-game populer seperti Mobile Legends dan Free Fire.',
         },
     ];
 
@@ -92,7 +92,7 @@ export default function Home() {
                                     IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
                                 </h1>
                                 <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Excepturi molestias architecto nemo?
+                                    Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
                                 </p>
                                 <div className="flex justify-center space-x-4 md:justify-start">
                                     <Link
@@ -670,22 +670,22 @@ export default function Home() {
                                 {[
                                     {
                                         name: "Damar",
-                                        wa: "-",
-                                        line: "-",
+                                        wa: "089666401388",
+                                        line: "komang.damar",
                                         animation: "fade-up",
                                         delay: 0
                                     },
                                     {
                                         name: "Mita",
-                                        wa: "-",
-                                        line: "-",
+                                        wa: "087861081640",
+                                        line: "pramitawindari",
                                         animation: "fade-up",
                                         delay: 100
                                     },
                                     {
                                         name: "Yoga",
-                                        wa: "-",
-                                        line: "-",
+                                        wa: "082145175076",
+                                        line: "dewaanoc135",
                                         animation: "fade-up",
                                         delay: 200
                                     }
