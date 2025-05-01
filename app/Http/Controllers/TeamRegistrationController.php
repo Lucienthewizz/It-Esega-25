@@ -14,6 +14,8 @@ class TeamRegistrationController extends Controller
 {
     public function store(StoreMLTeamRegistrationRequest $request)
     {
+
+        // dd($request->all());
         $validated = $request->validated();
 
         $team = new ML_Team();
