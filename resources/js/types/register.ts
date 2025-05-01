@@ -27,7 +27,7 @@ export interface FFPlayer {
     name: string
     id: string
     nickname: string
-    phone: string
+    no_hp: string
     email: string
 }
 

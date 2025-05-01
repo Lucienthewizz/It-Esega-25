@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import type { FFPlayer, PlayerFormProps } from "@/types/register"
 
 export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
-    const ffPlayer = player as FFPlayer
+    const ffPlayer = player as unknown as FFPlayer
 
     return (
         <div className="border border-gray-200 rounded-xl p-6 bg-gray-50">
@@ -54,13 +54,13 @@ export function FFPlayerForm({ player, index, onChange }: PlayerFormProps) {
                 </div>
 
                 <div>
-                    <Label htmlFor={`ff-phone-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
+                    <Label htmlFor={`ff-no_hp-${index}`} className="block text-sm font-medium text-gray-700 mb-1">
                         Phone Number
                     </Label>
                     <Input
-                        id={`ff-phone-${index}`}
-                        value={ffPlayer.phone}
-                        onChange={(e) => onChange(index, "phone", e.target.value)}
+                        id={`ff-no_hp-${index}`}
+                        value={ffPlayer.no_hp}
+                        onChange={(e) => onChange(index, "no_hp", e.target.value)}
                         required
                         placeholder="Phone number"
                         className="bg-white text-slate-900 border-gray-200 rounded-lg"
