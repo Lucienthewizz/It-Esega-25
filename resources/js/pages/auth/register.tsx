@@ -32,17 +32,6 @@ export default function RegisterPage() {
         });
     }, []);
 
-    useEffect(() => {
-        const savedStep = localStorage.getItem("registration_step")
-        if (savedStep) {
-            setStep(parseInt(savedStep))
-        }
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem("registration_step", step.toString())
-    }, [step])
-
     const handleGameSelect = (game: "ml" | "ff") => {
         setGameType(game)
         setStep(2)
@@ -55,7 +44,13 @@ export default function RegisterPage() {
 
     const resetStep = () => {
         setStep(1)
-        localStorage.setItem("registration_step", "1")
+        setGameType("ml")
+        setTeamData({
+            id: null,
+            team_name: "",
+            proof_of_payment: null,
+            team_logo: null,
+        })
     }
 
     const handleBack = () => {

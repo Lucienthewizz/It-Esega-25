@@ -162,7 +162,7 @@ export default function About() {
                                     </h2>
                                     <div className="max-w-4xl mx-auto">
                                         <p className="mb-6 text-base sm:text-lg text-[#333] leading-relaxed px-4 sm:px-0">
-                                            IT-ESEGA adalah kompetisi teknologi premier yang mempertemukan pikiran-pikiran cemerlang dari universitas-universitas di seluruh negeri. Kami berkomitmen untuk menciptakan platform yang memungkinkan para gamers dan tech enthusiast untuk menunjukkan bakat mereka dalam kompetisi yang seru dan menantang.
+                                            IT-ESEGA merupakan ajang tahunan bergengsi yang diselenggarakan oleh Himpunan Mahasiswa Teknologi Informasi, Universitas Udayana. Kompetisi ini mempertemukan para gamers dari berbagai kalangan dalam dua cabang E-Sport populer, yaitu Mobile Legends dan Free Fire. IT-ESEGA hadir sebagai representasi semangat kolaborasi, sportivitas, serta wadah untuk mengembangkan potensi, menjalin komunitas, dan mendorong lahirnya atlet E-Sport berbakat yang siap bersaing di tingkat nasional hingga internasional.
                                         </p>
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@ export default function About() {
                                         </div>
                                         <h3 className="mb-4 text-xl font-semibold text-red-600 text-center">Visi</h3>
                                         <p className="text-gray-600 text-center leading-relaxed">
-                                            Menjadi platform utama yang mempertemukan dan mengembangkan bakat esports di kalangan mahasiswa Indonesia.
+                                            Menjadi platform utama yang mempertemukan dan mengembangkan bakat esports.
                                         </p>
                                     </div>
                                     <div className="rounded-xl bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
@@ -269,9 +269,9 @@ export default function About() {
                                         <div className="w-20 sm:w-24 h-1 bg-red-600 rounded-full mb-6 sm:mb-8"></div>
                                         <div className="space-y-4 sm:space-y-6 text-gray-600">
                                             <div>
-                                                <h3 className="text-2xl font-semibold text-red-600 mb-4">[Nama Maskot]</h3>
+                                                <h3 className="text-2xl font-semibold text-red-600 mb-4">[VALDRON]</h3>
                                                 <p className="leading-relaxed mb-6">
-                                                    [Nama Maskot] adalah representasi semangat kompetitif dan inovasi teknologi dari IT-ESEGA. Maskot ini dirancang untuk menjadi simbol yang menginspirasi dan memotivasi para peserta kompetisi.
+                                                    VALDRON adalah simbol dari kekuatan yang tak terhentikan untuk memimpin pertempuran dan menghancurkan batasan. Maskot ini menjadi pemantik semangat, pengobar ambisi, dan penakluk segala rintangan mewakili keberanian untuk keluar dari batas yang dimiliki dan membebaskan potensi terbaik daslam setiap jiwa kompetitor.
                                                 </p>
                                             </div>
                                             

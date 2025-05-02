@@ -14,16 +14,6 @@ Route::get('/', function () {
     return Inertia::render('home');
 })->name('home');
 
-
-Route::get('/registerff', function () {
-    return Inertia::render('RegisterFF');
-})->name('registerff');
-
-
-Route::get('/registerml', function () {
-    return Inertia::render('RegisterML');
-})->name('registerml');
-
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
 

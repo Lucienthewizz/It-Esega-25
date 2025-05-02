@@ -54,7 +54,7 @@ const defaultSocialMedia: SocialMedia[] = [
                 <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
             </svg>
         ),
-        href: "https://tiktok.com"
+        href: "https://www.tiktok.com/@it_esega?_t=ZS-8w0ZWkoxbtQ&_r=1"
     },
     {
         name: "Instagram",
@@ -65,7 +65,7 @@ const defaultSocialMedia: SocialMedia[] = [
                 <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
             </svg>
         ),
-        href: "https://instagram.com"
+        href: "https://www.instagram.com/it_esega?igsh=ZjdxZDkydnc4NHhx"
     },
     {
         name: "YouTube",
@@ -75,7 +75,7 @@ const defaultSocialMedia: SocialMedia[] = [
                 <path d="m10 15 5-3-5-3z" />
             </svg>
         ),
-        href: "https://youtube.com"
+        href: "https://youtube.com/@it-esega2756?si=HStpBPZFFp2hjfAV"
     }
 ];
 
@@ -89,7 +89,7 @@ const defaultLogo = (
 );
 
 // Default description
-const defaultDescription = "IT-ESEGA adalah kompetisi teknologi premier yang mempertemukan pikiran-pikiran cemerlang dari universitas-universitas di seluruh negeri. Kami berkomitmen untuk menciptakan platform yang memungkinkan para gamers dan tech enthusiast untuk menunjukkan bakat mereka dalam kompetisi yang seru dan menantang.";
+const defaultDescription = "Information Technology Electronic Sport Based On Excellent Games 2025";
 
 export function Footer({ 
     customDescription,
