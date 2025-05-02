@@ -54,29 +54,19 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
         <form onSubmit={onSubmitHandler} className="space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="title">Event Title</Label>
-                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder="Enter event title" />
+                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder="Enter event title" required />
                 {errors.title && <span className="text-sm text-red-500">{errors.title}</span>}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="due_date">Due Date</Label>
-                <Input
-                    id="due_date"
-                    type="date"
-                    value={data.due_date}
-                    onChange={(e) => setData('due_date', e.target.value)}
-                />
+                <Input id="due_date" type="date" value={data.due_date} onChange={(e) => setData('due_date', e.target.value)} required />
                 {errors.due_date && <span className="text-sm text-red-500">{errors.due_date}</span>}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="end_date">End Date</Label>
-                <Input
-                    id="end_date"
-                    type="date"
-                    value={data.end_date}
-                    onChange={(e) => setData('end_date', e.target.value)}
-                />
+                <Input id="end_date" type="date" value={data.end_date} onChange={(e) => setData('end_date', e.target.value)} required />
                 {errors.end_date && <span className="text-sm text-red-500">{errors.end_date}</span>}
             </div>
 
@@ -115,6 +105,7 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
                     onChange={(e) => setData('description', e.target.value)}
                     placeholder="Enter event description"
                     rows={3}
+                    required
                 />
             </div>
 
