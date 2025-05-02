@@ -21,7 +21,7 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
 
                     <div className="relative mx-auto flex w-full flex-col items-center">
                         <div
-                            className="animate-gradient-glow absolute top-0 left-1/2 hidden h-full w-1 -translate-x-1/2 transform md:block"
+                            className="animate-gradient-glow-strong absolute top-0 left-1/2 hidden h-full w-1 -translate-x-1/2 transform md:block"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
@@ -29,7 +29,7 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
                         />
 
                         <div
-                            className="animate-gradient-glow absolute top-0 left-6 h-full w-1 md:hidden"
+                            className="animate-gradient-glow-strong absolute top-0 left-6 h-full w-1 md:hidden"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
