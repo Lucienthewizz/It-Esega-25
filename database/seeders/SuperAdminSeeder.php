@@ -16,11 +16,12 @@ class SuperAdminSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Super Admin IT Essega',
-            'email' => 'itessega2025@gmail.com',
+            'name' => 'Super Admin IT Esega',
+            'email' => 'itesega2025@gmail.com',
             'email_verified_at' => now(),
             'password' => Hash::make('TIsegasuperAdmin2025'),
             'remember_token' => Str::random(10)
         ])->assignRole('super_admin');
     }
 }
+

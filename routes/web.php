@@ -14,23 +14,17 @@ Route::get('/', function () {
     return Inertia::render('home');
 })->name('home');
 
-
-Route::get('/registerff', function () {
-    return Inertia::render('RegisterFF');
-})->name('registerff');
-
-
-Route::get('/registerml', function () {
-    return Inertia::render('RegisterML');
-})->name('registerml');
-
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
 
     Route::post('/player-registration', [PlayerRegistrationController::class, 'store'])->name('player-registration.store');
+    Route::post('/player-registration-ff', [PlayerRegistrationController::class, 'storeFF'])->name('player-registration-ff.store');
 
     Route::get('/player-registration-ml/form/{encryptedTeamName}', [PlayerRegistrationController::class, 'showRegistrationForm'])
         ->name('player-registration.form');
+
+    Route::get('/player-registration-ff/form/{encryptedTeamName}', [PlayerRegistrationController::class, 'showRegistrationFormFF'])
+        ->name('player-registration-ff.form');
 
 });
 

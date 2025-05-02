@@ -11,17 +11,18 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
-import { MLPlayerForm } from "@/components/registration/ml-player-form"
+// import { FFPlayerForm } from "@/components/registration/ml-player-form"
 import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle, Loader2 } from "lucide-react"
-import { useProgress } from "@/hooks/use-progress"
-import { useMLPlayers } from "@/hooks/use-ml-player"
-import type { MLPlayer, PlayerRegistrationFormProps } from "@/types/register"
+import { useProgressFF } from "@/hooks/use-progress-ff"
+import { useFFPlayers } from "@/hooks/use-ff-player"
+import type { FFPlayer, PlayerRegistrationFormProps } from "@/types/register"
+import { FFPlayerForm } from "@/components/registration/ff-player-form"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
-    const isML = gameType === "ml"
-    const gameTitle = isML ? "Mobile Legends" : "Free Fire"
-    const minPlayers = 5
-    const maxPlayers = 7
+    const isFF = gameType === "ff"
+    const gameTitle = isFF ? "Free Fire" : ""
+    const minPlayers = 4
+    const maxPlayers = 6
 
     const themeColors = {
         primary: "bg-red-600 hover:bg-red-700 text-white",
@@ -39,10 +40,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const [formData, setFormData] = useState<{
-        ml_players: MLPlayer[];
+        ff_players: FFPlayer[];
         team_id: number;
     }>({
-        ml_players: [],
+        ff_players: [],
         team_id: teamData.id ?? 0,
     })
 
@@ -54,41 +55,98 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [successMessage, setSuccessMessage] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const progress = useProgress(formData.ml_players, minPlayers)
+    const progress = useProgressFF(formData.ff_players, minPlayers)
 
     const hasLoadedPlayersFromStorage = useRef(false)
 
     useEffect(() => {
         if (!hasLoadedPlayersFromStorage.current) {
-            const saved = localStorage.getItem("ml_players_data")
-            if (saved && formData.ml_players.length === 0) {
+            const saved = localStorage.getItem("ff_players_data")
+            if (saved && formData.ff_players.length === 0) {
                 try {
                     const parsed = JSON.parse(saved)
-                    if (Array.isArray(parsed)) setFormData(prev => ({ ...prev, ml_players: parsed }))
+                    if (Array.isArray(parsed)) setFormData(prev => ({ ...prev, ff_players: parsed }))
                 } catch (e) {
                     console.error("Failed to parse saved players", e)
                 }
             }
             hasLoadedPlayersFromStorage.current = true
         }
-    }, [formData.ml_players])
+    }, [formData.ff_players])
 
     useEffect(() => {
-        localStorage.setItem("ml_players_data", JSON.stringify(formData.ml_players))
-    }, [formData.ml_players])
+        localStorage.setItem("ff_players_data", JSON.stringify(formData.ff_players))
+    }, [formData.ff_players])
 
-    const { addPlayer, deletePlayer } = useMLPlayers(
-        { ml_players: formData.ml_players },
-        (key: "ml_players", value: MLPlayer[]) => setFormData(prev => ({ ...prev, [key]: value })),
+    const { addPlayer, deletePlayer } = useFFPlayers(
+        { ff_players: formData.ff_players },
+        (key: "ff_players", value: FFPlayer[]) => setFormData(prev => ({ ...prev, [key]: value })),
         teamData.id
     )
+
+    const validatePhoneNumber = (phone: string) => {
+        // Hapus semua karakter non-digit
+        const cleanPhone = phone.replace(/\D/g, '')
+        // Validasi panjang 10-15 digit
+        return cleanPhone.length >= 10 && cleanPhone.length <= 15
+    }
+
+    const handlePlayerChange = (
+        index: number,
+        field: keyof FFPlayer,
+        value: string | number | File | null | undefined
+    ) => {
+        const newValue = value !== null && value !== undefined ? value : ""
+        
+        // Validasi nomor HP
+        if (field === 'no_hp' && typeof newValue === 'string') {
+            if (!validatePhoneNumber(newValue)) {
+                setShowValidationError(true)
+                setAlertMessage("Nomor HP harus terdiri dari 10 hingga 15 digit angka.")
+                setTimeout(() => {
+                    setShowValidationError(false)
+                }, 5000)
+                return
+            }
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            ff_players: prev.ff_players.map((player, i) =>
+                i === index ? { ...player, [field]: newValue } : player
+            )
+        }))
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (formData.ml_players.length < minPlayers) {
+        if (!teamData?.id) {
             setShowValidationError(true)
-            setAlertMessage(`Kamu Butuh minimal ${minPlayers} Pemain untuk melakukan Submit Form.`)
+            setAlertMessage("Data tim tidak valid. Silakan coba lagi.")
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 5000)
+            return
+        }
+
+        const teamId = teamData.id
+
+        // Validasi jumlah pemain
+        if (formData.ff_players.length < minPlayers) {
+            setShowValidationError(true)
+            setAlertMessage(`Minimal harus ada ${minPlayers} pemain.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 5000)
+            return
+        }
+
+        // Validasi nomor HP untuk semua pemain
+        const invalidPhones = formData.ff_players.filter(player => !validatePhoneNumber(player.no_hp || ''))
+        if (invalidPhones.length > 0) {
+            setShowValidationError(true)
+            setAlertMessage("Ada nomor HP yang tidak valid. Pastikan semua nomor HP terdiri dari 10-15 digit angka.")
             setTimeout(() => {
                 setShowValidationError(false)
             }, 5000)
@@ -98,45 +156,31 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         setIsSubmitting(true)
 
         try {
-            // Create FormData for file upload
             const submitData = new FormData()
-            submitData.append('team_id', formData.team_id.toString())
-            
-            // Log data yang akan dikirim
-            console.log('Submitting data:', formData.ml_players)
-            
-            formData.ml_players.forEach((player: MLPlayer, index: number) => {
-                // Append player data
-                submitData.append(`ml_players[${index}][name]`, player.name || '')
-                submitData.append(`ml_players[${index}][nickname]`, player.nickname || '')
-                submitData.append(`ml_players[${index}][id_server]`, player.id_server || '')
-                submitData.append(`ml_players[${index}][no_hp]`, player.no_hp || '')
-                submitData.append(`ml_players[${index}][email]`, player.email || '')
-                submitData.append(`ml_players[${index}][alamat]`, player.alamat || '')
-                submitData.append(`ml_players[${index}][ml_team_id]`, formData.team_id.toString())
-                submitData.append(`ml_players[${index}][role]`, player.role || 'anggota')
-                
-                // Handle file uploads dengan format yang benar
+            submitData.append('team_id', teamId.toString())
+            submitData.append('ff_team_id', teamId.toString())
+
+            formData.ff_players.forEach((player: FFPlayer, index: number) => {
+                submitData.append(`ff_players[${index}][name]`, player.name || '')
+                submitData.append(`ff_players[${index}][nickname]`, player.nickname || '')
+                submitData.append(`ff_players[${index}][id_server]`, player.id_server || '')
+                submitData.append(`ff_players[${index}][no_hp]`, player.no_hp || '')
+                submitData.append(`ff_players[${index}][email]`, player.email || '')
+                submitData.append(`ff_players[${index}][alamat]`, player.alamat || '')
+                submitData.append(`ff_players[${index}][ff_team_id]`, teamId.toString())
+                submitData.append(`ff_players[${index}][role]`, player.role || 'anggota')
+
                 if (player.foto instanceof File) {
-                    console.log(`Uploading foto for player ${index}:`, player.foto.name)
-                    submitData.append(`ml_players_${index}_foto`, player.foto)
+                    submitData.append(`ff_players_${index}_foto`, player.foto)
                 }
                 if (player.tanda_tangan instanceof File) {
-                    console.log(`Uploading tanda_tangan for player ${index}:`, player.tanda_tangan.name)
-                    submitData.append(`ml_players_${index}_tanda_tangan`, player.tanda_tangan)
+                    submitData.append(`ff_players_${index}_tanda_tangan`, player.tanda_tangan)
                 }
             })
 
-            // Debug: Log semua data yang akan dikirim
-            console.log('Form data entries:')
-            for (const [key, value] of submitData.entries()) {
-                console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value)
-            }
-
-            // Tambahkan game type ke form data
             submitData.append('game_type', gameType)
 
-            router.post(route("player-registration.store"), submitData, {
+            router.post(route("player-registration-ff.store"), submitData, {
                 onSuccess: () => {
                     setSuccessMessage("Pendaftaran berhasil!")
                     setShowSuccessAlert(true)
@@ -167,22 +211,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         }
     }
 
-    const handlePlayerChange = (
-        index: number,
-        field: keyof MLPlayer,
-        value: string | number | File | null | undefined
-    ) => {
-        const newValue = value !== null && value !== undefined ? value : ""
-        setFormData(prev => ({
-            ...prev,
-            ml_players: prev.ml_players.map((player, i) => 
-                i === index ? { ...player, [field]: newValue } : player
-            )
-        }))
-    }
-
     const addNewPlayer = () => {
-        if (formData.ml_players.length < maxPlayers) {
+        if (formData.ff_players.length < maxPlayers) {
             addPlayer()
             setSuccessMessage("Player baru berhasil ditambahkan!")
             setShowSuccessAlert(true)
@@ -247,13 +277,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     {[1, 2, 3].map((s, index) => (
                                         <div key={s} className="flex items-center">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                                                    s < 3 
-                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
-                                                        : s === 3
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${s < 3
+                                                    ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200'
+                                                    : s === 3
                                                         ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200'
                                                         : 'bg-red-100 text-red-400'
-                                                }`}
+                                                    }`}
                                             >
                                                 <span className="text-sm font-semibold">{s}</span>
                                             </div>
@@ -346,7 +375,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     <div className="flex items-center gap-4">
                                         <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
                                             <Users className="w-5 h-5" />
-                                            <span className="font-medium">{formData.ml_players.length}/{maxPlayers} Players</span>
+                                            <span className="font-medium">{formData.ff_players.length}/{maxPlayers} Players</span>
                                         </div>
                                         <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
                                             <Trophy className="w-5 h-5" />
@@ -361,7 +390,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm font-medium text-gray-600">Registration Progress</span>
                                         <Badge className={themeColors.badge}>
-                                            {formData.ml_players.length}/{minPlayers} required players
+                                            {formData.ff_players.length}/{minPlayers} required players
                                         </Badge>
                                     </div>
                                     <span className="text-sm font-medium text-gray-600">{Math.round(progress)}%</span>
@@ -378,7 +407,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                                     <div className="space-y-8">
                                         <AnimatePresence>
-                                            {formData.ml_players.map((player, index) => (
+                                            {formData.ff_players.map((player, index) => (
                                                 <motion.div
                                                     key={index}
                                                     initial={{ opacity: 0, y: 20 }}
@@ -388,11 +417,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                     data-player-form
                                                 >
                                                     <div className={themeColors.section}>
-                                                        <MLPlayerForm
+                                                        <FFPlayerForm
                                                             player={player}
                                                             index={index}
                                                             errorsBE={{}}
-                                                            allPlayers={formData.ml_players}
+                                                            allPlayers={formData.ff_players}
                                                             onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
                                                             onDelete={() => openDeleteDialog(index)}
                                                         />
@@ -405,16 +434,16 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                             <Button
                                                 type="button"
                                                 onClick={addNewPlayer}
-                                                disabled={formData.ml_players.length >= maxPlayers || isSubmitting}
+                                                disabled={formData.ff_players.length >= maxPlayers || isSubmitting}
                                                 className={themeColors.secondary}
                                             >
                                                 <PlusCircle className="mr-2 h-4 w-4" />
-                                                Add Player {formData.ml_players.length < maxPlayers && `(${formData.ml_players.length}/${maxPlayers})`}
+                                                Add Player {formData.ff_players.length < maxPlayers && `(${formData.ff_players.length}/${maxPlayers})`}
                                             </Button>
 
                                             <Button
                                                 type="submit"
-                                                disabled={formData.ml_players.length < minPlayers || isSubmitting}
+                                                disabled={formData.ff_players.length < minPlayers || isSubmitting}
                                                 className={`w-full sm:w-auto ${themeColors.primary} relative`}
                                             >
                                                 {isSubmitting ? (

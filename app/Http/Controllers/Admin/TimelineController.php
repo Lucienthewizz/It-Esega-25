@@ -25,31 +25,42 @@ class TimelineController extends Controller
     {
         $validated = $request->validated();
 
-        Timeline::create($validated);
+        try {
+            Timeline::create($validated);
+            Session::flash('success', "Timeline berhasil ditambahkan.");
+        } catch (\Exception $e) {
+            Session::flash('error', "Gagal menambahkan timeline: " . $e->getMessage());
+        }
 
-        Session::flash('success', "Timeline berhasil ditambahkan.");
         return to_route('timeline.index');
     }
 
     public function update(TimelineRequest $request, $id)
     {
-        $timeline = Timeline::findOrFail($id);
+        try {
+            $timeline = Timeline::findOrFail($id);
+            $validated = $request->validated();
 
-        $validated = $request->validated();
+            $timeline->update($validated);
+            Session::flash('success', "Timeline berhasil diperbaharui.");
+        } catch (\Exception $e) {
+            Session::flash('error', "Gagal memperbarui timeline: " . $e->getMessage());
+        }
 
-        $timeline->update($validated);
-
-        Session::flash('success', "Timeline berhasil diperbaharui.");
         return to_route('timeline.index');
     }
 
     public function destroy($id)
     {
-        $timeline = Timeline::findOrFail($id);
+        try {
+            $timeline = Timeline::findOrFail($id);
+            $timeline->delete();
 
-        $timeline->delete();
+            Session::flash('success', "Timeline berhasil dihapus.");
+        } catch (\Exception $e) {
+            Session::flash('error', "Gagal menghapus timeline: " . $e->getMessage());
+        }
 
-        Session::flash('success', "Timeline berhasil dihapus.");
         return to_route('timeline.index');
     }
 }

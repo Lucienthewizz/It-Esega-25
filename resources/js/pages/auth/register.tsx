@@ -32,17 +32,6 @@ export default function RegisterPage() {
         });
     }, []);
 
-    useEffect(() => {
-        const savedStep = localStorage.getItem("registration_step")
-        if (savedStep) {
-            setStep(parseInt(savedStep))
-        }
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem("registration_step", step.toString())
-    }, [step])
-
     const handleGameSelect = (game: "ml" | "ff") => {
         setGameType(game)
         setStep(2)
@@ -55,7 +44,13 @@ export default function RegisterPage() {
 
     const resetStep = () => {
         setStep(1)
-        localStorage.setItem("registration_step", "1")
+        setGameType("ml")
+        setTeamData({
+            id: null,
+            team_name: "",
+            proof_of_payment: null,
+            team_logo: null,
+        })
     }
 
     const handleBack = () => {
@@ -97,17 +92,21 @@ export default function RegisterPage() {
 
                             {/* Progress Indicator */}
                             <div className="flex items-center gap-6">
-                                <div className="flex items-center gap-3">
-                                    {[1, 2, 3].map((s) => (
-                                        <div
-                                            key={s}
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                                                s <= step 
-                                                    ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
-                                                    : 'bg-gray-100 text-gray-400'
-                                            }`}
-                                        >
-                                            <span className="text-sm font-semibold">{s}</span>
+                                <div className="flex items-center">
+                                    {[1, 2, 3].map((s, index) => (
+                                        <div key={s} className="flex items-center">
+                                            <div
+                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                                                    s <= step 
+                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
+                                                        : 'bg-gray-100 text-gray-400'
+                                                }`}
+                                            >
+                                                <span className="text-sm font-semibold">{s}</span>
+                                            </div>
+                                            {index < 2 && (
+                                                <div className="w-8 h-0.5 bg-red-200"></div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>

@@ -43,8 +43,8 @@ export default function Home() {
 
     const faqs = [
         {
-            question: 'Apa itu  IT-ESEGA?',
-            answer: 'IT-ESEGA adalah ajang kompetisi teknologi bergengsi yang jadi tempat berkumpulnya para mahasiswa terbaik dari berbagai universitas di seluruh Indonesia.',
+            question: 'Apa itu IT-ESEGA?',
+            answer: 'IT-ESEGA adalah ajang kompetisi teknologi bergengsi yang jadi tempat berkumpulnya para peserta terbaik dari berbagai daerah di seluruh Indonesia.',
         },
         {
             question: 'Bagaimana saya bisa mendaftar?',
@@ -54,7 +54,24 @@ export default function Home() {
             question: 'Game apa saja yang dimainkan dalam turnamen ini?',
             answer: 'Turnamen ini menghadirkan game-game populer seperti Mobile Legends dan Free Fire.',
         },
+        {
+            question: 'Berapa total prize pool IT-ESEGA?',
+            answer: 'Total prize pool IT-ESEGA adalah sebesar IDR 12.000.000.',
+        },
+        {
+            question: 'Berapa biaya registrasi setiap game?',
+            answer: 'Biaya registrasi untuk setiap game adalah IDR 100.000.',
+        },
+        {
+            question: 'Apakah bisa mendaftar lebih dari satu game?',
+            answer: 'Ya, kamu bisa mendaftar lebih dari satu game selama memenuhi syarat dan membayar biaya masing-masing.',
+        },
+        {
+            question: 'Siapa saja yang boleh ikut serta?',
+            answer: 'Turnamen ini terbuka untuk umum dan dapat diikuti oleh siapa saja dari seluruh Indonesia, tidak terbatas hanya mahasiswa.',
+        },
     ];
+    
 
     return (
         <>
@@ -92,7 +109,7 @@ export default function Home() {
                                     IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
                                 </h1>
                                 <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
-                                    Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
+                                Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
                                 </p>
                                 <div className="flex justify-center space-x-4 md:justify-start">
                                     <Link
@@ -308,12 +325,12 @@ export default function Home() {
                                 {[{
                                     title: "Mobile Legends",
                                     slots: "64 SLOTS",
-                                    type: "SINGLE SLOT",
+                                    type: "DOUBLE SLOT",
                                     scope: "NATIONAL COMPETITION",
-                                    date: "JULY 1st, 2nd, 8th, 9th",
+                                    date: "JULY 12st, 13nd, 19th",
                                     mode: "ONLINE",
                                     image: "/images/ML-logo.png",
-                                    bgImage: "/images/ml-bg.png",
+                                    bgImage: "/images/ML-bg-high.jpeg",
                                     delay: 0,
                                     animation: "fade-up"
                                 }, {
@@ -321,10 +338,10 @@ export default function Home() {
                                     slots: "64 SLOTS",
                                     type: "SINGLE SLOT",
                                     scope: "NATIONAL COMPETITION",
-                                    date: "JULY 1st, 2nd, 8th, 9th",
+                                    date: "JULY 5st",
                                     mode: "ONLINE",
                                     image: "/images/FF-logo.png",
-                                    bgImage: "/images/FF-bg.jpg",
+                                    bgImage: "/images/FF-bg-high.jpeg",
                                     delay: 100,
                                     animation: "fade-up"
                                 }].map((game, i) => (
@@ -466,7 +483,7 @@ export default function Home() {
                                             </div>
                                             <div className="text-center">
                                                 <p className="text-sm font-medium text-gray-500 mb-1">Total Hadiah</p>
-                                                <h3 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3">Rp 10.000.000</h3>
+                                                <h3 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3">Rp 12.000.000</h3>
                                                 <div className="flex items-center justify-center gap-2 text-gray-600">
                                                     <span className="text-2xl">🏆</span>
                                                     <p className="text-sm">Mobile Legends & Free Fire</p>
@@ -667,7 +684,7 @@ export default function Home() {
                                 </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                                {[
+                            {[
                                     {
                                         name: "Damar",
                                         wa: "089666401388",

@@ -20,6 +20,7 @@ class TimelineResource extends JsonResource
             'location' => $this->location,
             'description' => $this->description,
             'due_date' => $this->due_date?->format('Y-m-d H:i:s'),
+            'end_date' => $this->end_date?->format('Y-m-d H:i:s'),
             'status' => $this->status,
             'category' => $this->category,
             'created_at' => $this->created_at?->toDateTimeString(),
