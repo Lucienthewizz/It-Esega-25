@@ -22,13 +22,30 @@ export interface MLPlayer {
 
 
 
-
 export interface FFPlayer {
-    name: string
     id: string
+    ff_team_id?: number | null
+    name: string
     nickname: string
+    id_server: string
     no_hp: string
     email: string
+    alamat: string
+    tanda_tangan?: string | File | null
+    foto?: string | File | null
+    role: 'ketua' | 'anggota' | 'cadangan'
+    created_at?: string;
+    updated_at?: string;
+}
+
+
+export interface PlayerFFFormProps {
+    player: FFPlayer
+    allPlayers: FFPlayer[]
+    index: number
+    onChange: <K extends keyof FFPlayer>(index: number, field: K, value: FFPlayer[K]) => void
+    onDelete: () => void
+    errorsBE: Record<string, string>
 }
 
 export interface PlayerFormProps {

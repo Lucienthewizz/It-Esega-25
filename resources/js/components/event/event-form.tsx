@@ -1,12 +1,12 @@
-import { useForm } from "@inertiajs/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Event } from "@/types/event";
-import { DatePickerWithRange } from "../datepicker/date-picker";
-import { Loader } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Event } from '@/types/event';
+import { useForm } from '@inertiajs/react';
+import { Loader } from 'lucide-react';
+import { DatePickerWithRange } from '../datepicker/date-picker';
 
 interface EventFormProps {
     onCancel: () => void;
@@ -16,21 +16,22 @@ interface EventFormProps {
 }
 
 const CATEGORIES = [
-    { value: "mobile_legend", label: "Mobile Legend" },
-    { value: "valorant", label: "Valorant" },
-    { value: "free_fire", label: "Free Fire" },
-    { value: "opening", label: "Opening" },
-    { value: "closing", label: "Closing" },
+    { value: 'mobile_legend', label: 'Mobile Legend' },
+    { value: 'valorant', label: 'Valorant' },
+    { value: 'free_fire', label: 'Free Fire' },
+    { value: 'opening', label: 'Opening' },
+    { value: 'closing', label: 'Closing' },
 ];
 
 export function EventForm({ onCancel, initialData, processing, onSubmit }: EventFormProps) {
     const { data, setData, errors } = useForm({
-        title: initialData?.title || "",
-        due_date: initialData?.due_date ? initialData.due_date.toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16),
-        description: initialData?.description || "",
-        category: initialData?.category || "main",
-        location: initialData?.location || "",
-        status: initialData?.status || true,
+        title: initialData?.title || '',
+        due_date: initialData?.due_date ? new Date(initialData.due_date).toISOString() : '',
+        end_date: initialData?.end_date ? new Date(initialData.end_date).toISOString() : '', // Added end_date field
+        description: initialData?.description || '',
+        category: initialData?.category || 'main',
+        location: initialData?.location || '',
+        status: initialData?.status ?? true,
     });
 
     const onSubmitHandler = (e: React.FormEvent) => {
@@ -38,7 +39,8 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
 
         const formData: Omit<Event, 'id'> & { id: number } = {
             title: data.title,
-            due_date: new Date(data.due_date),
+            due_date: data.due_date ? new Date(data.due_date) : new Date(),
+            end_date: data.end_date ? new Date(data.end_date) : new Date(), // Ensure end_date is included
             description: data.description,
             category: data.category,
             location: data.location,
@@ -50,10 +52,12 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
     };
 
     const handleDateChange = (dateRange: { from: Date; to: Date | undefined }) => {
-        if (dateRange?.from && dateRange?.to) {
-            setData("due_date", `${dateRange.from.toISOString()} - ${dateRange.to.toISOString()}`);
+        if (dateRange?.from) {
+            setData('due_date', dateRange.from.toISOString());
+            setData('end_date', dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString());
         } else {
-            setData("due_date", "");
+            setData('due_date', '');
+            setData('end_date', '');
         }
     };
 
@@ -61,30 +65,20 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
         <form onSubmit={onSubmitHandler} className="space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="title">Event Title</Label>
-                <Input
-                    id="title"
-                    value={data.title}
-                    onChange={(e) => setData("title", e.target.value)}
-                    placeholder="Enter event title"
-                />
-                {errors.title && <span className="text-red-500 text-sm">{errors.title}</span>}
+                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder="Enter event title" />
+                {errors.title && <span className="text-sm text-red-500">{errors.title}</span>}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="due_date">Date Range</Label>
-                <DatePickerWithRange
-                    className="w-full"
-                    onChange={handleDateChange}
-                />
-                {errors.due_date && <span className="text-red-500 text-sm">{errors.due_date}</span>}
+                <DatePickerWithRange className="w-full" onChange={handleDateChange} />
+                {errors.due_date && <span className="text-sm text-red-500">{errors.due_date}</span>}
+                {errors.end_date && <span className="text-sm text-red-500">{errors.end_date}</span>} {/* Added error handling for end_date */}
             </div>
 
             <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
-                <Select
-                    value={data.category}
-                    onValueChange={(value) => setData("category", value)}
-                >
+                <Select value={data.category} onValueChange={(value) => setData('category', value)}>
                     <SelectTrigger>
                         <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
@@ -103,7 +97,7 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
                 <Textarea
                     id="description"
                     value={data.description}
-                    onChange={(e) => setData("description", e.target.value)}
+                    onChange={(e) => setData('description', e.target.value)}
                     placeholder="Enter event description"
                     rows={3}
                 />
@@ -116,11 +110,13 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
                 <Button type="submit" className="bg-teal-600 hover:bg-teal-700" disabled={processing}>
                     {processing ? (
                         <div className="flex items-center space-x-2">
-                            <Loader className="animate-spin text-white" size={20} /> 
+                            <Loader className="animate-spin text-white" size={20} />
                             <span className="text-white">Processing...</span>
                         </div>
+                    ) : initialData ? (
+                        'Update Event'
                     ) : (
-                        initialData ? "Update Event" : "Add Event"
+                        'Add Event'
                     )}
                 </Button>
             </div>

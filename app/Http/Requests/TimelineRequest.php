@@ -24,6 +24,7 @@ class TimelineRequest extends FormRequest
             'location' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'due_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date'],
             'status' => ['required', 'boolean'],
             'category' => ['required', 'in:mobile_legend,free_fire,valorant,pubgm,opening,closing'],
         ];
@@ -42,6 +43,7 @@ class TimelineRequest extends FormRequest
             'location.max' => 'Lokasi tidak boleh lebih dari 255 karakter.',
             'description.string' => 'Deskripsi harus berupa teks.',
             'due_date.date' => 'Tanggal harus berupa format tanggal yang valid.',
+            'end_date.date' => 'Tanggal harus berupa format tanggal yang valid.',
             'status.required' => 'Status wajib diisi.',
             'status.boolean' => 'Status harus berupa true atau false.',
             'category.required' => 'Kategori wajib dipilih.',
