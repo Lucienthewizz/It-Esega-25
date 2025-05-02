@@ -31,7 +31,7 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
                         <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-red-100 opacity-50"></div>
                         <div className="relative">
                             <img
-                                src={`/placeholder.svg?height=300&width=300&text=${gameType.toUpperCase()} QR Code`}
+                                src="/Images/QR-dummy.png"
                                 alt={`${gameType.toUpperCase()} Payment QR Code`}
                                 className="w-64 h-64 object-cover rounded-lg"
                             />
