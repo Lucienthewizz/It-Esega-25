@@ -15,7 +15,7 @@ import { useState } from "react"
 export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }: TeamRegistrationFormProps) {
     const isML = gameType === "ml"
     const gameTitle = isML ? "Mobile Legends" : "Free Fire"
-    const registrationFee = isML ? "Rp 200.000" : "Rp 150.000"
+    const registrationFee = "Rp 100.000"
 
     const [formErrors, setFormErrors] = useState<{
         team_name?: string;
@@ -146,13 +146,13 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                 title={`${gameTitle} Payment`}
                 description="Scan the QR code below to complete your payment"
                 instructions={[
-                    "Open your banking or e-wallet app",
-                    "Scan the QR code above",
-                    "Enter the registration fee amount",
-                    "Complete the payment",
-                    "Take a screenshot of your payment receipt",
+                    "Buka aplikasi bank atau e-wallet Anda",
+                    "Pindai kode QR di atas",
+                    "Masukkan jumlah biaya pendaftaran",
+                    "Selesaikan pembayaran",
+                    "Ambil tangkapan layar bukti pembayaran Anda",
                 ]}
-                amount={`Registration fee: ${registrationFee}`}
+                amount={`Biaya pendaftaran: ${registrationFee}`}
                 gameType={gameType}
             />
 
@@ -162,7 +162,7 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                             {gameTitle} Team Registration
                         </h1>
-                        <p className="text-sm text-gray-600">Complete your team details to proceed with registration</p>
+                        <p className="text-sm text-gray-600">Lengkapi detail tim Anda untuk melanjutkan pendaftaran</p>
                     </div>
 
                     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur rounded-2xl">
@@ -290,13 +290,13 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                 className="fixed bottom-6 right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-4 rounded-full
                 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(186,0,0,0.2)]
                 transform hover:scale-110 transition-all duration-300 group z-50 border border-[#ba0000]/20"
-                title="Need help? Contact committee"
+                title="Butuh bantuan? Hubungi panitia"
             >
                 <div className="relative">
                     <HelpCircle className="w-6 h-6" />
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
                 </div>
-                <span className="sr-only">Contact Committee</span>
+                <span className="sr-only">Hubungi Panitia</span>
             </button>
 
             {/* File Size Limit Dialog */}

@@ -138,6 +138,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
             router.post(route("player-registration.store"), submitData, {
                 onSuccess: () => {
+                    // Reset form data and clear localStorage
+                    setFormData(prev => ({ ...prev, ml_players: [] }))
+                    localStorage.removeItem("ml_players_data")
                     setSuccessMessage("Pendaftaran berhasil!")
                     setShowSuccessAlert(true)
                     setTimeout(() => {
