@@ -335,7 +335,7 @@ export default function Home() {
                                     animation: "fade-up"
                                 }, {
                                     title: "Free Fire",
-                                    slots: "64 SLOTS",
+                                    slots: "48 SLOTS",
                                     type: "SINGLE SLOT",
                                     scope: "NATIONAL COMPETITION",
                                     date: "JULY 5st",

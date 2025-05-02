@@ -39,8 +39,8 @@ const defaultFooterSections: FooterSection[] = [
     {
         title: "Competition",
         links: [
-            { title: "Mobile Legends", href: "#" },
-            { title: "Free Fire", href: "#" }
+            { title: "Mobile Legends", href: route('register') },
+            { title: "Free Fire", href: route('register') }
         ]
     }
 ];

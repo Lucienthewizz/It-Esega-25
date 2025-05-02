@@ -85,12 +85,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     )
 
     const validatePhoneNumber = (phone: string) => {
-        // Hapus semua karakter non-digit
+        if (!phone) return true
         const cleanPhone = phone.replace(/\D/g, '')
-        // Validasi panjang 10-15 digit
         return cleanPhone.length >= 10 && cleanPhone.length <= 15
     }
-
+    
     const handlePlayerChange = (
         index: number,
         field: keyof FFPlayer,
@@ -98,29 +97,30 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     ) => {
         const newValue = value !== null && value !== undefined ? value : ""
         
-        // Validasi nomor HP
-        if (field === 'no_hp' && typeof newValue === 'string') {
+        // Update the form data first
+        const updatedPlayers = formData.ff_players.map((player, i) =>
+            i === index ? { ...player, [field]: newValue } : player
+        )
+        
+        setFormData(prev => ({
+            ...prev,
+            ff_players: updatedPlayers
+        }))
+        
+        if (field === 'no_hp' && typeof newValue === 'string' && newValue.trim() !== '') {
             if (!validatePhoneNumber(newValue)) {
                 setShowValidationError(true)
                 setAlertMessage("Nomor HP harus terdiri dari 10 hingga 15 digit angka.")
                 setTimeout(() => {
                     setShowValidationError(false)
                 }, 5000)
-                return
             }
         }
-
-        setFormData(prev => ({
-            ...prev,
-            ff_players: prev.ff_players.map((player, i) =>
-                i === index ? { ...player, [field]: newValue } : player
-            )
-        }))
     }
-
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
+    
         if (!teamData?.id) {
             setShowValidationError(true)
             setAlertMessage("Data tim tidak valid. Silakan coba lagi.")
@@ -129,9 +129,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             }, 5000)
             return
         }
-
+    
         const teamId = teamData.id
-
+    
         // Validasi jumlah pemain
         if (formData.ff_players.length < minPlayers) {
             setShowValidationError(true)
@@ -142,17 +142,20 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
-        // Validasi nomor HP untuk semua pemain
-        const invalidPhones = formData.ff_players.filter(player => !validatePhoneNumber(player.no_hp || ''))
-        if (invalidPhones.length > 0) {
+        const invalidPhoneIndexes = formData.ff_players
+            .map((player, index) => (!player.no_hp || validatePhoneNumber(player.no_hp)) ? -1 : index)
+            .filter(index => index !== -1)
+        
+        if (invalidPhoneIndexes.length > 0) {
+            const playerNumbers = invalidPhoneIndexes.map(index => index + 1).join(', ')
             setShowValidationError(true)
-            setAlertMessage("Ada nomor HP yang tidak valid. Pastikan semua nomor HP terdiri dari 10-15 digit angka.")
+            setAlertMessage(`Nomor HP tidak valid untuk pemain ${playerNumbers}. Pastikan nomor HP terdiri dari 10-15 digit angka.`)
             setTimeout(() => {
                 setShowValidationError(false)
             }, 5000)
             return
         }
-
+    
         setIsSubmitting(true)
 
         try {
