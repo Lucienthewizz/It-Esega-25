@@ -13,11 +13,17 @@ import { ChevronLeft, ArrowLeft } from 'lucide-react';
 
 // Import Footer component
 import { Footer } from '@/components/footer';
+import TimelineSection from '@/components/home/timeline';
+import { Event } from '@/types/event';
 
 export default function Home() {
-    const { user } = usePage<{ user: { data: UserType } }>().props;
+    const { user, event } = usePage<{
+        user: { data: UserType },
+        event: { data: Event[] }
+    }>().props;
 
     console.log('Dari Home', user);
+    console.log('Dari Event', event);
 
     const navItems = [
         { title: 'Home', href: route('home') },
@@ -123,7 +129,7 @@ export default function Home() {
                                     src="/images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
                                     className="w-auto h-[420px] object-contain"
-                                    style={{ 
+                                    style={{
                                         maxWidth: '100%',
                                         willChange: 'transform',
                                         backfaceVisibility: 'hidden',
@@ -291,68 +297,8 @@ export default function Home() {
                     </section>
 
                     {/* Timeline Section */}
-                    <section className="bg-cover bg-center py-16" data-aos="fade-up">
-                        <div className="container mx-auto px-6">
-                            <h2 className="mb-16 text-center text-4xl font-extrabold text-gray-900">
-                                Event <span className="text-red-600">Timeline</span>
-                            </h2>
+                    <TimelineSection timeline={event.data || []} />
 
-                            <div className="relative mx-auto flex w-full flex-col items-center">
-                                {/* Vertical Line */}
-                                <div className="absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform bg-red-600" />
-
-                                <div className="flex w-full flex-col items-center">
-                                    {[
-                                        {
-                                            date: 'January 1, 2025',
-                                            title: 'Lorem Ipsum Dolor',
-                                            description:
-                                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula magna ut ante cursus.',
-                                        },
-                                        {
-                                            date: 'February 10, 2025',
-                                            title: 'Sit Amet Consectetur',
-                                            description:
-                                                'Phasellus vitae sapien vel velit dapibus suscipit. Pellentesque habitant morbi tristique senectus.',
-                                        },
-                                        {
-                                            date: 'March 20, 2025',
-                                            title: 'Adipisicing Elit',
-                                            description:
-                                                'Mauris lacinia, nulla in fermentum blandit, urna leo laoreet nulla, eget sodales ligula erat ac elit.',
-                                        },
-                                        {
-                                            date: 'April 5, 2025',
-                                            title: 'Dolore Magna Aliqua',
-                                            description:
-                                                'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                                        },
-                                    ].map((item, index) => {
-                                        const isLeft = index % 2 === 0;
-                                        return (
-                                            <motion.div
-                                                key={index}
-                                                initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
-                                                whileInView={{ opacity: 1, x: 0 }}
-                                                viewport={{ once: true }}
-                                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                                className={`mb-16 flex w-full flex-col items-center md:w-1/2 ${
-                                                    isLeft ? 'pr-4 md:items-end md:self-start' : 'pl-4 md:items-start md:self-end'
-                                                }`}
-                                            >
-                                                <div className="relative max-w-md rounded-xl border bg-white p-6 shadow-md">
-                                                    <span className="absolute -top-3 left-1/2 h-5 w-5 -translate-x-1/2 transform rounded-full border-4 border-white bg-red-600 shadow-lg"></span>
-                                                    <p className="mb-1 text-sm text-gray-500">{item.date}</p>
-                                                    <h4 className="mb-2 text-xl font-semibold text-red-600">{item.title}</h4>
-                                                    <p className="text-gray-700">{item.description}</p>
-                                                </div>
-                                            </motion.div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                    </section>
 
                     {/* FAQ Section */}
                     <section id="faq" className="bg-cover bg-center py-40" data-aos="fade-up">
@@ -370,9 +316,8 @@ export default function Home() {
                                                         <span>{faq.question}</span>
                                                         <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
                                                             <svg
-                                                                className={`h-5 w-5 transform transition-transform duration-300 ${
-                                                                    open ? 'rotate-180' : ''
-                                                                }`}
+                                                                className={`h-5 w-5 transform transition-transform duration-300 ${open ? 'rotate-180' : ''
+                                                                    }`}
                                                                 fill="none"
                                                                 stroke="currentColor"
                                                                 strokeWidth="2"

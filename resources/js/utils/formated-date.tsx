@@ -24,6 +24,21 @@ export const FormattedDate: React.FC<FormattedDateProps> = ({ date }) => {
     return <span>{formatted}</span>;
 };
 
+
+export const FormattedDateWithOutTime: React.FC<FormattedDateProps> = ({ date }) => {
+    const parsedDate = typeof date === 'string' ? new Date(date) : date;
+
+    const dayName = dayNames[parsedDate.getDay()];
+    const day = parsedDate.getDate();
+    const month = monthNames[parsedDate.getMonth()];
+    const year = parsedDate.getFullYear();
+
+
+    const formatted = `${dayName}, ${day} ${month} ${year}`;
+
+    return <span>{formatted}</span>;
+};
+
 export function formatDate(date: Date | string | undefined): string {
     if (!date) {
         return 'Invalid Date';
