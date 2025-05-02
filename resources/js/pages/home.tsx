@@ -317,7 +317,7 @@ export default function Home() {
                             <div className="text-center mb-8 md:mb-12">
                                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
                                     Upcoming <span className="text-red-600">Tournament</span>
-                            </h2>
+                                </h2>
                                 <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
@@ -332,7 +332,8 @@ export default function Home() {
                                     image: "/images/ML-logo.png",
                                     bgImage: "/images/ML-bg-high.jpeg",
                                     delay: 0,
-                                    animation: "fade-up"
+                                    animation: "fade-up",
+                                    fee: "Rp 100.000"
                                 }, {
                                     title: "Free Fire",
                                     slots: "48 SLOTS",
@@ -343,43 +344,44 @@ export default function Home() {
                                     image: "/images/FF-logo.png",
                                     bgImage: "/images/FF-bg-high.jpeg",
                                     delay: 100,
-                                    animation: "fade-up"
+                                    animation: "fade-up",
+                                    fee: "Rp 100.000"
                                 }].map((game, i) => (
                                     <div
                                         key={i}
                                         className="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl border-2 border-red-500/50 hover:border-red-500 p-3"
                                         data-aos={game.animation}
                                         data-aos-delay={game.delay}
-                                        style={{
-                                            height: '540px',
-                                        }}
+                                        style={{ height: '600px' }}
                                     >
                                         {/* Background Game Image */}
                                         <div 
                                             className="absolute inset-0 m-3 rounded-xl bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
-                                            style={{
-                                                backgroundImage: `url(${game.bgImage})`,
-                                            }}
+                                            style={{ backgroundImage: `url(${game.bgImage})` }}
                                         />
-                                        
-                                        {/* Dark Overlay on Hover */}
-                                        <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/90 via-black/70 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                                        {/* Static Dark Overlay for Mobile View Only */}
+                                        <div className="absolute inset-0 rounded-xl bg-black/60 block md:hidden" />
+
+                                        {/* Dark Overlay (only on desktop hover) */}
+                                        <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-black/90 via-black/70 to-transparent opacity-0 transition-opacity duration-500 hidden md:block group-hover:opacity-100" />
 
                                         {/* Content Container */}
                                         <div className="relative h-full w-full flex flex-col items-center justify-center">
-                                            {/* Game Logo Container - Always on top */}
-                                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                                                <div className="flex justify-center items-center rounded-full p-8 transition-all duration-500 group-hover:-translate-y-[60%]">
-                                                <img
-                                                    src={game.image}
+                                            
+                                            {/* Game Logo */}
+                                            <div className="absolute z-20 -top-1 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+                                                <div className="flex justify-center items-center rounded-full p-8 transition-all duration-500 md:group-hover:-translate-y-[80%]">
+                                                    <img
+                                                        src={game.image}
                                                         alt={`${game.title} Logo`}
-                                                        className="h-42 w-auto object-contain transition-all duration-500 group-hover:scale-140"
-                                                />
+                                                        className="h-42 w-auto object-contain transition-all duration-500 md:group-hover:scale-140"
+                                                    />
                                                 </div>
                                             </div>
 
-                                            {/* Content that appears on hover */}
-                                            <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center p-8 my-5 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                                            {/* Content (shown on mobile and on hover in desktop) */}
+                                            <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center p-8 my-5 opacity-100 translate-y-0 md:opacity-0 md:translate-y-4 transition-all duration-500 md:group-hover:opacity-100 md:group-hover:translate-y-0">
                                                 <h3 className="text-center text-2xl font-bold mb-4 text-white">
                                                     {game.title} <span className="text-red-400">Tournament</span>
                                                     <div className="w-64 h-0.5 mt-2 bg-red-400 mx-auto rounded-full"></div>
@@ -391,14 +393,18 @@ export default function Home() {
                                                     <p className="text-white/90 text-base">{game.scope}</p>
                                                     <p className="text-white/90 text-base font-semibold">{game.date}</p>
                                                     <p className="text-white/90 text-base font-bold">{game.mode}</p>
+                                                    <div className="mt-2 pt-2 border-t border-red-400/30">
+                                                        <p className="text-white/90 text-sm">Registration Fee</p>
+                                                        <p className="text-white text-base font-semibold">{game.fee}</p>
+                                                    </div>
                                                 </div>
 
-                                                    <Link
-                                                        href={route('register')}
+                                                <Link
+                                                    href={route('register')}
                                                     className="inline-block rounded-lg bg-red-600 px-8 py-3 text-white text-base font-semibold transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
-                                                    >
-                                                        Register Now
-                                                    </Link>
+                                                >
+                                                    Register Now
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
