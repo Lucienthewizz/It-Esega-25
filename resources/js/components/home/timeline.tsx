@@ -140,11 +140,7 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
                                             )}
                                         </p>
 
-                                        <h4
-                                            className={`mb-2 text-lg font-semibold sm:text-xl ${
-                                                isPast ? 'text-gray-500 line-through' : 'text-red-600'
-                                            }`}
-                                        >
+                                        <h4 className={`mb-2 text-lg font-semibold sm:text-xl ${isPast ? 'text-gray-500' : 'text-red-600'}`}>
                                             {item.title}
                                         </h4>
                                         <p className="text-sm leading-relaxed text-gray-600 sm:text-base">{item.description}</p>
