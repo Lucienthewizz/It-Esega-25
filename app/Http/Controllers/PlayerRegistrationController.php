@@ -121,59 +121,59 @@ class PlayerRegistrationController extends Controller
     public function storeFF(FFPlayerRequest $request)
     {
         $validated = $request->validated();
-        $teamId = $validated['team_id'];
+            $teamId = $validated['team_id'];
         $team = FF_Team::findOrFail($teamId);
-        $teamSlug = Str::slug($team->team_name);
+            $teamSlug = Str::slug($team->team_name);
 
-        // Buat folder player jika belum ada
+            // Buat folder player jika belum ada
         $playerBasePath = "FF_teams/{$teamId}_{$teamSlug}/players";
-        $playerBaseStoragePath = storage_path("app/public/" . $playerBasePath);
-        if (!file_exists($playerBaseStoragePath)) {
-            mkdir($playerBaseStoragePath, 0777, true);
-        }
+            $playerBaseStoragePath = storage_path("app/public/" . $playerBasePath);
+            if (!file_exists($playerBaseStoragePath)) {
+                mkdir($playerBaseStoragePath, 0777, true);
+            }
 
-        foreach ($validated['ff_players'] as $index => $player) {
-            $photoPath = null;
-            if ($request->hasFile("ff_players_{$index}_foto")) {
-                $file = $request->file("ff_players_{$index}_foto");
-                if ($file && $file->isValid()) {
+            foreach ($validated['ff_players'] as $index => $player) {
+                $photoPath = null;
+                if ($request->hasFile("ff_players_{$index}_foto")) {
+                    $file = $request->file("ff_players_{$index}_foto");
+                    if ($file && $file->isValid()) {
                     $photoExtension = $file->getClientOriginalExtension();
                     $photoFileName = "player_{$index}_foto.{$photoExtension}";
                     $photoPath = $file->storeAs($playerBasePath, $photoFileName, 'public');
+                    }
                 }
-            }
 
-            $signaturePath = null;
-            if ($request->hasFile("ff_players_{$index}_tanda_tangan")) {
-                $file = $request->file("ff_players_{$index}_tanda_tangan");
-                if ($file && $file->isValid()) {
+                $signaturePath = null;
+                if ($request->hasFile("ff_players_{$index}_tanda_tangan")) {
+                    $file = $request->file("ff_players_{$index}_tanda_tangan");
+                    if ($file && $file->isValid()) {
                     $signatureExtension = $file->getClientOriginalExtension();
                     $signatureFileName = "player_{$index}_ttd.{$signatureExtension}";
                     $signaturePath = $file->storeAs($playerBasePath, $signatureFileName, 'public');
+                    }
                 }
-            }
 
             Log::info("Processing FF player {$index}", [
-                'has_foto' => $request->hasFile("ff_players_{$index}_foto"),
-                'has_tanda_tangan' => $request->hasFile("ff_players_{$index}_tanda_tangan"),
-                'foto_path' => $photoPath,
-                'tanda_tangan_path' => $signaturePath,
-                'all_files' => $request->allFiles(),
-                'player_data' => $player
-            ]);
+                    'has_foto' => $request->hasFile("ff_players_{$index}_foto"),
+                    'has_tanda_tangan' => $request->hasFile("ff_players_{$index}_tanda_tangan"),
+                    'foto_path' => $photoPath,
+                    'tanda_tangan_path' => $signaturePath,
+                    'all_files' => $request->allFiles(),
+                    'player_data' => $player
+                ]);
 
             $player = FF_Participant::create([
                 'ff_team_id' => $teamId,
-                'name' => $player['name'],
-                'nickname' => $player['nickname'],
-                'id_server' => $player['id_server'],
-                'no_hp' => $player['no_hp'],
-                'email' => $player['email'],
-                'alamat' => $player['alamat'] ?? '-',
-                'tanda_tangan' => $signaturePath,
-                'foto' => $photoPath,
-                'role' => $player['role']
-            ]);
+                    'name' => $player['name'],
+                    'nickname' => $player['nickname'],
+                    'id_server' => $player['id_server'],
+                    'no_hp' => $player['no_hp'],
+                    'email' => $player['email'],
+                    'alamat' => $player['alamat'] ?? '-',
+                    'tanda_tangan' => $signaturePath,
+                    'foto' => $photoPath,
+                    'role' => $player['role']
+                ]);
         }
 
         return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESSEGA!');
