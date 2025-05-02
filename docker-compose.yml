@@ -22,12 +22,13 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: apa_je_nanti
       MYSQL_DATABASE: it-essega
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_USER: apa_je_nanti
+      MYSQL_PASSWORD: apa_je_nanti
     volumes:
       - mysql-data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       laravel:
         driver: bridge
