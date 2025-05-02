@@ -13,7 +13,7 @@ import { Footer } from '@/components/footer';
 import { Dialog, Transition } from '@headlessui/react';
 
 export default function Home() {
-    const { user } = usePage<{ user: { data: UserType } }>().props;
+    const { user, flash } = usePage<{ user: { data: UserType }, flash: { success?: string; error?: string }; }>().props;
     const [isOpen, setIsOpen] = useState(false);
     // const auth = user;
 
@@ -71,7 +71,7 @@ export default function Home() {
             answer: 'Turnamen ini terbuka untuk umum dan dapat diikuti oleh siapa saja dari seluruh Indonesia, tidak terbatas hanya mahasiswa.',
         },
     ];
-    
+
 
     return (
         <>
@@ -109,7 +109,7 @@ export default function Home() {
                                     IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
                                 </h1>
                                 <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
-                                Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
+                                    Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
                                 </p>
                                 <div className="flex justify-center space-x-4 md:justify-start">
                                     <Link
@@ -148,7 +148,7 @@ export default function Home() {
                                     src="/images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
                                     className="w-auto h-[420px] object-contain"
-                                    style={{ 
+                                    style={{
                                         maxWidth: '100%',
                                         willChange: 'transform',
                                         backfaceVisibility: 'hidden',
@@ -270,7 +270,7 @@ export default function Home() {
                     <section className="relative overflow-hidden py-16 md:py-24">
                         {/* Background Layer */}
                         <div className="absolute inset-0 bg-white"></div>
-                        
+
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
 
@@ -288,10 +288,10 @@ export default function Home() {
                                 className="w-full h-full"
                             >
                                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                 </svg>
                             </motion.div>
-                                </div>
+                        </div>
 
                         {/* Cross Blob - Bottom Right Competition */}
                         <div className="absolute right-8 bottom-16 w-20 h-20 opacity-5 pointer-events-none">
@@ -307,11 +307,11 @@ export default function Home() {
                                 className="w-full h-full"
                             >
                                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                 </svg>
                             </motion.div>
                         </div>
-                        
+
                         {/* Content Container */}
                         <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                             <div className="text-center mb-8 md:mb-12">
@@ -355,7 +355,7 @@ export default function Home() {
                                         style={{ height: '600px' }}
                                     >
                                         {/* Background Game Image */}
-                                        <div 
+                                        <div
                                             className="absolute inset-0 m-3 rounded-xl bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                                             style={{ backgroundImage: `url(${game.bgImage})` }}
                                         />
@@ -368,7 +368,7 @@ export default function Home() {
 
                                         {/* Content Container */}
                                         <div className="relative h-full w-full flex flex-col items-center justify-center">
-                                            
+
                                             {/* Game Logo */}
                                             <div className="absolute z-20 -top-1 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
                                                 <div className="flex justify-center items-center rounded-full p-8 transition-all duration-500 md:group-hover:-translate-y-[80%]">
@@ -514,24 +514,24 @@ export default function Home() {
                         <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                             <div className="text-center mb-8 md:mb-12">
                                 <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                Event <span className="text-red-600">Timeline</span>
-                            </h2>
+                                    Event <span className="text-red-600">Timeline</span>
+                                </h2>
                                 <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
                             <div className="relative mx-auto flex w-full flex-col items-center">
                                 {/* Timeline Line */}
-                                <div 
-                                    className="bg-red-500 absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform md:block hidden" 
-                                    data-aos="fade-down" 
+                                <div
+                                    className="bg-red-500 absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform md:block hidden"
+                                    data-aos="fade-down"
                                     data-aos-duration="1500"
                                     data-aos-delay="200"
                                     data-aos-easing="ease-out-cubic"
                                 />
                                 {/* Mobile Timeline Line */}
-                                <div 
-                                    className="bg-red-500 absolute top-0 left-6 h-full w-1 md:hidden" 
-                                    data-aos="fade-down" 
+                                <div
+                                    className="bg-red-500 absolute top-0 left-6 h-full w-1 md:hidden"
+                                    data-aos="fade-down"
                                     data-aos-duration="1500"
                                     data-aos-delay="200"
                                     data-aos-easing="ease-out-cubic"
@@ -586,11 +586,10 @@ export default function Home() {
                                             whileInView={{ opacity: 1, x: 0 }}
                                             viewport={{ once: true }}
                                             transition={{ duration: 0.6, delay: index * 0.1 }}
-                                            className={`mb-8 md:mb-16 flex w-full flex-col ${
-                                                isLeft 
-                                                    ? 'md:pr-4 md:items-end md:self-start pl-12 md:pl-0' 
-                                                    : 'md:pl-4 md:items-start md:self-end pl-12 md:pl-0'
-                                            } md:w-1/2 items-start`}
+                                            className={`mb-8 md:mb-16 flex w-full flex-col ${isLeft
+                                                ? 'md:pr-4 md:items-end md:self-start pl-12 md:pl-0'
+                                                : 'md:pl-4 md:items-start md:self-end pl-12 md:pl-0'
+                                                } md:w-1/2 items-start`}
                                         >
                                             <div className="relative max-w-md w-full rounded-xl border border-red-100 bg-white p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
                                                 {/* Animated Circle - Desktop */}
@@ -637,8 +636,8 @@ export default function Home() {
                             <div className="mx-auto max-w-3xl">
                                 <div className="text-center mb-8 md:mb-12">
                                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                    Frequently <span className="text-red-600">Asked Questions</span>
-                                </h2>
+                                        Frequently <span className="text-red-600">Asked Questions</span>
+                                    </h2>
                                     <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                                 </div>
                                 <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm" data-aos="fade-up" data-aos-delay="100">
@@ -650,9 +649,8 @@ export default function Home() {
                                                         <span>{faq.question}</span>
                                                         <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
                                                             <svg
-                                                                className={`h-5 w-5 transform transition-transform duration-300 ${
-                                                                    open ? 'rotate-180' : ''
-                                                                }`}
+                                                                className={`h-5 w-5 transform transition-transform duration-300 ${open ? 'rotate-180' : ''
+                                                                    }`}
                                                                 fill="none"
                                                                 stroke="currentColor"
                                                                 strokeWidth="2"
@@ -687,10 +685,10 @@ export default function Home() {
                                 <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
                                     Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi narahubung yang tertera di bawah ini.
                                 </p>
-                                </div>
+                            </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-                            {[
+                                {[
                                     {
                                         name: "Damar",
                                         wa: "089666401388",
@@ -713,8 +711,8 @@ export default function Home() {
                                         delay: 200
                                     }
                                 ].map((contact, index) => (
-                                    <div 
-                                        key={index} 
+                                    <div
+                                        key={index}
                                         className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-red-100"
                                         data-aos={contact.animation}
                                         data-aos-delay={contact.delay}
@@ -726,10 +724,10 @@ export default function Home() {
                                                 </svg>
                                             </div>
                                             <h3 className="text-xl font-semibold text-red-600">{contact.name}</h3>
-                                    </div>
+                                        </div>
                                         <div className="space-y-3">
-                                            <a href={`https://wa.me/${contact.wa}`} target="_blank" rel="noopener noreferrer" 
-                                            className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
+                                            <a href={`https://wa.me/${contact.wa}`} target="_blank" rel="noopener noreferrer"
+                                                className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
                                                 <span className="font-semibold">WA:</span>
                                                 <span className="hover:underline">{contact.wa}</span>
                                             </a>
@@ -737,7 +735,7 @@ export default function Home() {
                                                 <span className="font-semibold">LINE:</span>
                                                 <span>{contact.line}</span>
                                             </p>
-                                </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
