@@ -23,6 +23,8 @@ class TimelineController extends Controller
 
     public function store(TimelineRequest $request)
     {
+
+        // dd($request->all());
         $validated = $request->validated();
 
         try {

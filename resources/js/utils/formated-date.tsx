@@ -37,9 +37,6 @@ export function formatDate(date: Date | string | undefined): string {
 
     return new Intl.DateTimeFormat('id-ID', {
         day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
         month: 'short',
         year: 'numeric',
     }).format(parsedDate);

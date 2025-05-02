@@ -14,12 +14,14 @@ class Timeline extends Model
         'location',
         'description',
         'due_date',
+        'end_date',
         'status',
         'category'
     ];
 
     protected $casts = [
-        'due_date' => 'datetime',
+        'due_date' => 'date',
+        'end_date' => 'date',
         'status' => 'boolean',
     ];
 }

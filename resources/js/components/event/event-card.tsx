@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import type { Event } from '@/types/event';
-import { formatDate, formatTime } from '@/utils/formated-date';
+import { formatDate } from '@/utils/formated-date';
 import { Calendar, CheckCircle2, Clock, Edit, Trash2 } from 'lucide-react';
 
 interface EventCardProps {
@@ -39,10 +39,7 @@ export function EventCard({ event, onEdit, onDelete, compact = false }: EventCar
                                 <span>{!isNaN(formattedDueDate.getTime()) ? formatDate(formattedDueDate) : 'Invalid Date'}</span>
                             </div>
 
-                            <div className="flex items-center text-xs text-gray-500">
-                                <Clock className="mr-1 h-3 w-3" />
-                                <span>{!isNaN(formattedDueDate.getTime()) ? formatTime(formattedDueDate) : 'Invalid Time'}</span>
-                            </div>
+
 
                             {/* End Date */}
                             {formattedEndDate && !isNaN(formattedEndDate.getTime()) && (
@@ -52,10 +49,6 @@ export function EventCard({ event, onEdit, onDelete, compact = false }: EventCar
                                         <span>{formatDate(formattedEndDate)}</span>
                                     </div>
 
-                                    <div className="flex items-center text-xs text-gray-500">
-                                        <Clock className="mr-1 h-3 w-3" />
-                                        <span>{formatTime(formattedEndDate)}</span>
-                                    </div>
                                 </>
                             )}
 

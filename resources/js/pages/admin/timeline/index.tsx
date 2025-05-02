@@ -24,10 +24,13 @@ export default function AdminTimelinePage() {
 
     const events = timelines.data;
 
+    console.log(events)
+
     const { setData, post, put, delete: destroy, processing, reset } = useForm<Omit<Event, "id">>({
         title: '',
         description: '',
         due_date: new Date(),
+        end_date: undefined,
         category: '',
         location: '',
         status: true,
@@ -48,6 +51,7 @@ export default function AdminTimelinePage() {
             title: updatedEvent.title,
             description: updatedEvent.description,
             due_date: updatedEvent.due_date,
+            end_date: updatedEvent.end_date,
             location: updatedEvent.location || '',
             category: updatedEvent.category,
             status: updatedEvent.status,
@@ -152,3 +156,6 @@ export default function AdminTimelinePage() {
         </AuthenticatedAdminLayout>
     );
 }
+
+
+
