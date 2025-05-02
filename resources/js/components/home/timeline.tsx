@@ -21,19 +21,21 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
 
                     <div className="relative mx-auto flex w-full flex-col items-center">
                         <div
-                            className="absolute top-0 left-1/2 hidden h-full w-1 -translate-x-1/2 transform bg-red-500 md:block"
+                            className="animate-gradient-glow absolute top-0 left-1/2 hidden h-full w-1 -translate-x-1/2 transform md:block"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
                             data-aos-easing="ease-out-cubic"
                         />
+
                         <div
-                            className="absolute top-0 left-6 h-full w-1 bg-red-500 md:hidden"
+                            className="animate-gradient-glow absolute top-0 left-6 h-full w-1 md:hidden"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
                             data-aos-easing="ease-out-cubic"
                         />
+
                         {timeline.map((item, index) => {
                             const isLeft = index % 2 === 0;
                             const isPast = item.end_date && new Date(item.end_date) < now;
