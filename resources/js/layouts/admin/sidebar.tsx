@@ -1,7 +1,6 @@
 "use client"
 
-import { CalendarClock, Home, Settings, Users } from "lucide-react"
-
+import { CalendarClock, Home, Layers, Settings, Users } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -25,42 +24,43 @@ type SidebarNavProps = {
     user: UserType
 }
 
+const hasRole = (user: UserType, roleName: string): boolean => {
+    return user.roles.some(role => role.name === roleName)
+}
+
 export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarNavProps) {
-    const menuItems = [
+    const rawMenuItems = [
         {
             id: "dashboard",
             label: "Dashboard",
             icon: Home,
-            link: route('admin.dashboard')
+            link: route('admin.dashboard'),
         },
         {
             id: "admins",
             label: "Admin Management",
             icon: Users,
-            link: route('admins.index')
+            link: route('admins.index'),
+            roles: ["super_admin"],
         },
         {
             id: "timeline",
             label: "Timeline Management",
             icon: CalendarClock,
-            link: route('timeline.index')
+            link: route('timeline.index'),
         },
-        // {
-        //     id: "settings",
-        //     label: "Settings",
-        //     icon: Package,
-        // },
-        // {
-        //     id: "orders",
-        //     label: "Orders",
-        //     icon: ShoppingCart,
-        // },
-        // {
-        //     id: "analytics",
-        //     label: "Analytics",
-        //     icon: BarChart3,
-        // },
+        {
+            id: "players",
+            label: "Team & Player Management",
+            icon: Layers,
+            link: route('players.index'),
+        },
     ]
+
+    const menuItems = rawMenuItems.filter((item) => {
+        if (!item.roles) return true
+        return item.roles.some(role => hasRole(user, role))
+    })
 
     return (
         <Sidebar>
@@ -78,7 +78,10 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
                             {menuItems.map((item) => (
                                 <SidebarMenuItem key={item.id}>
                                     <Link href={item.link}>
-                                        <SidebarMenuButton isActive={activeItem === item.id} onClick={() => setActiveItem(item.id)}>
+                                        <SidebarMenuButton
+                                            isActive={activeItem === item.id}
+                                            onClick={() => setActiveItem(item.id)}
+                                        >
                                             <item.icon className="h-4 w-4" />
                                             <span>{item.label}</span>
                                         </SidebarMenuButton>
@@ -93,7 +96,10 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
-                                <SidebarMenuButton isActive={activeItem === "settings"} onClick={() => setActiveItem("settings")}>
+                                <SidebarMenuButton
+                                    isActive={activeItem === "settings"}
+                                    onClick={() => setActiveItem("settings")}
+                                >
                                     <Settings className="h-4 w-4" />
                                     <span>Settings</span>
                                 </SidebarMenuButton>
