@@ -21,7 +21,7 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
 
                     <div className="relative mx-auto flex w-full flex-col items-center">
                         <div
-                            className="animate-gradient-glow-strong absolute top-0 left-1/2 hidden h-full w-1 -translate-x-1/2 transform md:block"
+                            className="timeline-line absolute top-0 left-1/2 hidden h-full w-2 -translate-x-1/2 transform md:block"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
@@ -29,7 +29,7 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
                         />
 
                         <div
-                            className="animate-gradient-glow-strong absolute top-0 left-6 h-full w-1 md:hidden"
+                            className="timeline-line absolute top-0 left-6 h-full w-2 md:hidden"
                             data-aos="fade-down"
                             data-aos-duration="1500"
                             data-aos-delay="200"
@@ -68,29 +68,26 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
 
                                         <div className="absolute -top-3 left-1/2 hidden -translate-x-1/2 transform md:block">
                                             <div className="relative">
-                                                <div className="absolute -inset-4 animate-pulse rounded-full bg-red-500/20"></div>
-                                                <div className="relative">
-                                                    <div
-                                                        className={`flex h-10 w-10 items-center justify-center rounded-full border-4 border-white shadow-lg ${
-                                                            isPast ? 'bg-gray-400 grayscale' : 'animate-bounce bg-red-500'
-                                                        }`}
-                                                    >
-                                                        <div className="text-white">
-                                                            <svg
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-6 w-6"
-                                                                fill="none"
-                                                                viewBox="0 0 24 24"
-                                                                stroke="currentColor"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={2}
-                                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                                                />
-                                                            </svg>
-                                                        </div>
+                                                <div
+                                                    className={`flex h-10 w-10 items-center justify-center rounded-full border-4 border-white shadow-lg ${
+                                                        isPast ? 'bg-gray-400 grayscale' : 'bg-red-500'
+                                                    }`}
+                                                >
+                                                    <div className="text-white">
+                                                        <svg
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            className="h-6 w-6"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                            stroke="currentColor"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                            />
+                                                        </svg>
                                                     </div>
                                                 </div>
                                             </div>
@@ -98,10 +95,9 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
 
                                         <div className="absolute top-2 -left-[2.4rem] md:hidden">
                                             <div className="relative">
-                                                <div className="absolute -inset-1 animate-pulse rounded-full bg-red-500/20"></div>
                                                 <div
                                                     className={`relative flex h-7 w-7 items-center justify-center rounded-full border-4 border-white shadow-lg ${
-                                                        isPast ? 'bg-gray-400 grayscale' : 'animate-bounce bg-red-500'
+                                                        isPast ? 'bg-gray-400 grayscale' : 'bg-red-500'
                                                     }`}
                                                 >
                                                     <div className="scale-75 text-white">
@@ -150,10 +146,9 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
                                             <div className="relative mt-3 flex items-center gap-2 text-sm text-gray-500">
                                                 {item.location.includes('youtube.com') || item.location.includes('youtu.be') ? (
                                                     <div className="relative">
-                                                        <div className="absolute -inset-2 animate-pulse rounded-full bg-red-500/20"></div>
                                                         <div
-                                                            className={`relative flex h-6 w-6 items-center justify-center rounded-full p-1 text-white shadow ${
-                                                                isPast ? 'bg-gray-400 grayscale' : 'animate-bounce bg-red-500'
+                                                            className={`flex h-6 w-6 items-center justify-center rounded-full p-1 text-white shadow ${
+                                                                isPast ? 'bg-gray-400 grayscale' : 'bg-red-500'
                                                             }`}
                                                         >
                                                             <YoutubeIcon />
@@ -161,10 +156,9 @@ export default function TimelineSection({ timeline }: { timeline: Event[] }) {
                                                     </div>
                                                 ) : (
                                                     <div className="relative">
-                                                        <div className="absolute -inset-2 animate-pulse rounded-full bg-red-500/20"></div>
                                                         <div
-                                                            className={`relative flex h-6 w-6 items-center justify-center rounded-full p-1 text-white shadow ${
-                                                                isPast ? 'bg-gray-400 grayscale' : 'animate-bounce bg-red-500'
+                                                            className={`flex h-6 w-6 items-center justify-center rounded-full p-1 text-white shadow ${
+                                                                isPast ? 'bg-gray-400 grayscale' : 'bg-red-500'
                                                             }`}
                                                         >
                                                             <MapPinPlus />
