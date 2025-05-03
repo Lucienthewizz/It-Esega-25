@@ -15,9 +15,9 @@ use App\Http\Controllers\PageController;
 //     return Inertia::render('home');
 // })->name('home');
 
-Route::get('/', function () {
-    return Inertia::render('home');
-})->name('home');
+Route::get('/', [PageController::class, 'home'])->name('home');
+
+Route::get('/about', [PageController::class, 'about'])->name('about');
 
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
@@ -64,9 +64,8 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
 });
 
 
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/faq', [PageController::class, 'faq'])->name('faq');
-Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

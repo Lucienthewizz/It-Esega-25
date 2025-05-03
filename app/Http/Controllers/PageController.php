@@ -15,7 +15,7 @@ class PageController extends Controller
      */
     public function about(): Response
     {
-        return Inertia::render('About');
+        return Inertia::render('about');
     }
 
     public function home(): Response

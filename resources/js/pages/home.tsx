@@ -9,10 +9,8 @@ import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
 import { useEffect, useState, Fragment } from 'react';
 import { route } from 'ziggy-js';
-import { Dialog, Transition } from '@headlessui/react';
-
-// Import Footer component
 import { Footer } from '@/components/footer';
+import { Dialog, Transition } from '@headlessui/react';
 import TimelineSection from '@/components/home/timeline';
 import { Event } from '@/types/event';
 
@@ -24,6 +22,10 @@ export default function Home() {
     }>().props;
     const [isOpen, setIsOpen] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+
+    // Debugging data timeline
+    console.log('Timeline data dari API:', event);
+
     // const auth = user;
 
     console.log('Dari Home', user);
@@ -44,17 +46,21 @@ export default function Home() {
 
     const navItems = [
         { title: 'Home', href: route('home') },
-        { title: 'About', href: '#about' },
+        { title: 'About', href: route('about') },
         { title: 'FAQ', href: '#faq' },
         { title: 'Contact', href: '#contact' },
-        { title: 'Register', href: '#register' },
+        { title: 'Register', href: route('register') },
     ];
 
     useEffect(() => {
         AOS.init({
-            duration: 1000,
+            duration: 800,
             once: true,
-            easing: 'ease-in-out',
+            easing: 'ease-out-cubic',
+            offset: 100,
+            delay: 0,
+            mirror: false,
+            anchorPlacement: 'top-bottom',
         });
     }, []);
 
@@ -141,7 +147,7 @@ export default function Home() {
                     <Navbar
                         user={user}
                         logo={
-                            <div className="flex items-center justify-center">
+                            <div className="flex items-center justify-start">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
@@ -149,11 +155,11 @@ export default function Home() {
                     />
 
                     {/* Hero Section */}
-                    <div className="container mx-auto px-6 py-30 pt-35">
-                        <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[1.5fr_1fr]">
-                            <div className="text-center md:text-left" data-aos="fade-right">
-                                <h1 className="mb-4 text-7xl font-black text-[#333]">
-                                    IT-ESEGA <span className="text-secondary inline-block -skew-x-12 transform">2025</span>
+                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-35 md:pt-45 pb-16 md:pb-40">
+                        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1.5fr_1fr] relative z-10 w-full">
+                            <div className="text-center md:text-left" data-aos="fade-up">
+                                <h1 className="mb-4 text-4xl sm:text-7xl font-black text-[#333] leading-tight">
+                                    IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
                                 </h1>
                                 <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
                                     Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
@@ -161,7 +167,9 @@ export default function Home() {
                                 <div className="flex justify-center space-x-4 md:justify-start">
                                     <Link
                                         href={route('register')}
-                                        className="border-secondary text-secondary hover:bg-secondary rounded-lg border bg-transparent px-8 py-4 text-lg font-semibold transition-colors duration-300 hover:text-white"
+                                        className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold
+                                            bg-red-600 text-white rounded-lg transform transition-all duration-300
+                                            hover:bg-red-700 hover:scale-105 hover:shadow-lg"
                                     >
                                         Register Now!
                                     </Link>
@@ -188,7 +196,7 @@ export default function Home() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-left">
+                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
                                 <motion.img
                                     src="/images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
@@ -213,39 +221,25 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* About Section */}
-                    <section id="about" className="bg-white bg-cover bg-center py-16" data-aos="fade-up">
-                        <div className="container mx-auto px-6">
-                            <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
-                                <div className="flex justify-center md:justify-start" data-aos="fade-right">
-                                    <img src="/images/MascotEsega25.png" alt="Mascot" className="h-64 w-auto object-contain md:h-150" />
-                                </div>
-                                <div className="text-center md:text-left" data-aos="fade-left">
-                                    <h2 className="mb-8 text-4xl font-bold text-[#333]">
-                                        About <span className="text-red-600">IT-ESEGA</span>
-                                    </h2>
-                                    <p className="mb-6 text-lg text-[#333]">
-                                        IT-ESEGA is the premier technology competition that brings together the brightest minds from universities
-                                        across the nation.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* How to Register Dialog */}
-                    <Transition show={isOpen} as={Fragment}>
-                        <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
+                    {/* Video Tutorial Modal */}
+                    <Transition appear show={isOpen} as={Fragment}>
+                        <Dialog
+                            as="div"
+                            className="fixed inset-0 z-[60] overflow-y-auto"
+                            onClose={() => setIsOpen(false)}
+                        >
                             <Transition.Child
                                 as={Fragment}
-                                enter="ease-out duration-300"
+                                enter="ease-out duration-200"
                                 enterFrom="opacity-0"
                                 enterTo="opacity-100"
-                                leave="ease-in duration-200"
+                                leave="ease-in duration-150"
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <div className="fixed inset-0 bg-black bg-opacity-25" />
+                                <div className="fixed inset-0">
+                                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+                                </div>
                             </Transition.Child>
 
                             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -316,9 +310,9 @@ export default function Home() {
                                                     >
                                                         Got it
                                                     </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                        </div>
                                     </Dialog.Panel>
                                 </Transition.Child>
                             </div>
@@ -376,41 +370,8 @@ export default function Home() {
                             <div className="text-center mb-8 md:mb-12">
                                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
                                     Upcoming <span className="text-red-600">Tournament</span>
-                                </h2>
-                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full mb-6 sm:mb-8" data-aos="fade-up" data-aos-delay="50"></div>
-                            </div>
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                                {[
-                                    {
-                                        title: '1st Place',
-                                        amount: '$1000',
-                                        description: 'Champion of the tournament.',
-                                        delay: 100,
-                                    },
-                                    {
-                                        title: '2nd Place',
-                                        amount: '$500',
-                                        description: 'Runner-up of the tournament.',
-                                        delay: 200,
-                                    },
-                                    {
-                                        title: '3rd Place',
-                                        amount: '$250',
-                                        description: 'Third place in the tournament.',
-                                        delay: 300,
-                                    },
-                                ].map((prize, i) => (
-                                    <div
-                                        key={i}
-                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
-                                        data-aos="fade-up"
-                                        data-aos-delay={prize.delay}
-                                    >
-                                        <h3 className="mb-4 text-2xl font-semibold text-gray-800">{prize.title}</h3>
-                                        <p className="mb-2 text-lg font-bold text-red-600">{prize.amount}</p>
-                                        <p className="text-sm text-gray-500">{prize.description}</p>
-                                    </div>
-                                ))}
+                            </h2>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 justify-items-center">
@@ -425,8 +386,7 @@ export default function Home() {
                                     bgImage: "/images/ML-bg-high.jpeg",
                                     delay: 0,
                                     animation: "fade-up",
-                                    fee: "Rp 100.000",
-                                    link: "register"
+                                    fee: "Rp 100.000"
                                 }, {
                                     title: "Free Fire",
                                     slots: "48 SLOTS",
@@ -438,13 +398,12 @@ export default function Home() {
                                     bgImage: "/images/FF-bg-high.jpeg",
                                     delay: 100,
                                     animation: "fade-up",
-                                    fee: "Rp 100.000",
-                                    link: "register"
+                                    fee: "Rp 100.000"
                                 }].map((game, i) => (
                                     <div
                                         key={i}
-                                        className="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
-                                        data-aos="fade-up"
+                                        className="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl border-2 border-red-500/50 hover:border-red-500 p-3"
+                                        data-aos={game.animation}
                                         data-aos-delay={game.delay}
                                         style={{ height: '600px' }}
                                     >
@@ -466,11 +425,11 @@ export default function Home() {
                                             {/* Game Logo */}
                                             <div className="absolute z-20 -top-1 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
                                                 <div className="flex justify-center items-center rounded-full p-8 transition-all duration-500 md:group-hover:-translate-y-[80%]">
-                                                    <img
-                                                        src={game.image}
+                                                <img
+                                                    src={game.image}
                                                         alt={`${game.title} Logo`}
                                                         className="h-42 w-auto object-contain transition-all duration-500 md:group-hover:scale-140"
-                                                    />
+                                                />
                                                 </div>
                                             </div>
 
@@ -493,12 +452,12 @@ export default function Home() {
                                                     </div>
                                                 </div>
 
-                                                <Link
-                                                    href={route(game.link)}
-                                                    className="hover:bg-primary/90 inline-block rounded-lg bg-red-600 px-6 py-2.5 text-sm font-medium text-white transition hover:shadow-md"
-                                                >
-                                                    Register Now
-                                                </Link>
+                                                    <Link
+                                                        href={route('register')}
+                                                    className="inline-block rounded-lg bg-red-600 px-8 py-3 text-white text-base font-semibold transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
+                                                    >
+                                                        Register Now
+                                                    </Link>
                                             </div>
                                         </div>
                                     </div>
@@ -601,29 +560,37 @@ export default function Home() {
                             </div>
                         </div>
                     </section>
-
+                    
                     {/* Timeline Section */}
                     <TimelineSection timeline={event.data || []} />
 
-
                     {/* FAQ Section */}
-                    <section id="faq" className="bg-cover bg-center py-40" data-aos="fade-up">
-                        <div className="container mx-auto px-4">
+                    <section id="faq" className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-100/30 via-white to-red-50/40"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                             <div className="mx-auto max-w-3xl">
-                                <h2 className="mb-10 text-center text-4xl font-extrabold text-gray-900">
-                                    Frequently <span className="text-red-600">Asked Questions</span>
-                                </h2>
-                                <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm">
+                                <div className="text-center mb-8 md:mb-12">
+                                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
+                                        Frequently <span className="text-red-600">Asked Questions</span>
+                                    </h2>
+                                    <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
+                                    <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-6" data-aos="fade-up" data-aos-delay="100">
+                                        Temukan jawaban untuk pertanyaan umum tentang IT-ESEGA 2025 dan proses pendaftaran turnamen
+                                    </p>
+                                </div>
+                                
+                                <div className="space-y-4" data-aos="fade-up" data-aos-delay="150">
                                     {faqs.map((faq, index) => (
-                                        <Disclosure key={index}>
-                                            {({ open }) => (
-                                                <div className="px-6 py-5 transition-all hover:bg-gray-100">
-                                                    <Disclosure.Button className="flex w-full items-center justify-between text-left text-lg font-medium text-gray-800 focus:outline-none">
-                                                        <span>{faq.question}</span>
-                                                        <span className="ml-4 flex-shrink-0 text-gray-500 transition-transform duration-300 ease-in-out">
+                                        <Disclosure key={index} as="div" className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200/70 hover:shadow-md transition-all duration-300">
+                                            {({ open }: { open: boolean }) => (
+                                                <>
+                                                    <Disclosure.Button className="flex w-full items-center justify-between px-6 py-5 text-left focus:outline-none focus-visible:ring focus-visible:ring-red-500/50">
+                                                        <span className={`text-lg font-medium ${open ? 'text-red-600' : 'text-gray-800'}`}>
+                                                            {faq.question}
+                                                        </span>
+                                                        <div className={`ml-4 flex-shrink-0 rounded-full p-1.5 ${open ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-500'}`}>
                                                             <svg
-                                                                className={`h-5 w-5 transform transition-transform duration-300 ${open ? 'rotate-180' : ''
-                                                                    }`}
+                                                                className={`h-5 w-5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
                                                                 fill="none"
                                                                 stroke="currentColor"
                                                                 strokeWidth="2"
@@ -631,27 +598,52 @@ export default function Home() {
                                                             >
                                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                                                             </svg>
-                                                        </span>
+                                                        </div>
                                                     </Disclosure.Button>
-                                                    <Disclosure.Panel className="mt-2 text-sm leading-relaxed text-gray-700">
-                                                        {faq.answer}
+                                                    
+                                                    <Disclosure.Panel className="px-6 pb-5">
+                                                        <div className="border-t border-gray-100 pt-3 text-base text-gray-600 leading-relaxed">
+                                                            {faq.answer}
+                                                        </div>
                                                     </Disclosure.Panel>
-                                                </div>
+                                                </>
                                             )}
                                         </Disclosure>
                                     ))}
+                                </div>
+                                
+                                <div className="mt-12 text-center" data-aos="fade-up" data-aos-delay="200">
+                                    <p className="text-gray-600 mb-4">Masih punya pertanyaan lain?</p>
+                                    <a 
+                                        href="#contact" 
+                                        className="inline-flex items-center px-5 py-2.5 text-sm font-medium rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-300"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+                                        </svg>
+                                        Hubungi Kami
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* Contact Person inti esega*/}
-                    <section id="contact" className="bg-cover bg-center py-16" data-aos="fade-up">
-                        <div className="container mx-auto px-4">
-                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
-                                Contact <span className="text-red-600">Persons</span>
-                            </h2>
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    {/* Contact Person Section */}
+                    <section id="contact" className="relative overflow-hidden py-16 md:py-24">
+                        <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-red-100/30 to-white"></div>
+                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                            <div className="text-center mb-8 md:mb-12">
+                                <h2 className="text-3xl sm:text-4xl font-bold mb-4" data-aos="fade-up">
+                                    <span className="text-red-600">CONTACT</span>{" "}
+                                    <span className="text-red-400">PERSON</span>
+                                </h2>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
+                                <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
+                                    Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi narahubung yang tertera di bawah ini.
+                                </p>
+                                </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                                 {[
                                     {
                                         name: "Damar",
@@ -688,7 +680,7 @@ export default function Home() {
                                                 </svg>
                                             </div>
                                             <h3 className="text-xl font-semibold text-red-600">{contact.name}</h3>
-                                        </div>
+                                    </div>
                                         <div className="space-y-3">
                                             <a href={`https://wa.me/${contact.wa}`} target="_blank" rel="noopener noreferrer"
                                                 className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
@@ -699,7 +691,7 @@ export default function Home() {
                                                 <span className="font-semibold">LINE:</span>
                                                 <span>{contact.line}</span>
                                             </p>
-                                        </div>
+                                </div>
                                     </div>
                                 ))}
                             </div>
