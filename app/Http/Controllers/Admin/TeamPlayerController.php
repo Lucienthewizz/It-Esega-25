@@ -13,12 +13,43 @@ class TeamPlayerController extends Controller
 {
     public function index()
     {
+        
+        $ffTeams = FF_Team::withCount('participants')->get();
+        $mlTeams = ML_Team::withCount('participants')->get();
 
-        $ff_team = FF_Team::all();
-        $ml_team = ML_Team::all();
+        $combinedTeams = $ffTeams->map(function ($team) {
+            return [
+                'id' => $team->id,
+                'name' => $team->team_name,
+                'game' => 'Free Fire',
+                'playerCount' => $team->participants_count,
+                'achievements' => $team->achievements ?? 0,
+                'logo' => $team->team_logo ?? '/placeholder.svg',
+                'color' => 'from-orange-500 to-red-600',
+            ];
+        })->merge(
+            $mlTeams->map(function ($team) {
+                return [
+                    'id' => $team->id,
+                    'name' => $team->team_name,
+                    'game' => 'Mobile Legends',
+                    'playerCount' => $team->participants_count,
+                    'achievements' => $team->achievements ?? 0,
+                    'logo' => $team->logo ?? '/placeholder.svg',
+                    'color' => 'from-blue-500 to-purple-600',
+                ];
+            })
+        )->values();
+
+    
         return Inertia::render('admin/lomba/index', [
-            'teamsFF' => FFTeamResource::collection($ff_team),
-            'teamsML' => FFTeamResource::collection($ml_team)
+            'teams' => $combinedTeams,
+            'totalTeams' => $combinedTeams->count(),
+            'totalPlayers' => $combinedTeams->sum('playerCount'),
+            'achievementsTotal' => $combinedTeams->sum('achievements'),
+            'winRate' => 68,
         ]);
+
+
     }
 }
