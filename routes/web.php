@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
+use App\Http\Controllers\Admin\TeamPlayerController;
 use App\Http\Controllers\Admin\TimelineController;
 use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('admins', AdminUserController::class);
     Route::resource('timeline', TimelineController::class);
+    Route::resource('players', TeamPlayerController::class);
 
 
 
