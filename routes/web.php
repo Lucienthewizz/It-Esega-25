@@ -10,6 +10,9 @@ use App\Http\Controllers\TeamRegistrationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
+use App\Exports\MLPlayersExport;
+use App\Exports\FFPlayersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 // Route::get('/', function () {
 //     return Inertia::render('home');
@@ -56,7 +59,14 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::resource('admins', AdminUserController::class);
     Route::resource('timeline', TimelineController::class);
     Route::resource('players', TeamPlayerController::class);
-
+    Route::get('testff', [TeamPlayerController::class, 'ffPlayer'])->name('ffPlayer.list');
+    Route::get('testml', [TeamPlayerController::class, 'mlPlayer'])->name('ffPlayer.list');
+    Route::get('/export/MLplayers', function () {
+        return Excel::download(new MLPlayersExport, 'mlplayers.xlsx');
+    });
+    Route::get('/export/FFplayers', function () {
+        return Excel::download(new FFPlayersExport, 'ffplayers.xlsx');
+    });
 
 
     Route::post('logout/admin/it-esega', [AuthenticatedSessionControllerAdmin::class, 'destroy'])
