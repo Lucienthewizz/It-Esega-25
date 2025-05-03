@@ -10,8 +10,6 @@ import { UserType } from '@/types/user';
 import { useEffect, useState, useRef } from 'react';
 import { route } from 'ziggy-js';
 import { createPortal } from 'react-dom';
-import { Link } from '@inertiajs/react';
-import { router } from '@inertiajs/react';
 
 interface NavItem {
     title: string;
@@ -25,16 +23,30 @@ interface NavbarProps {
 }
 
 export function Navbar({ logo, items = [], user }: NavbarProps) {
+    const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
     const dropdownContentRef = useRef<HTMLDivElement>(null);
+    // Memisahkan item Register dari items lainnya
     const navigationItems = items.filter(item => item.title !== 'Register');
     const registerItem = items.find(item => item.title === 'Register');
     const currentPath = window.location.pathname;
 
     useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
         if (isDropdownOpen && dropdownTriggerRef.current && dropdownContentRef.current) {
             const triggerRect = dropdownTriggerRef.current.getBoundingClientRect();
+            
+            // Calculate position
             const top = triggerRect.bottom + 5;
             const right = window.innerWidth - triggerRect.right;
             

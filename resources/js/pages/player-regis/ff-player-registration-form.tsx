@@ -84,61 +84,110 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         teamData.id
     )
 
+    const validatePhoneNumber = (phone: string) => {
+        if (!phone) return true
+        const cleanPhone = phone.replace(/\D/g, '')
+        return cleanPhone.length >= 10 && cleanPhone.length <= 15
+    }
+    
+    const handlePlayerChange = (
+        index: number,
+        field: keyof FFPlayer,
+        value: string | number | File | null | undefined
+    ) => {
+        const newValue = value !== null && value !== undefined ? value : ""
+        
+        // Update the form data first
+        const updatedPlayers = formData.ff_players.map((player, i) =>
+            i === index ? { ...player, [field]: newValue } : player
+        )
+        
+        setFormData(prev => ({
+            ...prev,
+            ff_players: updatedPlayers
+        }))
+        
+        if (field === 'no_hp' && typeof newValue === 'string' && newValue.trim() !== '') {
+            if (!validatePhoneNumber(newValue)) {
+                setShowValidationError(true)
+                setAlertMessage("Nomor HP harus terdiri dari 10 hingga 15 digit angka.")
+                setTimeout(() => {
+                    setShowValidationError(false)
+                }, 5000)
+            }
+        }
+    }
+    
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
+    
+        if (!teamData?.id) {
+            setShowValidationError(true)
+            setAlertMessage("Data tim tidak valid. Silakan coba lagi.")
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 5000)
+            return
+        }
+    
+        const teamId = teamData.id
+    
+        // Validasi jumlah pemain
         if (formData.ff_players.length < minPlayers) {
             setShowValidationError(true)
-            setAlertMessage(`Kamu Butuh minimal ${minPlayers} Pemain untuk melakukan Submit Form.`)
+            setAlertMessage(`Minimal harus ada ${minPlayers} pemain.`)
             setTimeout(() => {
                 setShowValidationError(false)
             }, 5000)
             return
         }
 
+        const invalidPhoneIndexes = formData.ff_players
+            .map((player, index) => (!player.no_hp || validatePhoneNumber(player.no_hp)) ? -1 : index)
+            .filter(index => index !== -1)
+        
+        if (invalidPhoneIndexes.length > 0) {
+            const playerNumbers = invalidPhoneIndexes.map(index => index + 1).join(', ')
+            setShowValidationError(true)
+            setAlertMessage(`Nomor HP tidak valid untuk pemain ${playerNumbers}. Pastikan nomor HP terdiri dari 10-15 digit angka.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 5000)
+            return
+        }
+    
         setIsSubmitting(true)
 
         try {
-            // Create FormData for file upload
             const submitData = new FormData()
-            submitData.append('team_id', formData.team_id.toString())
-
-            // Log data yang akan dikirim
-            console.log('Submitting data:', formData.ff_players)
+            submitData.append('team_id', teamId.toString())
+            submitData.append('ff_team_id', teamId.toString())
 
             formData.ff_players.forEach((player: FFPlayer, index: number) => {
-                // Append player data
                 submitData.append(`ff_players[${index}][name]`, player.name || '')
                 submitData.append(`ff_players[${index}][nickname]`, player.nickname || '')
                 submitData.append(`ff_players[${index}][id_server]`, player.id_server || '')
                 submitData.append(`ff_players[${index}][no_hp]`, player.no_hp || '')
                 submitData.append(`ff_players[${index}][email]`, player.email || '')
                 submitData.append(`ff_players[${index}][alamat]`, player.alamat || '')
-                submitData.append(`ff_players[${index}][ff_team_id]`, formData.team_id.toString())
+                submitData.append(`ff_players[${index}][ff_team_id]`, teamId.toString())
                 submitData.append(`ff_players[${index}][role]`, player.role || 'anggota')
 
-                // Handle file uploads dengan format yang benar
                 if (player.foto instanceof File) {
-                    console.log(`Uploading foto for player ${index}:`, player.foto.name)
                     submitData.append(`ff_players_${index}_foto`, player.foto)
                 }
                 if (player.tanda_tangan instanceof File) {
-                    console.log(`Uploading tanda_tangan for player ${index}:`, player.tanda_tangan.name)
                     submitData.append(`ff_players_${index}_tanda_tangan`, player.tanda_tangan)
                 }
             })
 
-            // Debug: Log semua data yang akan dikirim
-            console.log('Form data entries:')
-            for (const [key, value] of submitData.entries()) {
-                console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value)
-            }
-
-            // Tambahkan game type ke form data
             submitData.append('game_type', gameType)
 
-            router.post(route("player-registration.store"), submitData, {
+            router.post(route("player-registration-ff.store"), submitData, {
                 onSuccess: () => {
+                    // Reset form data and clear localStorage
+                    setFormData(prev => ({ ...prev, ff_players: [] }))
+                    localStorage.removeItem("ff_players_data")
                     setSuccessMessage("Pendaftaran berhasil!")
                     setShowSuccessAlert(true)
                     setTimeout(() => {
@@ -166,20 +215,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             }, 5000)
             setIsSubmitting(false)
         }
-    }
-
-    const handlePlayerChange = (
-        index: number,
-        field: keyof FFPlayer,
-        value: string | number | File | null | undefined
-    ) => {
-        const newValue = value !== null && value !== undefined ? value : ""
-        setFormData(prev => ({
-            ...prev,
-            ff_players: prev.ff_players.map((player, i) =>
-                i === index ? { ...player, [field]: newValue } : player
-            )
-        }))
     }
 
     const addNewPlayer = () => {

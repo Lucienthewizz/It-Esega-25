@@ -15,8 +15,9 @@ class FFPlayerRequest extends FormRequest
     {
         return [
             'ff_team_id' => ['required', 'exists:FF_Team,id'],
+            'team_id' => ['required', 'exists:FF_Team,id'],
 
-            'ff_players' => ['required', 'array', 'min:5', 'max:7'],
+            'ff_players' => ['required', 'array', 'min:4', 'max:6'],
             'ff_players.*.name' => ['required', 'string', 'max:255'],
             'ff_players.*.nickname' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_]+$/'],
             'ff_players.*.id_server' => ['required', 'string', 'max:50', 'regex:/^[\d()]+$/'],
@@ -34,11 +35,13 @@ class FFPlayerRequest extends FormRequest
         return [
             'ff_team_id.required' => 'ID tim wajib diisi.',
             'ff_team_id.exists' => 'ID tim tidak ditemukan.',
+            'team_id.required' => 'ID tim wajib diisi.',
+            'team_id.exists' => 'ID tim tidak ditemukan.',
 
             'ff_players.required' => 'Data pemain wajib diisi.',
             'ff_players.array' => 'Format pemain tidak valid.',
-            'ff_players.min' => 'Minimal harus ada 5 pemain.',
-            'ff_players.max' => 'Maksimal hanya 7 pemain yang diperbolehkan.',
+            'ff_players.min' => 'Minimal harus ada 4 pemain.',
+            'ff_players.max' => 'Maksimal hanya 6 pemain yang diperbolehkan.',
 
             'ff_players.*.name.required' => 'Nama pemain wajib diisi.',
             'ff_players.*.nickname.required' => 'Nickname pemain wajib diisi.',
@@ -54,6 +57,7 @@ class FFPlayerRequest extends FormRequest
             'ff_players.*.email.email' => 'Format email tidak valid.',
 
             'ff_players.*.alamat.required' => 'Alamat wajib diisi.',
+            'ff_players.*.alamat.min' => 'Alamat harus minimal 10 karakter.',
 
             'ff_players.*.tanda_tangan.image' => 'Tanda tangan harus berupa gambar.',
             'ff_players.*.tanda_tangan.mimes' => 'Tanda tangan hanya boleh berupa file jpeg, png, atau jpg.',
