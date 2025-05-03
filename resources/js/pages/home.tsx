@@ -15,11 +15,24 @@ import { Dialog, Transition } from '@headlessui/react';
 export default function Home() {
     const { user, flash } = usePage<{ user: { data: UserType }, flash: { success?: string; error?: string }; }>().props;
     const [isOpen, setIsOpen] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     // const auth = user;
 
     console.log('Dari Home', user);
 
     // console.log(auth?.roles?.[0]?.name)
+
+    useEffect(() => {
+        // Jika ada flash success message, tampilkan animasi
+        if (flash?.success) {
+            setShowSuccess(true);
+            // Otomatis hilangkan animasi setelah 5 detik
+            const timer = setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash?.success]);
 
     const navItems = [
         { title: 'Home', href: route('home') },
@@ -76,6 +89,36 @@ export default function Home() {
     return (
         <>
             <Head title="IT-ESEGA 2025 Official Website" />
+            
+            {/* Notifikasi Sukses dengan Animasi */}
+            <Transition
+                show={showSuccess}
+                as={Fragment}
+                enter="transform transition duration-500"
+                enterFrom="translate-y-full opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transform transition duration-500"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-full opacity-0"
+            >
+                <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg">
+                    <div className="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="font-medium">{flash?.success}</span>
+                        <button
+                            onClick={() => setShowSuccess(false)}
+                            className="ml-4 text-white hover:text-green-100 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </Transition>
+            
             <div className="bg-white from-primary to-secondary font-poppins relative min-h-screen text-black overflow-hidden">
 
                 {/* Background Overlay */}
@@ -257,9 +300,9 @@ export default function Home() {
                                                     >
                                                         Got it
                                                     </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                        </div>
                                     </Dialog.Panel>
                                 </Transition.Child>
                             </div>
@@ -317,7 +360,7 @@ export default function Home() {
                             <div className="text-center mb-8 md:mb-12">
                                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
                                     Upcoming <span className="text-red-600">Tournament</span>
-                                </h2>
+                            </h2>
                                 <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
@@ -372,11 +415,11 @@ export default function Home() {
                                             {/* Game Logo */}
                                             <div className="absolute z-20 -top-1 left-1/2 -translate-x-1/2 md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
                                                 <div className="flex justify-center items-center rounded-full p-8 transition-all duration-500 md:group-hover:-translate-y-[80%]">
-                                                    <img
-                                                        src={game.image}
+                                                <img
+                                                    src={game.image}
                                                         alt={`${game.title} Logo`}
                                                         className="h-42 w-auto object-contain transition-all duration-500 md:group-hover:scale-140"
-                                                    />
+                                                />
                                                 </div>
                                             </div>
 
@@ -399,12 +442,12 @@ export default function Home() {
                                                     </div>
                                                 </div>
 
-                                                <Link
-                                                    href={route('register')}
+                                                    <Link
+                                                        href={route('register')}
                                                     className="inline-block rounded-lg bg-red-600 px-8 py-3 text-white text-base font-semibold transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
-                                                >
-                                                    Register Now
-                                                </Link>
+                                                    >
+                                                        Register Now
+                                                    </Link>
                                             </div>
                                         </div>
                                     </div>
@@ -514,8 +557,8 @@ export default function Home() {
                         <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                             <div className="text-center mb-8 md:mb-12">
                                 <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                    Event <span className="text-red-600">Timeline</span>
-                                </h2>
+                                Event <span className="text-red-600">Timeline</span>
+                            </h2>
                                 <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                             </div>
 
@@ -636,8 +679,8 @@ export default function Home() {
                             <div className="mx-auto max-w-3xl">
                                 <div className="text-center mb-8 md:mb-12">
                                     <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                        Frequently <span className="text-red-600">Asked Questions</span>
-                                    </h2>
+                                    Frequently <span className="text-red-600">Asked Questions</span>
+                                </h2>
                                     <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
                                 </div>
                                 <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm" data-aos="fade-up" data-aos-delay="100">
@@ -685,7 +728,7 @@ export default function Home() {
                                 <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
                                     Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi narahubung yang tertera di bawah ini.
                                 </p>
-                            </div>
+                                </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                                 {[
@@ -724,7 +767,7 @@ export default function Home() {
                                                 </svg>
                                             </div>
                                             <h3 className="text-xl font-semibold text-red-600">{contact.name}</h3>
-                                        </div>
+                                    </div>
                                         <div className="space-y-3">
                                             <a href={`https://wa.me/${contact.wa}`} target="_blank" rel="noopener noreferrer"
                                                 className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-300">
@@ -735,7 +778,7 @@ export default function Home() {
                                                 <span className="font-semibold">LINE:</span>
                                                 <span>{contact.line}</span>
                                             </p>
-                                        </div>
+                                </div>
                                     </div>
                                 ))}
                             </div>
