@@ -74,7 +74,22 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                 },
                 onError: (errors) => {
                     console.error('Validation errors:', errors)
-                    setFormErrors(errors)
+                    
+                    // Tampilkan pesan error duplikat nama tim dengan lebih jelas
+                    if (errors.team_name && errors.team_name.includes('unique')) {
+                        setFormErrors({
+                            ...errors,
+                            team_name: `Tim dengan nama "${data.team_name}" sudah terdaftar. Silakan gunakan nama tim yang lain.`
+                        })
+                    } else {
+                        setFormErrors(errors)
+                    }
+                    
+                    // Scroll ke bagian form dengan error
+                    const firstError = document.querySelector('.text-red-500')
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                    }
                 },
                 onFinish: () => {
                     console.log('Form submission finished')

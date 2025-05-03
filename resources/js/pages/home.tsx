@@ -9,35 +9,52 @@ import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
 import { useEffect, useState, Fragment } from 'react';
 import { route } from 'ziggy-js';
-import { Footer } from '@/components/footer';
 import { Dialog, Transition } from '@headlessui/react';
 
+// Import Footer component
+import { Footer } from '@/components/footer';
+import TimelineSection from '@/components/home/timeline';
+import { Event } from '@/types/event';
+
 export default function Home() {
-    const { user, flash } = usePage<{ user: { data: UserType }, flash: { success?: string; error?: string }; }>().props;
+    const { user, flash, event = { data: [] } } = usePage<{ 
+        user: { data: UserType }, 
+        flash: { success?: string; error?: string }; 
+        event: { data: Event[] }
+    }>().props;
     const [isOpen, setIsOpen] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     // const auth = user;
 
     console.log('Dari Home', user);
 
     // console.log(auth?.roles?.[0]?.name)
 
+    useEffect(() => {
+        // Jika ada flash success message, tampilkan animasi
+        if (flash?.success) {
+            setShowSuccess(true);
+            // Otomatis hilangkan animasi setelah 5 detik
+            const timer = setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash?.success]);
+
     const navItems = [
         { title: 'Home', href: route('home') },
-        { title: 'About', href: route('about') },
+        { title: 'About', href: '#about' },
         { title: 'FAQ', href: '#faq' },
         { title: 'Contact', href: '#contact' },
-        { title: 'Register', href: route('register') },
+        { title: 'Register', href: '#register' },
     ];
 
     useEffect(() => {
         AOS.init({
-            duration: 800,
+            duration: 1000,
             once: true,
-            easing: 'ease-out-cubic',
-            offset: 100,
-            delay: 0,
-            mirror: false,
-            anchorPlacement: 'top-bottom',
+            easing: 'ease-in-out',
         });
     }, []);
 
@@ -76,6 +93,36 @@ export default function Home() {
     return (
         <>
             <Head title="IT-ESEGA 2025 Official Website" />
+            
+            {/* Notifikasi Sukses dengan Animasi */}
+            <Transition
+                show={showSuccess}
+                as={Fragment}
+                enter="transform transition duration-500"
+                enterFrom="translate-y-full opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transform transition duration-500"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-full opacity-0"
+            >
+                <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl shadow-lg">
+                    <div className="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="font-medium">{flash?.success}</span>
+                        <button
+                            onClick={() => setShowSuccess(false)}
+                            className="ml-4 text-white hover:text-green-100 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </Transition>
+            
             <div className="bg-white from-primary to-secondary font-poppins relative min-h-screen text-black overflow-hidden">
 
                 {/* Background Overlay */}
@@ -94,7 +141,7 @@ export default function Home() {
                     <Navbar
                         user={user}
                         logo={
-                            <div className="flex items-center justify-start">
+                            <div className="flex items-center justify-center">
                                 <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
@@ -102,11 +149,11 @@ export default function Home() {
                     />
 
                     {/* Hero Section */}
-                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-35 md:pt-45 pb-16 md:pb-40">
-                        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[1.5fr_1fr] relative z-10 w-full">
-                            <div className="text-center md:text-left" data-aos="fade-up">
-                                <h1 className="mb-4 text-4xl sm:text-7xl font-black text-[#333] leading-tight">
-                                    IT-ESEGA <span className="text-red-600 inline-block transform -skew-x-12">2025</span>
+                    <div className="container mx-auto px-6 py-30 pt-35">
+                        <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[1.5fr_1fr]">
+                            <div className="text-center md:text-left" data-aos="fade-right">
+                                <h1 className="mb-4 text-7xl font-black text-[#333]">
+                                    IT-ESEGA <span className="text-secondary inline-block -skew-x-12 transform">2025</span>
                                 </h1>
                                 <p className="mb-6 sm:mb-8 text-base sm:text-xl text-[#333] max-w-2xl mx-auto md:mx-0 leading-relaxed">
                                     Bergabunglah dalam perlombaan eSport bergengsi. Daftarkan timmu, taklukkan bracket, dan menangkan hadiah jutaan rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
@@ -114,9 +161,7 @@ export default function Home() {
                                 <div className="flex justify-center space-x-4 md:justify-start">
                                     <Link
                                         href={route('register')}
-                                        className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold
-                                            bg-red-600 text-white rounded-lg transform transition-all duration-300
-                                            hover:bg-red-700 hover:scale-105 hover:shadow-lg"
+                                        className="border-secondary text-secondary hover:bg-secondary rounded-lg border bg-transparent px-8 py-4 text-lg font-semibold transition-colors duration-300 hover:text-white"
                                     >
                                         Register Now!
                                     </Link>
@@ -143,7 +188,7 @@ export default function Home() {
                                     </button>
                                 </div>
                             </div>
-                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
+                            <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-left">
                                 <motion.img
                                     src="/images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
@@ -168,25 +213,39 @@ export default function Home() {
                         </div>
                     </div>
 
-                    {/* Video Tutorial Modal */}
-                    <Transition appear show={isOpen} as={Fragment}>
-                        <Dialog
-                            as="div"
-                            className="fixed inset-0 z-[60] overflow-y-auto"
-                            onClose={() => setIsOpen(false)}
-                        >
+                    {/* About Section */}
+                    <section id="about" className="bg-white bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-6">
+                            <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1fr_1.2fr]">
+                                <div className="flex justify-center md:justify-start" data-aos="fade-right">
+                                    <img src="/images/MascotEsega25.png" alt="Mascot" className="h-64 w-auto object-contain md:h-150" />
+                                </div>
+                                <div className="text-center md:text-left" data-aos="fade-left">
+                                    <h2 className="mb-8 text-4xl font-bold text-[#333]">
+                                        About <span className="text-red-600">IT-ESEGA</span>
+                                    </h2>
+                                    <p className="mb-6 text-lg text-[#333]">
+                                        IT-ESEGA is the premier technology competition that brings together the brightest minds from universities
+                                        across the nation.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* How to Register Dialog */}
+                    <Transition show={isOpen} as={Fragment}>
+                        <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>
                             <Transition.Child
                                 as={Fragment}
-                                enter="ease-out duration-200"
+                                enter="ease-out duration-300"
                                 enterFrom="opacity-0"
                                 enterTo="opacity-100"
-                                leave="ease-in duration-150"
+                                leave="ease-in duration-200"
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
                             >
-                                <div className="fixed inset-0">
-                                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
-                                </div>
+                                <div className="fixed inset-0 bg-black bg-opacity-25" />
                             </Transition.Child>
 
                             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -318,7 +377,40 @@ export default function Home() {
                                 <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-800 mb-4" data-aos="fade-up">
                                     Upcoming <span className="text-red-600">Tournament</span>
                                 </h2>
-                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
+                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full mb-6 sm:mb-8" data-aos="fade-up" data-aos-delay="50"></div>
+                            </div>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                {[
+                                    {
+                                        title: '1st Place',
+                                        amount: '$1000',
+                                        description: 'Champion of the tournament.',
+                                        delay: 100,
+                                    },
+                                    {
+                                        title: '2nd Place',
+                                        amount: '$500',
+                                        description: 'Runner-up of the tournament.',
+                                        delay: 200,
+                                    },
+                                    {
+                                        title: '3rd Place',
+                                        amount: '$250',
+                                        description: 'Third place in the tournament.',
+                                        delay: 300,
+                                    },
+                                ].map((prize, i) => (
+                                    <div
+                                        key={i}
+                                        className="group relative flex flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                        data-aos="fade-up"
+                                        data-aos-delay={prize.delay}
+                                    >
+                                        <h3 className="mb-4 text-2xl font-semibold text-gray-800">{prize.title}</h3>
+                                        <p className="mb-2 text-lg font-bold text-red-600">{prize.amount}</p>
+                                        <p className="text-sm text-gray-500">{prize.description}</p>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 justify-items-center">
@@ -333,7 +425,8 @@ export default function Home() {
                                     bgImage: "/images/ML-bg-high.jpeg",
                                     delay: 0,
                                     animation: "fade-up",
-                                    fee: "Rp 100.000"
+                                    fee: "Rp 100.000",
+                                    link: "register"
                                 }, {
                                     title: "Free Fire",
                                     slots: "48 SLOTS",
@@ -345,12 +438,13 @@ export default function Home() {
                                     bgImage: "/images/FF-bg-high.jpeg",
                                     delay: 100,
                                     animation: "fade-up",
-                                    fee: "Rp 100.000"
+                                    fee: "Rp 100.000",
+                                    link: "register"
                                 }].map((game, i) => (
                                     <div
                                         key={i}
-                                        className="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl border-2 border-red-500/50 hover:border-red-500 p-3"
-                                        data-aos={game.animation}
+                                        className="group relative w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl"
+                                        data-aos="fade-up"
                                         data-aos-delay={game.delay}
                                         style={{ height: '600px' }}
                                     >
@@ -400,8 +494,8 @@ export default function Home() {
                                                 </div>
 
                                                 <Link
-                                                    href={route('register')}
-                                                    className="inline-block rounded-lg bg-red-600 px-8 py-3 text-white text-base font-semibold transition-all duration-300 hover:bg-red-700 hover:shadow-lg transform hover:scale-105"
+                                                    href={route(game.link)}
+                                                    className="hover:bg-primary/90 inline-block rounded-lg bg-red-600 px-6 py-2.5 text-sm font-medium text-white transition hover:shadow-md"
                                                 >
                                                     Register Now
                                                 </Link>
@@ -509,141 +603,20 @@ export default function Home() {
                     </section>
 
                     {/* Timeline Section */}
-                    <section className="relative overflow-hidden py-16 md:py-24">
-                        <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
-                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
-                            <div className="text-center mb-8 md:mb-12">
-                                <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                    Event <span className="text-red-600">Timeline</span>
-                                </h2>
-                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
-                            </div>
+                    <TimelineSection timeline={event.data || []} />
 
-                            <div className="relative mx-auto flex w-full flex-col items-center">
-                                {/* Timeline Line */}
-                                <div
-                                    className="bg-red-500 absolute top-0 left-1/2 h-full w-1 -translate-x-1/2 transform md:block hidden"
-                                    data-aos="fade-down"
-                                    data-aos-duration="1500"
-                                    data-aos-delay="200"
-                                    data-aos-easing="ease-out-cubic"
-                                />
-                                {/* Mobile Timeline Line */}
-                                <div
-                                    className="bg-red-500 absolute top-0 left-6 h-full w-1 md:hidden"
-                                    data-aos="fade-down"
-                                    data-aos-duration="1500"
-                                    data-aos-delay="200"
-                                    data-aos-easing="ease-out-cubic"
-                                />
-                                {[
-                                    {
-                                        date: 'January 1, 2025',
-                                        title: 'Lorem Ipsum Dolor',
-                                        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vehicula magna ut ante cursus.',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        )
-                                    },
-                                    {
-                                        date: 'February 10, 2025',
-                                        title: 'Sit Amet Consectetur',
-                                        description: 'Phasellus vitae sapien vel velit dapibus suscipit. Pellentesque habitant morbi tristique senectus.',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        )
-                                    },
-                                    {
-                                        date: 'March 20, 2025',
-                                        title: 'Adipisicing Elit',
-                                        description: 'Mauris lacinia, nulla in fermentum blandit, urna leo laoreet nulla, eget sodales ligula erat ac elit.',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        )
-                                    },
-                                    {
-                                        date: 'April 5, 2025',
-                                        title: 'Dolore Magna Aliqua',
-                                        description: 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                                        icon: (
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        )
-                                    },
-                                ].map((item, index) => {
-                                    const isLeft = index % 2 === 0;
-                                    return (
-                                        <motion.div
-                                            key={index}
-                                            initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
-                                            whileInView={{ opacity: 1, x: 0 }}
-                                            viewport={{ once: true }}
-                                            transition={{ duration: 0.6, delay: index * 0.1 }}
-                                            className={`mb-8 md:mb-16 flex w-full flex-col ${isLeft
-                                                ? 'md:pr-4 md:items-end md:self-start pl-12 md:pl-0'
-                                                : 'md:pl-4 md:items-start md:self-end pl-12 md:pl-0'
-                                                } md:w-1/2 items-start`}
-                                        >
-                                            <div className="relative max-w-md w-full rounded-xl border border-red-100 bg-white p-4 sm:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                                                {/* Animated Circle - Desktop */}
-                                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 transform md:block hidden">
-                                                    <div className="relative">
-                                                        <div className="absolute -inset-4 rounded-full bg-red-500/20 animate-pulse"></div>
-                                                        <div className="relative">
-                                                            <div className="bg-red-500 h-10 w-10 rounded-full border-4 border-white shadow-lg flex items-center justify-center animate-bounce">
-                                                                <div className="text-white">
-                                                                    {item.icon}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {/* Animated Circle - Mobile */}
-                                                <div className="absolute -left-[2.4rem] top-2 md:hidden">
-                                                    <div className="relative">
-                                                        <div className="absolute -inset-1 rounded-full bg-red-500/20 animate-pulse"></div>
-                                                        <div className="relative">
-                                                            <div className="bg-red-500 h-7 w-7 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                                                                <div className="text-white scale-75">
-                                                                    {item.icon}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <p className="mb-2 text-sm font-medium text-red-500">{item.date}</p>
-                                                <h4 className="text-red-600 mb-2 text-lg sm:text-xl font-semibold">{item.title}</h4>
-                                                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{item.description}</p>
-                                            </div>
-                                        </motion.div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </section>
 
                     {/* FAQ Section */}
-                    <section id="faq" className="relative overflow-hidden py-16 md:py-24">
-                        <div className="absolute inset-0 bg-gradient-to-b from-red-100/30 via-white to-red-50/40"></div>
-                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
+                    <section id="faq" className="bg-cover bg-center py-40" data-aos="fade-up">
+                        <div className="container mx-auto px-4">
                             <div className="mx-auto max-w-3xl">
-                                <div className="text-center mb-8 md:mb-12">
-                                    <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">
-                                        Frequently <span className="text-red-600">Asked Questions</span>
-                                    </h2>
-                                    <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
-                                </div>
-                                <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm" data-aos="fade-up" data-aos-delay="100">
+                                <h2 className="mb-10 text-center text-4xl font-extrabold text-gray-900">
+                                    Frequently <span className="text-red-600">Asked Questions</span>
+                                </h2>
+                                <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-gray-50 shadow-sm">
                                     {faqs.map((faq, index) => (
                                         <Disclosure key={index}>
-                                            {({ open }: { open: boolean }) => (
+                                            {({ open }) => (
                                                 <div className="px-6 py-5 transition-all hover:bg-gray-100">
                                                     <Disclosure.Button className="flex w-full items-center justify-between text-left text-lg font-medium text-gray-800 focus:outline-none">
                                                         <span>{faq.question}</span>
@@ -672,22 +645,13 @@ export default function Home() {
                         </div>
                     </section>
 
-                    {/* Contact Person Section */}
-                    <section id="contact" className="relative overflow-hidden py-16 md:py-24">
-                        <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-red-100/30 to-white"></div>
-                        <div className="relative z-10 max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
-                            <div className="text-center mb-8 md:mb-12">
-                                <h2 className="text-3xl sm:text-4xl font-bold mb-4" data-aos="fade-up">
-                                    <span className="text-red-600">CONTACT</span>{" "}
-                                    <span className="text-red-400">PERSON</span>
-                                </h2>
-                                <div className="w-20 sm:w-24 h-1 bg-red-600 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="50"></div>
-                                <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">
-                                    Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk menghubungi narahubung yang tertera di bawah ini.
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                    {/* Contact Person inti esega*/}
+                    <section id="contact" className="bg-cover bg-center py-16" data-aos="fade-up">
+                        <div className="container mx-auto px-4">
+                            <h2 className="mb-8 text-center text-4xl font-bold text-[#333]">
+                                Contact <span className="text-red-600">Persons</span>
+                            </h2>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                                 {[
                                     {
                                         name: "Damar",

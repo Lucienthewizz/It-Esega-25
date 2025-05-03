@@ -6,14 +6,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Event } from '@/types/event';
 import { useForm } from '@inertiajs/react';
 import { Loader } from 'lucide-react';
-import { DatePickerWithRange } from '../datepicker/date-picker';
-
-interface EventFormProps {
-    onCancel: () => void;
-    initialData?: Event | null;
-    processing: boolean;
-    onSubmit: (updatedEvent: Event) => void;
-}
 
 const CATEGORIES = [
     { value: 'mobile_legend', label: 'Mobile Legend' },
@@ -23,11 +15,18 @@ const CATEGORIES = [
     { value: 'closing', label: 'Closing' },
 ];
 
+interface EventFormProps {
+    onCancel: () => void;
+    initialData?: Event | null;
+    processing: boolean;
+    onSubmit: (updatedEvent: Event) => void;
+}
+
 export function EventForm({ onCancel, initialData, processing, onSubmit }: EventFormProps) {
     const { data, setData, errors } = useForm({
         title: initialData?.title || '',
-        due_date: initialData?.due_date ? new Date(initialData.due_date).toISOString() : '',
-        end_date: initialData?.end_date ? new Date(initialData.end_date).toISOString() : '', // Added end_date field
+        due_date: initialData?.due_date ? new Date(initialData.due_date).toISOString().split('T')[0] : '',
+        end_date: initialData?.end_date ? new Date(initialData.end_date).toISOString().split('T')[0] : '',
         description: initialData?.description || '',
         category: initialData?.category || 'main',
         location: initialData?.location || '',
@@ -40,7 +39,7 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
         const formData: Omit<Event, 'id'> & { id: number } = {
             title: data.title,
             due_date: data.due_date ? new Date(data.due_date) : new Date(),
-            end_date: data.end_date ? new Date(data.end_date) : new Date(), // Ensure end_date is included
+            end_date: data.end_date ? new Date(data.end_date) : undefined,
             description: data.description,
             category: data.category,
             location: data.location,
@@ -51,29 +50,24 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
         onSubmit(formData);
     };
 
-    const handleDateChange = (dateRange: { from: Date; to: Date | undefined }) => {
-        if (dateRange?.from) {
-            setData('due_date', dateRange.from.toISOString());
-            setData('end_date', dateRange.to ? dateRange.to.toISOString() : dateRange.from.toISOString());
-        } else {
-            setData('due_date', '');
-            setData('end_date', '');
-        }
-    };
-
     return (
         <form onSubmit={onSubmitHandler} className="space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="title">Event Title</Label>
-                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder="Enter event title" />
+                <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} placeholder="Enter event title" required />
                 {errors.title && <span className="text-sm text-red-500">{errors.title}</span>}
             </div>
 
             <div className="space-y-2">
-                <Label htmlFor="due_date">Date Range</Label>
-                <DatePickerWithRange className="w-full" onChange={handleDateChange} />
+                <Label htmlFor="due_date">Due Date</Label>
+                <Input id="due_date" type="date" value={data.due_date} onChange={(e) => setData('due_date', e.target.value)} required />
                 {errors.due_date && <span className="text-sm text-red-500">{errors.due_date}</span>}
-                {errors.end_date && <span className="text-sm text-red-500">{errors.end_date}</span>} {/* Added error handling for end_date */}
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="end_date">End Date</Label>
+                <Input id="end_date" type="date" value={data.end_date} onChange={(e) => setData('end_date', e.target.value)} required />
+                {errors.end_date && <span className="text-sm text-red-500">{errors.end_date}</span>}
             </div>
 
             <div className="space-y-2">
@@ -93,6 +87,17 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
             </div>
 
             <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                    id="location"
+                    value={data.location}
+                    onChange={(e) => setData('location', e.target.value)}
+                    placeholder="Enter event location, eg:yotube link or maps"
+                />
+                {errors.location && <span className="text-sm text-red-500">{errors.location}</span>}
+            </div>
+
+            <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                     id="description"
@@ -100,6 +105,7 @@ export function EventForm({ onCancel, initialData, processing, onSubmit }: Event
                     onChange={(e) => setData('description', e.target.value)}
                     placeholder="Enter event description"
                     rows={3}
+                    required
                 />
             </div>
 

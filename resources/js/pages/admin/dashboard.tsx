@@ -9,11 +9,7 @@ export default function AdminDashboard() {
     console.log('admin dashboard data', auth);
 
     return (
-<<<<<<< HEAD
-        <AuthenticatedAdminLayout user={auth}>
-=======
-        <AuthenticatedAdminLayout title="IT-ESEGA Admin Portal | Dashboard" headerTitle={'Control Panel'} user={auth}>
->>>>>>> fbbc686da5809a93d113b302ad97e5115290ed8e
+        <AuthenticatedAdminLayout title="Admin Dashboard" headerTitle={'Dashboard'} user={auth}>
             <div>
                 {auth?.name}
             </div>

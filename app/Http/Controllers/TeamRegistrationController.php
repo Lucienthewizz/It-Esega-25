@@ -15,19 +15,40 @@ class TeamRegistrationController extends Controller
 {
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $gameType = $request->input('game_type');
+        
+        // Aturan validasi dasar
+        $rules = [
             'team_name' => 'required|string|max:255',
             'team_logo' => 'required|image|max:2048',
             'proof_of_payment' => 'required|image|max:2048',
             'game_type' => 'required|in:ml,ff',
-        ]);
+        ];
+        
+        // Tambahkan validasi unique berdasarkan jenis game
+        if ($gameType === 'ml') {
+            $rules['team_name'] .= '|unique:ML_Team,team_name';
+        } elseif ($gameType === 'ff') {
+            $rules['team_name'] .= '|unique:FF_Team,team_name';
+        }
+        
+        $validated = $request->validate($rules);
 
         $isML = $validated['game_type'] === 'ml';
         $isFF = $validated['game_type'] === 'ff';
 
+        // Periksa kembali secara manual apakah tim sudah ada (sebagai double-check)
         if ($isML) {
+            $existingTeam = ML_Team::where('team_name', $validated['team_name'])->first();
+            if ($existingTeam) {
+                return back()->withErrors(['team_name' => 'Nama tim Mobile Legends sudah digunakan. Silakan gunakan nama lain.'])->withInput();
+            }
             $team = new ML_Team();
         } else if ($isFF) {
+            $existingTeam = FF_Team::where('team_name', $validated['team_name'])->first();
+            if ($existingTeam) {
+                return back()->withErrors(['team_name' => 'Nama tim Free Fire sudah digunakan. Silakan gunakan nama lain.'])->withInput();
+            }
             $team = new FF_Team();
         }
 
