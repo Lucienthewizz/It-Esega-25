@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use App\Models\CompetitionSlot;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class TeamRegistrationController extends Controller
 {
@@ -51,13 +53,15 @@ class TeamRegistrationController extends Controller
             ], 404);
         }
         
-        // Hitung slot yang dibutuhkan
-        $slotCount = 1; // Default untuk Free Fire (selalu single slot)
-        
+        // Periksa apakah pengguna memilih double slot
+        $isDoubleSlot = false;
         if ($gameType === 'ml') {
-            $slotType = $validated['slot_type'] ?? 'double';
-            $slotCount = $slotType === 'double' ? 2 : 1;
+            $slotType = $validated['slot_type'] ?? 'single';
+            $isDoubleSlot = $slotType === 'double';
         }
+        
+        // Untuk setiap pendaftaran, kita hanya mengurangi 1 slot
+        $slotCount = 1;
         
         // Cek ketersediaan slot
         $availableSlots = $slot->getAvailableSlots();
@@ -80,8 +84,8 @@ class TeamRegistrationController extends Controller
             $team = new ML_Team();
             
             // Set slot type dan count untuk ML
-            $team->slot_type = $validated['slot_type'] ?? 'double';
-            $team->slot_count = $team->slot_type === 'double' ? 2 : 1;
+            $team->slot_type = $validated['slot_type'] ?? 'single';
+            $team->slot_count = 1; // Selalu set 1 untuk setiap pendaftaran, karena kita menangani slot satu per satu
             
         } else if ($isFF) {
             $existingTeam = FF_Team::where('team_name', $validated['team_name'])->first();
@@ -124,12 +128,21 @@ class TeamRegistrationController extends Controller
         $team->save();
 
         // Setelah berhasil mendaftar, tambah jumlah slot yang digunakan 
-        // Gunakan slot_count untuk menentukan berapa slot yang digunakan (1 untuk single, 2 untuk double)
-        $slotsUsed = $isML ? ($team->slot_count ?? 1) : 1;
-        $slot->incrementUsedSlots($slotsUsed);
+        // Selalu kurangi 1 slot untuk setiap pendaftaran
+        $slot->incrementUsedSlots(1);
 
         $encryptedTeamName = encrypt($team->team_name);
-        Session::flash('success', 'Selamat anda berhasil mendaftar sebagai team ' . $validated['team_name']);
+        
+        // Pesan sukses yang berbeda tergantung apakah ini double slot atau tidak
+        if ($isDoubleSlot) {
+            $successMessage = 'Selamat anda berhasil mendaftar sebagai team ' . $validated['team_name'] . '. Ini adalah tim pertama dari pendaftaran Double Slot. Setelah mengisi data pemain, silakan mendaftar untuk tim kedua Anda.';
+            // Simpan dalam session bahwa pengguna telah mendaftar untuk double slot
+            Session::put('double_slot_registered', true);
+        } else {
+            $successMessage = 'Selamat anda berhasil mendaftar sebagai team ' . $validated['team_name'];
+        }
+        
+        Session::flash('success', $successMessage);
 
         if ($isML) {
             return redirect()->route('player-registration.form', ['encryptedTeamName' => $encryptedTeamName]);

@@ -44,6 +44,10 @@ Route::get('/team-cek', function () {
 
 });
 
+// API Routes for Player Data
+Route::get('/api/ff-players', [TeamPlayerController::class, 'getFFPlayers']);
+Route::get('/api/ml-players', [TeamPlayerController::class, 'getMLPlayers']);
+
 
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {

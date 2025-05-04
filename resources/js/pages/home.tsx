@@ -15,13 +15,15 @@ import TimelineSection from '@/components/home/timeline';
 import { Event } from '@/types/event';
 
 export default function Home() {
-    const { user, flash, event = { data: [] } } = usePage<{ 
+    const { user, flash, event = { data: [] }, showSecondTeamRegistration } = usePage<{ 
         user: { data: UserType }, 
-        flash: { success?: string; error?: string }; 
-        event: { data: Event[] }
+        flash: { success?: string; error?: string; info?: string }; 
+        event: { data: Event[] },
+        showSecondTeamRegistration?: boolean
     }>().props;
     const [isOpen, setIsOpen] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [showDoubleSlotNotification, setShowDoubleSlotNotification] = useState(false);
 
     // Debugging data timeline
     console.log('Timeline data dari API:', event);
@@ -43,6 +45,14 @@ export default function Home() {
             return () => clearTimeout(timer);
         }
     }, [flash?.success]);
+    
+    // Cek apakah user perlu mendaftar tim kedua (double slot)
+    useEffect(() => {
+        if (showSecondTeamRegistration) {
+            setShowDoubleSlotNotification(true);
+            // Notifikasi akan tetap ada sampai user mengklik tombol close
+        }
+    }, [showSecondTeamRegistration]);
 
     const navItems = [
         { title: 'Home', href: route('home') },
@@ -99,6 +109,44 @@ export default function Home() {
     return (
         <>
             <Head title="IT-ESEGA 2025 Official Website" />
+            
+            {/* Notifikasi Double Slot */}
+            <Transition
+                show={showDoubleSlotNotification}
+                as={Fragment}
+                enter="transform transition duration-500"
+                enterFrom="translate-y-full opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transform transition duration-500"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-full opacity-0"
+            >
+                <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4 rounded-xl shadow-lg">
+                    <div className="flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <div>
+                            <span className="font-medium block">Pendaftaran Double Slot</span>
+                            <span className="text-sm">Anda telah mendaftar tim pertama dengan Double Slot. Silakan mendaftar untuk tim kedua Anda sekarang!</span>
+                        </div>
+                        <Link
+                            href={route('register')}
+                            className="ml-2 bg-white text-blue-600 px-3 py-1 rounded text-sm font-medium hover:bg-blue-50 transition-colors"
+                        >
+                            Daftar Tim Kedua
+                        </Link>
+                        <button
+                            onClick={() => setShowDoubleSlotNotification(false)}
+                            className="ml-2 text-white hover:text-blue-100 transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </Transition>
             
             {/* Notifikasi Sukses dengan Animasi */}
             <Transition

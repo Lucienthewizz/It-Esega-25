@@ -11,6 +11,7 @@ use App\Models\ML_Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -95,6 +96,18 @@ class PlayerRegistrationController extends Controller
                     'role' => $player['role']
                 ]);
             }
+        }
+
+        // Cek apakah user menggunakan double slot dan ini adalah tim pertama
+        if (Session::has('double_slot_registered')) {
+            Session::forget('double_slot_registered'); // Hapus penanda karena sudah tidak dibutuhkan
+            
+            // Arahkan ke halaman registrasi tim kedua dengan pesan
+            Session::flash('info', 'Pendaftaran pemain untuk tim pertama berhasil! Sekarang silakan mendaftar untuk tim kedua Anda.');
+            return redirect()->route('home')->with([
+                'showSecondTeamRegistration' => true, 
+                'success' => 'Pendaftaran pemain untuk tim pertama berhasil. Silakan mendaftar untuk tim kedua Anda.'
+            ]);
         }
 
         return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESSEGA!');
