@@ -23,6 +23,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'KTM',
+        'address',
+        'email_verified_at',
+        'status',
     ];
 
     protected $guard_name = 'web';

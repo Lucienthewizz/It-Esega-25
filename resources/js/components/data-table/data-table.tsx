@@ -38,8 +38,12 @@ type Props<TData> = {
     restoreDialogContent?: React.ReactNode;
     onAddConfirm?: () => void;
     onRestoreConfirm?: () => void;
+    onEdit?: (data: TData) => void;
+    onDelete?: (id: number) => void;
+    onRestore?: (id: number) => void;
     initialColumnVisibility?: Record<string, boolean>;
 };
+
 
 export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore, isButtonAdd, addDialogContent, restoreDialogContent, onAddConfirm, onRestoreConfirm, initialColumnVisibility }: Props<TData>) {
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -96,7 +100,7 @@ export function DataTable<TData>({ data, columns, filterColumn, isButtonRestore,
                                 trigger={<Button variant="default"><PlusIcon /> Add New</Button>}
                                 confirmText="Simpan"
                                 onConfirm={onAddConfirm}
-                                type="form"
+                                type="form-no-btn"
                             >
                                 {addDialogContent}
                             </CustomDialog>
