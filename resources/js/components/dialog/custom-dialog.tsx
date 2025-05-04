@@ -18,7 +18,7 @@ type CustomDialogProps = {
     confirmText?: string
     cancelText?: string
     onConfirm?: () => void
-    type?: "form" | "confirm" | "delete"
+    type?: "form" | "confirm" | "delete" | "form-no-btn"
     loading?: boolean
 }
 
@@ -37,7 +37,7 @@ export function CustomDialog({
 
     const handleConfirm = () => {
         onConfirm?.()
-        if (type !== "form" && type !== "confirm" && type !== "delete") {
+        if (type !== "form" && type !== "confirm" && type !== "delete" && type !== "form-no-btn") {
             setOpen(false)
         }
     }
@@ -52,18 +52,27 @@ export function CustomDialog({
                         {description && <DialogDescription>{description}</DialogDescription>}
                     </DialogHeader>
                 )}
-                {type === "form" && children}
+                {type === "form" || type === "form-no-btn" && children}
                 <DialogFooter className="mt-4">
                     <Button variant="outline" onClick={() => setOpen(false)}>
                         {cancelText}
                     </Button>
-                    <Button
-                        variant={type === "delete" ? "destructive" : "default"}
-                        onClick={handleConfirm}
-                        disabled={loading}
-                    >
-                        {loading ? "Please wait..." : confirmText}
-                    </Button>
+                    {type != 'form-no-btn' ? (
+                        <>
+                            <Button
+                                variant={type === "delete" ? "destructive" : "default"}
+                                onClick={handleConfirm}
+                                disabled={loading}
+                            >
+                                {loading ? "Please wait..." : confirmText}
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+
+                        </>
+                    )}
+
                 </DialogFooter>
             </DialogContent>
         </Dialog>

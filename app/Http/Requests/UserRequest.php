@@ -20,6 +20,8 @@ class UserRequest extends FormRequest
             'address' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'KTM' => ['nullable', 'string', 'max:255'],
+            'email_verified_at' => ['nullable', 'string', 'max:255'],
+            'remember_token' => ['nullable', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
             'status' => ['required', Rule::in(['active', 'inactive', 'blocked'])],
         ];

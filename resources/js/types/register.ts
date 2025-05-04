@@ -7,59 +7,56 @@ export interface TeamData {
     slot_type?: "single" | "double"
 }
 
+
 export interface MLPlayer {
-    name: string
-    nickname: string
-    id: string
-    id_server: string
-    no_hp: string
-    email: string
-    alamat: string
-    tanda_tangan: string | File | null
-    foto: string | File | null
-    ml_team_id?: number | null
-    role: 'ketua' | 'anggota' | 'cadangan'
+    name: string;
+    nickname: string;
+    id: string;
+    id_server: string;
+    no_hp: string;
+    email: string;
+    alamat: string;
+    tanda_tangan: string | File | null;
+    foto: string | File | null;
+    ml_team_id?: number | null;
+    role: 'ketua' | 'anggota' | 'cadangan';
     created_at?: string;
     updated_at?: string;
 }
-
-
 
 export interface FFPlayer {
-    id: string
-    ff_team_id?: number | null
-    name: string
-    nickname: string
-    id_server: string
-    no_hp: string
-    email: string
-    alamat: string
-    tanda_tangan?: string | File | null
-    foto?: string | File | null
-    role: 'ketua' | 'anggota' | 'cadangan'
+    id: string;
+    ff_team_id?: number | null;
+    name: string;
+    nickname: string;
+    id_server: string;
+    no_hp: string;
+    email: string;
+    alamat: string;
+    tanda_tangan?: string | File | null;
+    foto?: string | File | null;
+    role: 'ketua' | 'anggota' | 'cadangan';
     created_at?: string;
     updated_at?: string;
 }
 
-
 export interface PlayerFFFormProps {
-    player: FFPlayer
-    allPlayers: FFPlayer[]
-    index: number
-    onChange: <K extends keyof FFPlayer>(index: number, field: K, value: FFPlayer[K]) => void
-    onDelete: () => void
-    errorsBE: Record<string, string>
+    player: FFPlayer;
+    allPlayers: FFPlayer[];
+    index: number;
+    onChange: <K extends keyof FFPlayer>(index: number, field: K, value: FFPlayer[K]) => void;
+    onDelete: () => void;
+    errorsBE: Record<string, string>;
 }
 
 export interface PlayerFormProps {
-    player: MLPlayer
-    allPlayers: MLPlayer[]
-    index: number
-    onChange: <K extends keyof MLPlayer>(index: number, field: K, value: MLPlayer[K]) => void
-    onDelete: () => void
-    errorsBE: Record<string, string>
+    player: MLPlayer;
+    allPlayers: MLPlayer[];
+    index: number;
+    onChange: <K extends keyof MLPlayer>(index: number, field: K, value: MLPlayer[K]) => void;
+    onDelete: () => void;
+    errorsBE: Record<string, string>;
 }
-
 
 export interface FFPlayerFormProps {
     player: FFPlayer
@@ -87,10 +84,9 @@ export interface TeamRegistrationFormProps {
     resetStep?: () => void
 }
 
-
 export interface PlayerRegistrationFormProps {
-    teamData: TeamData
-    gameType: "ml" | "ff"
+    teamData: TeamData;
+    gameType: 'ml' | 'ff';
 }
 
 export interface QRCodeSectionProps {
@@ -103,10 +99,10 @@ export interface QRCodeSectionProps {
 }
 
 export interface FileUploadFieldProps {
-    id: string
-    label: string
-    accept: string
-    value: File | null
-    onChange: (file: File | null) => void
-    helpText?: string
+    id: string;
+    label: string;
+    accept: string;
+    value: File | null;
+    onChange: (file: File | null) => void;
+    helpText?: string;
 }

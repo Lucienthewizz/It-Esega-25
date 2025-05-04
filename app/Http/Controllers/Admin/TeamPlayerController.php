@@ -54,11 +54,11 @@ class TeamPlayerController extends Controller
 
     public function ffPlayer(){
         $players = FF_Participant::all();
-        dd($players);
+        return Excel::download(new FFPlayersExport($players), 'ff_players.xlsx');
     }
     
     public function mlPlayer(){
         $players = ML_Participant::all();
-        dd($players);
+        return Excel::download(new MLPlayersExport($players), 'ml_players.xlsx');
     }
 }
