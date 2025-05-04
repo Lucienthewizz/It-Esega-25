@@ -12,11 +12,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 // import { FFPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle, Loader2 } from "lucide-react"
+import { AlertCircle, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle } from "lucide-react"
 import { useProgressFF } from "@/hooks/use-progress-ff"
 import { useFFPlayers } from "@/hooks/use-ff-player"
 import type { FFPlayer, PlayerRegistrationFormProps } from "@/types/register"
 import { FFPlayerForm } from "@/components/registration/ff-player-form"
+import LoadingScreen from "@/components/ui/loading-screen"
+import SuccessDialog from "@/components/ui/success-dialog"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isFF = gameType === "ff"
@@ -51,9 +53,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [showValidationError, setShowValidationError] = useState(false)
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
-    const [successMessage, setSuccessMessage] = useState("")
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false)
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
     const progress = useProgressFF(formData.ff_players, minPlayers)
 
@@ -113,10 +114,15 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                 setAlertMessage("Nomor HP harus terdiri dari 10 hingga 15 digit angka.")
                 setTimeout(() => {
                     setShowValidationError(false)
-                }, 5000)
+                }, 10000)
             }
         }
     }
+    
+    const simulateFileUploadProgress = () => {
+        // Dummy function untuk backward compatibility
+        return setInterval(() => {}, 1000);
+    };
     
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -126,7 +132,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setAlertMessage("Data tim tidak valid. Silakan coba lagi.")
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
+            }, 10000)
             return
         }
     
@@ -138,7 +144,29 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setAlertMessage(`Minimal harus ada ${minPlayers} pemain.`)
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
+            }, 10000)
+            return
+        }
+
+        // Validasi foto dan tanda tangan
+        const playersWithoutFoto = formData.ff_players.filter(player => !player.foto);
+        const playersWithoutTandaTangan = formData.ff_players.filter(player => !player.tanda_tangan);
+
+        if (playersWithoutFoto.length > 0) {
+            setShowValidationError(true)
+            setAlertMessage(`Foto pemain belum dilengkapi untuk ${playersWithoutFoto.length} pemain. Silakan upload foto untuk semua pemain.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        }
+
+        if (playersWithoutTandaTangan.length > 0) {
+            setShowValidationError(true)
+            setAlertMessage(`Tanda tangan pemain belum dilengkapi untuk ${playersWithoutTandaTangan.length} pemain. Silakan upload tanda tangan untuk semua pemain.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
             return
         }
 
@@ -152,11 +180,13 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setAlertMessage(`Nomor HP tidak valid untuk pemain ${playerNumbers}. Pastikan nomor HP terdiri dari 10-15 digit angka.`)
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
+            }, 10000)
             return
         }
     
-        setIsSubmitting(true)
+        setShowLoadingScreen(true)
+        
+        const progressInterval = simulateFileUploadProgress();
 
         try {
             const submitData = new FormData()
@@ -185,46 +215,41 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
             router.post(route("player-registration-ff.store"), submitData, {
                 onSuccess: () => {
-                    // Reset form data and clear localStorage
-                    setFormData(prev => ({ ...prev, ff_players: [] }))
-                    localStorage.removeItem("ff_players_data")
-                    setSuccessMessage("Pendaftaran berhasil!")
-                    setShowSuccessAlert(true)
+                    clearInterval(progressInterval);
+                    
                     setTimeout(() => {
-                        setShowSuccessAlert(false)
-                    }, 3000)
+                        setFormData(prev => ({ ...prev, ff_players: [] }))
+                        localStorage.removeItem("ff_players_data")
+                        setShowLoadingScreen(false)
+                        setShowSuccessDialog(true)
+                    }, 3000);
                 },
                 onError: (errors) => {
+                    clearInterval(progressInterval);
+                    setShowLoadingScreen(false);
                     console.error('Validation errors:', errors)
                     setShowValidationError(true)
                     setAlertMessage("Terjadi kesalahan validasi. Silakan periksa kembali data yang diinput.")
                     setTimeout(() => {
                         setShowValidationError(false)
-                    }, 5000)
-                },
-                onFinish: () => {
-                    setIsSubmitting(false)
+                    }, 10000)
                 }
             })
         } catch (error) {
+            clearInterval(progressInterval);
+            setShowLoadingScreen(false);
             console.error('Error submitting form:', error)
             setShowValidationError(true)
             setAlertMessage("Terjadi kesalahan saat mengirim form. Silakan coba lagi.")
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
-            setIsSubmitting(false)
+            }, 10000)
         }
     }
 
     const addNewPlayer = () => {
         if (formData.ff_players.length < maxPlayers) {
             addPlayer()
-            setSuccessMessage("Player baru berhasil ditambahkan!")
-            setShowSuccessAlert(true)
-            setTimeout(() => {
-                setShowSuccessAlert(false)
-            }, 3000)
         }
     }
 
@@ -254,6 +279,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         const phoneNumber = "628113985061" // Format: kode negara tanpa + diikuti nomor HP
         const message = `Halo, saya butuh bantuan terkait pendaftaran pemain ${gameTitle}.`
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
+    }
+
+    const handleSuccessDialogClose = () => {
+        router.visit('/')
     }
 
     return (
@@ -327,20 +356,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                         <AlertCircle className="h-4 w-4" />
                                         <AlertTitle className="text-sm">Error</AlertTitle>
                                         <AlertDescription className="text-slate-900 text-xs">{alertMessage}</AlertDescription>
-                                    </Alert>
-                                </motion.div>
-                            )}
-                            {showSuccessAlert && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    <Alert className={`${themeColors.success} p-3`}>
-                                        <CheckCircle2 className="h-4 w-4" />
-                                        <AlertTitle className="text-sm">Success</AlertTitle>
-                                        <AlertDescription className="text-slate-900 text-xs">{successMessage}</AlertDescription>
                                     </Alert>
                                 </motion.div>
                             )}
@@ -440,7 +455,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                             <Button
                                                 type="button"
                                                 onClick={addNewPlayer}
-                                                disabled={formData.ff_players.length >= maxPlayers || isSubmitting}
+                                                disabled={formData.ff_players.length >= maxPlayers}
                                                 className={themeColors.secondary}
                                             >
                                                 <PlusCircle className="mr-2 h-4 w-4" />
@@ -449,17 +464,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                                             <Button
                                                 type="submit"
-                                                disabled={formData.ff_players.length < minPlayers || isSubmitting}
+                                                disabled={formData.ff_players.length < minPlayers}
                                                 className={`w-full sm:w-auto ${themeColors.primary} relative`}
                                             >
-                                                {isSubmitting ? (
-                                                    <>
-                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        Submitting...
-                                                    </>
-                                                ) : (
-                                                    'Submit Team Registration'
-                                                )}
+                                                Submit Team Registration
                                             </Button>
                                         </div>
                                     </div>
@@ -507,6 +515,16 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     <span className="sr-only">Contact Committee</span>
                 </button>
             </div>
+
+            <LoadingScreen isOpen={showLoadingScreen} />
+            
+            <SuccessDialog
+                isOpen={showSuccessDialog}
+                message="Selamat! Pendaftaran tim dan pemain Free Fire telah berhasil. Tim Anda telah terdaftar dalam kompetisi IT-ESEGA 2025. Silahkan tunggu informasi selanjutnya dari panitia."
+                title="Pendaftaran Berhasil!"
+                buttonText="Kembali ke Beranda"
+                onClose={handleSuccessDialogClose}
+            />
         </>
     )
 }

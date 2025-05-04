@@ -60,7 +60,7 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::resource('timeline', TimelineController::class);
     Route::resource('players', TeamPlayerController::class);
     Route::get('testff', [TeamPlayerController::class, 'ffPlayer'])->name('ffPlayer.list');
-    Route::get('testml', [TeamPlayerController::class, 'mlPlayer'])->name('ffPlayer.list');
+    Route::get('testml', [TeamPlayerController::class, 'mlPlayer'])->name('mlPlayer.list');
     Route::get('/export/MLplayers', function () {
         return Excel::download(new MLPlayersExport, 'mlplayers.xlsx');
     });

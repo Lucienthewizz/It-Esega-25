@@ -12,10 +12,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { MLPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle, Loader2 } from "lucide-react"
+import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle } from "lucide-react"
 import { useProgress } from "@/hooks/use-progress"
 import { useMLPlayers } from "@/hooks/use-ml-player"
 import type { MLPlayer, PlayerRegistrationFormProps } from "@/types/register"
+import LoadingScreen from "@/components/ui/loading-screen"
+import SuccessDialog from "@/components/ui/success-dialog"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isML = gameType === "ml"
@@ -52,7 +54,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [successMessage, setSuccessMessage] = useState("")
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showLoadingScreen, setShowLoadingScreen] = useState(false)
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false)
 
     const progress = useProgress(formData.ml_players, minPlayers)
 
@@ -83,6 +86,11 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         teamData.id
     )
 
+    const simulateFileUploadProgress = () => {
+        // Dummy function untuk backward compatibility
+        return setInterval(() => {}, 1000);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -91,22 +99,43 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setAlertMessage(`Kamu Butuh minimal ${minPlayers} Pemain untuk melakukan Submit Form.`)
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
+            }, 10000)
             return
         }
 
-        setIsSubmitting(true)
+        // Validasi foto dan tanda tangan
+        const playersWithoutFoto = formData.ml_players.filter(player => !player.foto);
+        const playersWithoutTandaTangan = formData.ml_players.filter(player => !player.tanda_tangan);
+
+        if (playersWithoutFoto.length > 0) {
+            setShowValidationError(true)
+            setAlertMessage(`Foto pemain belum dilengkapi untuk ${playersWithoutFoto.length} pemain. Silakan upload foto untuk semua pemain.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        }
+
+        if (playersWithoutTandaTangan.length > 0) {
+            setShowValidationError(true)
+            setAlertMessage(`Tanda tangan pemain belum dilengkapi untuk ${playersWithoutTandaTangan.length} pemain. Silakan upload tanda tangan untuk semua pemain.`)
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        }
+
+        setShowLoadingScreen(true)
+        
+        const progressInterval = simulateFileUploadProgress();
 
         try {
-            // Create FormData for file upload
             const submitData = new FormData()
             submitData.append('team_id', formData.team_id.toString())
             
-            // Log data yang akan dikirim
             console.log('Submitting data:', formData.ml_players)
             
             formData.ml_players.forEach((player: MLPlayer, index: number) => {
-                // Append player data
                 submitData.append(`ml_players[${index}][name]`, player.name || '')
                 submitData.append(`ml_players[${index}][nickname]`, player.nickname || '')
                 submitData.append(`ml_players[${index}][id_server]`, player.id_server || '')
@@ -116,7 +145,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                 submitData.append(`ml_players[${index}][ml_team_id]`, formData.team_id.toString())
                 submitData.append(`ml_players[${index}][role]`, player.role || 'anggota')
                 
-                // Handle file uploads dengan format yang benar
                 if (player.foto instanceof File) {
                     console.log(`Uploading foto for player ${index}:`, player.foto.name)
                     submitData.append(`ml_players_${index}_foto`, player.foto)
@@ -127,46 +155,46 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                 }
             })
 
-            // Debug: Log semua data yang akan dikirim
             console.log('Form data entries:')
             for (const [key, value] of submitData.entries()) {
                 console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value)
             }
 
-            // Tambahkan game type ke form data
             submitData.append('game_type', gameType)
 
             router.post(route("player-registration.store"), submitData, {
                 onSuccess: () => {
-                    // Reset form data and clear localStorage
-                    setFormData(prev => ({ ...prev, ml_players: [] }))
-                    localStorage.removeItem("ml_players_data")
+                    clearInterval(progressInterval);
                     setSuccessMessage("Pendaftaran berhasil!")
                     setShowSuccessAlert(true)
+                    setShowLoadingScreen(false)
+                    
                     setTimeout(() => {
-                        setShowSuccessAlert(false)
-                    }, 3000)
+                        setFormData(prev => ({ ...prev, ml_players: [] }))
+                        localStorage.removeItem("ml_players_data")
+                        setShowSuccessDialog(true)
+                    }, 3000);
                 },
                 onError: (errors) => {
+                    clearInterval(progressInterval);
+                    setShowLoadingScreen(false);
                     console.error('Validation errors:', errors)
                     setShowValidationError(true)
                     setAlertMessage("Terjadi kesalahan validasi. Silakan periksa kembali data yang diinput.")
                     setTimeout(() => {
                         setShowValidationError(false)
-                    }, 5000)
+                    }, 10000)
                 },
-                onFinish: () => {
-                    setIsSubmitting(false)
-                }
             })
         } catch (error) {
+            clearInterval(progressInterval);
+            setShowLoadingScreen(false);
             console.error('Error submitting form:', error)
             setShowValidationError(true)
             setAlertMessage("Terjadi kesalahan saat mengirim form. Silakan coba lagi.")
             setTimeout(() => {
                 setShowValidationError(false)
-            }, 5000)
-            setIsSubmitting(false)
+            }, 10000)
         }
     }
 
@@ -191,7 +219,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             setShowSuccessAlert(true)
             setTimeout(() => {
                 setShowSuccessAlert(false)
-            }, 3000)
+            }, 8000)
         }
     }
 
@@ -217,10 +245,13 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleEmergencyContact = () => {
-        // Ganti nomor WhatsApp sesuai dengan nomor panitia yang diperlukan
-        const phoneNumber = "628113985061" // Format: kode negara tanpa + diikuti nomor HP
+        const phoneNumber = "628113985061"
         const message = `Halo, saya butuh bantuan terkait pendaftaran pemain ${gameTitle}.`
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
+    }
+
+    const handleSuccessDialogClose = () => {
+        router.visit('/')
     }
 
     return (
@@ -228,11 +259,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             <Head title={`${gameTitle} Player Registration`} />
 
             <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
-                {/* Navigation Container */}
                 <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-red-100 shadow-sm">
                     <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                         <div className="flex items-center justify-between h-16">
-                            {/* Back Button */}
                             <motion.button
                                 onClick={handleBack}
                                 className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors duration-300"
@@ -244,7 +273,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 <span>Back to Team Registration</span>
                             </motion.button>
 
-                            {/* Progress Indicator */}
                             <div className="flex items-center gap-6">
                                 <div className="flex items-center">
                                     {[1, 2, 3].map((s, index) => (
@@ -279,9 +307,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </div>
                 </div>
 
-                {/* Main Content */}
                 <div className="pt-16">
-                    {/* Alerts Section */}
                     <div className="fixed top-20 right-4 z-50 w-auto max-w-[800px] space-y-2">
                         <AnimatePresence>
                             {showValidationError && (
@@ -316,7 +342,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </div>
 
                     <div className="max-w-6xl mx-auto space-y-8">
-                        {/* Header Section */}
                         <Card className={`${themeColors.card} border-0 shadow-xl`}>
                             <CardHeader className={`p-8 ${themeColors.gradient} text-white rounded-t-xl`}>
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -375,7 +400,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                             </div>
                         </Card>
 
-                        {/* Players Section */}
                         <Card className={themeColors.card}>
                             <CardContent className="p-8">
                                 <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -408,7 +432,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                             <Button
                                                 type="button"
                                                 onClick={addNewPlayer}
-                                                disabled={formData.ml_players.length >= maxPlayers || isSubmitting}
+                                                disabled={formData.ml_players.length >= maxPlayers}
                                                 className={themeColors.secondary}
                                             >
                                                 <PlusCircle className="mr-2 h-4 w-4" />
@@ -417,17 +441,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                                             <Button
                                                 type="submit"
-                                                disabled={formData.ml_players.length < minPlayers || isSubmitting}
+                                                disabled={formData.ml_players.length < minPlayers}
                                                 className={`w-full sm:w-auto ${themeColors.primary} relative`}
                                             >
-                                                {isSubmitting ? (
-                                                    <>
-                                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                        Submitting...
-                                                    </>
-                                                ) : (
-                                                    'Submit Team Registration'
-                                                )}
+                                                Submit Team Registration
                                             </Button>
                                         </div>
                                     </div>
@@ -436,7 +453,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                         </Card>
                     </div>
 
-                    {/* Dialog for Deletion */}
                     <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                         <DialogContent className="sm:max-w-[425px]">
                             <DialogHeader>
@@ -460,7 +476,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </Dialog>
                 </div>
 
-                {/* Emergency Contact Button */}
                 <button
                     onClick={handleEmergencyContact}
                     className="fixed bottom-6 right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-4 rounded-full
@@ -475,6 +490,16 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     <span className="sr-only">Contact Committee</span>
                 </button>
             </div>
+
+            <LoadingScreen isOpen={showLoadingScreen} />
+            
+            <SuccessDialog
+                isOpen={showSuccessDialog}
+                message="Selamat! Pendaftaran tim dan pemain Mobile Legends telah berhasil. Tim Anda telah terdaftar dalam kompetisi IT-ESEGA 2025. Silahkan tunggu informasi selanjutnya dari panitia."
+                title="Pendaftaran Berhasil!"
+                buttonText="Kembali ke Beranda"
+                onClose={handleSuccessDialogClose}
+            />
         </>
     )
 }

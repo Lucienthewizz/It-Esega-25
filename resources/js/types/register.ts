@@ -3,7 +3,10 @@ export interface TeamData {
     team_name: string
     proof_of_payment: File | null
     team_logo: File | null
+    game_type?: "ml" | "ff"
+    slot_type?: "single" | "double"
 }
+
 export interface MLPlayer {
     name: string
     nickname: string
@@ -65,15 +68,23 @@ export interface FFPlayerFormProps {
     onDelete: () => void
 }
 
+export interface GameStats {
+    game_type: string;
+    total_slots: number;
+    used_slots: number;
+    registered_teams: string;
+}
+
 export interface GameSelectionFormProps {
-    onGameSelect: (game: "ml" | "ff") => void
+    onGameSelect: (game: "ml" | "ff") => void;
+    gameStats?: GameStats[];
 }
 
 export interface TeamRegistrationFormProps {
     teamData: TeamData
     gameType: "ml" | "ff"
     onSubmit: (data: TeamData) => void
-    resetStep: () => void
+    resetStep?: () => void
 }
 
 
@@ -88,7 +99,7 @@ export interface QRCodeSectionProps {
     instructions: string[]
     amount: string
     gameType: "ml" | "ff"
-    resetStep: () => void
+    resetStep?: () => void
 }
 
 export interface FileUploadFieldProps {

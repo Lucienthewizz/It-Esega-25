@@ -213,10 +213,11 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                             </Label>
                             <Input
                                 id={`ml-name-${index}`}
-                                value={player.name}
+                                value={player.name || ""}
                                 onChange={handleInputChange("name")}
                                 placeholder="Nama lengkap pemain"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="bg-white/60 border-gray-200 rounded-lg text-gray-900 
+                                           py-2.5 px-3.5 text-sm placeholder:text-red-400"
                                 required
                             />
                             {renderError("name")}

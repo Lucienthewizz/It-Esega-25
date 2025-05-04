@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Models\CompetitionSlot;
 
 class TeamRegistrationController extends Controller
 {
@@ -25,6 +26,11 @@ class TeamRegistrationController extends Controller
             'game_type' => 'required|in:ml,ff',
         ];
         
+        // Tambahkan aturan validasi untuk slot_type jika game-nya Mobile Legends
+        if ($gameType === 'ml') {
+            $rules['slot_type'] = 'required|in:single,double';
+        }
+        
         // Tambahkan validasi unique berdasarkan jenis game
         if ($gameType === 'ml') {
             $rules['team_name'] .= '|unique:ML_Team,team_name';
@@ -33,6 +39,34 @@ class TeamRegistrationController extends Controller
         }
         
         $validated = $request->validate($rules);
+
+        // Validasi ketersediaan slot berdasarkan game type dan slot type
+        $competitionName = $gameType === 'ml' ? 'Mobile Legends' : 'Free Fire';
+        $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
+        
+        if (!$slot) {
+            return response()->json([
+                'success' => false,
+                'message' => "Maaf, kompetisi {$competitionName} tidak ditemukan."
+            ], 404);
+        }
+        
+        // Hitung slot yang dibutuhkan
+        $slotCount = 1; // Default untuk Free Fire (selalu single slot)
+        
+        if ($gameType === 'ml') {
+            $slotType = $validated['slot_type'] ?? 'double';
+            $slotCount = $slotType === 'double' ? 2 : 1;
+        }
+        
+        // Cek ketersediaan slot
+        $availableSlots = $slot->getAvailableSlots();
+        if ($availableSlots < $slotCount) {
+            return response()->json([
+                'success' => false,
+                'message' => "Maaf, slot untuk {$competitionName} tidak mencukupi. Tersedia {$availableSlots} slot, dibutuhkan {$slotCount} slot."
+            ], 400);
+        }
 
         $isML = $validated['game_type'] === 'ml';
         $isFF = $validated['game_type'] === 'ff';
@@ -44,12 +78,18 @@ class TeamRegistrationController extends Controller
                 return back()->withErrors(['team_name' => 'Nama tim Mobile Legends sudah digunakan. Silakan gunakan nama lain.'])->withInput();
             }
             $team = new ML_Team();
+            
+            // Set slot type dan count untuk ML
+            $team->slot_type = $validated['slot_type'] ?? 'double';
+            $team->slot_count = $team->slot_type === 'double' ? 2 : 1;
+            
         } else if ($isFF) {
             $existingTeam = FF_Team::where('team_name', $validated['team_name'])->first();
             if ($existingTeam) {
                 return back()->withErrors(['team_name' => 'Nama tim Free Fire sudah digunakan. Silakan gunakan nama lain.'])->withInput();
             }
             $team = new FF_Team();
+            // Free Fire selalu single slot, tidak perlu set slot_type dan slot_count
         }
 
         $team->team_name = $validated['team_name'];
@@ -82,6 +122,11 @@ class TeamRegistrationController extends Controller
         }
 
         $team->save();
+
+        // Setelah berhasil mendaftar, tambah jumlah slot yang digunakan 
+        // Gunakan slot_count untuk menentukan berapa slot yang digunakan (1 untuk single, 2 untuk double)
+        $slotsUsed = $isML ? ($team->slot_count ?? 1) : 1;
+        $slot->incrementUsedSlots($slotsUsed);
 
         $encryptedTeamName = encrypt($team->team_name);
         Session::flash('success', 'Selamat anda berhasil mendaftar sebagai team ' . $validated['team_name']);

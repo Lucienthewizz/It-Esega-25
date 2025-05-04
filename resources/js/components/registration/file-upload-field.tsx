@@ -102,9 +102,9 @@ export function FileUploadField({
                                 </div>
                                 <div className="flex flex-col items-center gap-1">
                                     <span className="text-sm font-semibold text-red-600 group-hover:text-red-700">
-                                        Click to upload
+                                        Klik untuk upload
                                     </span>
-                                    <span className="text-sm text-gray-500">or drag and drop</span>
+                                    <span className="text-sm text-gray-500">atau drag and drop</span>
                                     <span className="text-xs text-gray-400">{helpText}</span>
                                 </div>
                             </label>
