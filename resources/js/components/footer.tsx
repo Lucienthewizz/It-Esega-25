@@ -1,4 +1,4 @@
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import React from 'react';
 import { route } from 'ziggy-js';
 
@@ -31,10 +31,9 @@ const defaultFooterSections: FooterSection[] = [
         title: 'Quick Links',
         links: [
             { title: 'Home', href: route('home') },
-            { title: 'About', href: '#about' },
+            { title: 'About', href: route('about') },
             { title: 'FAQ', href: '#faq' },
             { title: 'Contact', href: '#contact' },
-            { title: 'Register', href: '#register' },
         ],
     },
     {
@@ -128,28 +127,23 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
     const logo = customLogo || defaultLogo;
 
     const handleNavigation = (e: React.MouseEvent<Element, MouseEvent>, href: string, title: string) => {
-        // Jika link adalah FAQ atau Contact
-        if (title === 'FAQ' || title === 'Contact') {
+        // Cek apakah link menuju ke section dalam halaman (menggunakan hash '#')
+        if (href.startsWith('#')) {
             e.preventDefault();
-
-            // Jika bukan di halaman home, arahkan ke home dulu
-            if (window.location.pathname !== '/') {
-                router.visit('/', {
-                    onSuccess: () => {
-                        // Tunggu sebentar untuk memastikan halaman sudah ter-render
-                        setTimeout(() => {
-                            const element = document.getElementById(href.substring(1));
-                            if (element) {
-                                element.scrollIntoView({ behavior: 'smooth' });
-                            }
-                        }, 100);
-                    },
-                });
-            } else {
-                // Jika sudah di halaman home, langsung scroll
+            
+            // Jika di halaman home, scroll ke elemen yang dituju
+            if (window.location.pathname === '/') {
                 const element = document.getElementById(href.substring(1));
                 if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                // Jika di halaman lain dan link adalah FAQ atau Contact, navigasi ke home dengan hash
+                if (title === 'FAQ' || title === 'Contact') {
+                    window.location.href = `/${href}`;
+                } else {
+                    // Untuk hash lainnya, scroll ke atas halaman saja
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
             }
         } else if (title === 'Home' && window.location.pathname === '/') {
@@ -157,6 +151,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
             e.preventDefault();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+        // Link lainnya akan mengikuti perilaku default navigasi
     };
 
     const scrollToTop = () => {
@@ -166,7 +161,10 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                 behavior: 'smooth',
             });
         } else {
-            router.visit('/');
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
         }
     };
 
@@ -241,10 +239,8 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                                 <Link
                                     href={route('home')}
                                     onClick={(e) => {
-                                        if (window.location.pathname === '/') {
-                                            e.preventDefault();
-                                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                                        }
+                                        e.preventDefault();
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
                                     }}
                                     className="inline-block"
                                 >
