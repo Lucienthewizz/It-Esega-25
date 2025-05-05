@@ -2,22 +2,12 @@
 
 namespace App\Exports;
 
-use App\Models\ML_Participant;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use App\Exports\MLPlayerExport;
 
-class MLPlayersExport implements FromCollection, WithHeadings
+/**
+ * Alias untuk MLPlayerExport untuk mempertahankan backward compatibility
+ */
+class MLPlayersExport extends MLPlayerExport
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
-    {
-        return ML_Participant::all();
-    }
-
-    public function headings(): array
-    {
-        return ['ID', 'Team ID', 'Name', 'Nickname', 'ID Server', 'No HP', 'Email', 'Alamat', 'Tanda Tangan', 'Foto', 'Role', 'Created At', 'Updated At'];
-    }
+    // Semua fungsionalitas diambil dari parent class (MLPlayerExport)
 }

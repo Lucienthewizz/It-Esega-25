@@ -63,16 +63,28 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::resource('admins', AdminUserController::class);
     Route::resource('timeline', TimelineController::class);
     Route::resource('players', TeamPlayerController::class);
+    
+    // Rute Tim dan Pemain
+    Route::get('teams/{game}/{id}', [TeamPlayerController::class, 'showTeam'])->name('admin.teams.show');
+    Route::put('teams/{game}/{id}/status', [TeamPlayerController::class, 'updateTeamStatus'])->name('admin.teams.update-status');
+    
+    // Rute untuk export data
+    Route::get('export/teams', [TeamPlayerController::class, 'exportTeams'])->name('admin.export.teams');
+    Route::get('export/all-players', [TeamPlayerController::class, 'exportAllPlayers'])->name('admin.export.all-players');
+    Route::get('export/ff-players', [TeamPlayerController::class, 'ffPlayer'])->name('admin.export.ff-players');
+    Route::get('export/ml-players', [TeamPlayerController::class, 'mlPlayer'])->name('admin.export.ml-players');
+    
+    // Tambahkan rute untuk export ZIP dengan semua data dan file
+    Route::get('export/all-files-data', [TeamPlayerController::class, 'exportFilesAndData'])->name('admin.export.all-files-data');
+    
+    // Tambahkan rute yang langsung match dengan URL yang dipanggil oleh frontend
+    Route::get('export/FFplayers', [TeamPlayerController::class, 'ffPlayer']);
+    Route::get('export/MLplayers', [TeamPlayerController::class, 'mlPlayer']);
+    
+    // Rute lama (untuk kompatibilitas)
     Route::get('testff', [TeamPlayerController::class, 'ffPlayer'])->name('ffPlayer.list');
     Route::get('testml', [TeamPlayerController::class, 'mlPlayer'])->name('mlPlayer.list');
-    Route::get('/export/MLplayers', function () {
-        return Excel::download(new MLPlayersExport, 'mlplayers.xlsx');
-    });
-    Route::get('/export/FFplayers', function () {
-        return Excel::download(new FFPlayersExport, 'ffplayers.xlsx');
-    });
-
-
+    
     Route::post('logout/admin/it-esega', [AuthenticatedSessionControllerAdmin::class, 'destroy'])
         ->name('logout.admin');
 });

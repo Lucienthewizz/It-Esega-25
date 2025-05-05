@@ -118,17 +118,17 @@ export function TeamOverview({ totalTeams, totalPlayers, achievementsTotal, winr
                             <CardDescription>Manage your esports teams</CardDescription>
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                            <Button variant="outline" size="sm" className="h-8 gap-1" onClick={() => window.open('/secure-admin-essega/export/teams', '_blank')}>
                                 <Download className="h-3.5 w-3.5" />
-                                <span>CSV</span>
+                                <span>Teams</span>
                             </Button>
-                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                            <Button variant="outline" size="sm" className="h-8 gap-1" onClick={() => window.open('/secure-admin-essega/export/all-players', '_blank')}>
                                 <Download className="h-3.5 w-3.5" />
-                                <span>PDF</span>
+                                <span>Players</span>
                             </Button>
-                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                            <Button variant="outline" size="sm" className="h-8 gap-1" onClick={() => window.open('/secure-admin-essega/export/all-files-data', '_blank')}>
                                 <Download className="h-3.5 w-3.5" />
-                                <span>Excel</span>
+                                <span>All Data + Files (ZIP)</span>
                             </Button>
                         </div>
                     </div>
