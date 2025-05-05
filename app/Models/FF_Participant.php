@@ -9,7 +9,7 @@ class FF_Participant extends Model
 {
     use HasFactory;
 
-    protected $table = 'FF_Participant'; 
+    protected $table = 'ff_participants'; 
     
     protected $fillable = [
         'ff_team_id', 'name', 'nickname', 'id_server', 'no_hp', 'email', 'alamat',

@@ -9,7 +9,7 @@ class ML_Team extends Model
 {
     use HasFactory;
 
-    protected $table = 'ML_Team';
+    protected $table = 'ml_teams';
     
     protected $fillable = [
         'team_name', 

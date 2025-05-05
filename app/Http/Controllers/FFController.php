@@ -15,7 +15,7 @@ class FFController extends Controller
         $team = new FF_Team();
 
         $validator = $request->validate([
-            'team_name' => 'required|unique:ff_team',
+            'team_name' => 'required|unique:ff_teams',
             'team_logo' => 'required|mimes:png,jpg,jpeg',
             'proof_of_payment' => 'required|mimes:png,jpg,jpeg',
         ]);

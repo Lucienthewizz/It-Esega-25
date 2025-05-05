@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class PlayerRegistrationController extends Controller
 {
@@ -24,8 +25,11 @@ class PlayerRegistrationController extends Controller
             $teamName = decrypt($encryptedTeamName);
 
             $team = ML_Team::where('team_name', $teamName)->firstOrFail();
+            
+            Log::info('Showing ML registration form', ['team_id' => $team->id, 'team_name' => $team->team_name]);
 
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            Log::error('Invalid encrypted team name', ['error' => $e->getMessage()]);
             abort(403, 'This URL is no longer valid or was tampered with.');
         }
 
@@ -39,6 +43,11 @@ class PlayerRegistrationController extends Controller
     public function store(StorePlayerMLRegistrationRequest $request)
     {
         $validated = $request->validated();
+        
+        Log::info('Processing ML team registration', [
+            'team_id' => $validated['team_id'] ?? 'not provided',
+            'player_count' => count($validated['ml_players'] ?? [])
+        ]);
 
         if (!empty($validated['ml_players'])) {
             $teamId = $validated['team_id'];
@@ -47,54 +56,68 @@ class PlayerRegistrationController extends Controller
 
             // Buat folder player jika belum ada
             $playerBasePath = "ML_teams/{$teamId}_{$teamSlug}/players";
-            $playerBaseStoragePath = storage_path("app/public/" . $playerBasePath);
-            if (!file_exists($playerBaseStoragePath)) {
-                mkdir($playerBaseStoragePath, 0777, true);
+            
+            // Gunakan Storage facade untuk membuat direktori
+            if (!Storage::disk('public')->exists($playerBasePath)) {
+                Storage::disk('public')->makeDirectory($playerBasePath, 0777, true);
             }
 
             foreach ($validated['ml_players'] as $index => $player) {
-                $photoPath = null;
-                if ($request->hasFile("ml_players_{$index}_foto")) {
-                    $file = $request->file("ml_players_{$index}_foto");
-                    if ($file && $file->isValid()) {
-                        $photoExtension = $file->getClientOriginalExtension();
-                        $photoFileName = "player_{$index}_foto.{$photoExtension}";
-                        $photoPath = $file->storeAs($playerBasePath, $photoFileName, 'public');
+                try {
+                    $photoPath = null;
+                    if ($request->hasFile("ml_players_{$index}_foto")) {
+                        $file = $request->file("ml_players_{$index}_foto");
+                        if ($file && $file->isValid()) {
+                            $photoExtension = $file->getClientOriginalExtension();
+                            $photoFileName = "player_{$index}_foto.{$photoExtension}";
+                            $photoPath = $file->storeAs($playerBasePath, $photoFileName, 'public');
+                        }
                     }
-                }
 
-                $signaturePath = null;
-                if ($request->hasFile("ml_players_{$index}_tanda_tangan")) {
-                    $file = $request->file("ml_players_{$index}_tanda_tangan");
-                    if ($file && $file->isValid()) {
-                        $signatureExtension = $file->getClientOriginalExtension();
-                        $signatureFileName = "player_{$index}_ttd.{$signatureExtension}";
-                        $signaturePath = $file->storeAs($playerBasePath, $signatureFileName, 'public');
+                    $signaturePath = null;
+                    if ($request->hasFile("ml_players_{$index}_tanda_tangan")) {
+                        $file = $request->file("ml_players_{$index}_tanda_tangan");
+                        if ($file && $file->isValid()) {
+                            $signatureExtension = $file->getClientOriginalExtension();
+                            $signatureFileName = "player_{$index}_ttd.{$signatureExtension}";
+                            $signaturePath = $file->storeAs($playerBasePath, $signatureFileName, 'public');
+                        }
                     }
+
+                    // Debug: Log file information
+                    Log::info("Processing ML player {$index}", [
+                        'has_foto' => $request->hasFile("ml_players_{$index}_foto"),
+                        'has_tanda_tangan' => $request->hasFile("ml_players_{$index}_tanda_tangan"),
+                        'foto_path' => $photoPath,
+                        'tanda_tangan_path' => $signaturePath,
+                        'player_data' => $player
+                    ]);
+
+                    $participant = ML_Participant::create([
+                        'ml_team_id' => $teamId,
+                        'name' => $player['name'],
+                        'nickname' => $player['nickname'],
+                        'id_server' => $player['id_server'],
+                        'no_hp' => $player['no_hp'],
+                        'email' => $player['email'],
+                        'alamat' => $player['alamat'] ?? '-',
+                        'tanda_tangan' => $signaturePath,
+                        'foto' => $photoPath,
+                        'role' => $player['role']
+                    ]);
+                    
+                    Log::info("ML player saved", [
+                        'player_id' => $participant->id,
+                        'name' => $participant->name,
+                        'team_id' => $teamId
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("Error saving ML player {$index}", [
+                        'error' => $e->getMessage(),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine()
+                    ]);
                 }
-
-                // Debug: Log file information
-                Log::info("Processing ML player {$index}", [
-                    'has_foto' => $request->hasFile("ml_players_{$index}_foto"),
-                    'has_tanda_tangan' => $request->hasFile("ml_players_{$index}_tanda_tangan"),
-                    'foto_path' => $photoPath,
-                    'tanda_tangan_path' => $signaturePath,
-                    'all_files' => $request->allFiles(),
-                    'player_data' => $player
-                ]);
-
-                $player = ML_Participant::create([
-                    'ml_team_id' => $teamId,
-                    'name' => $player['name'],
-                    'nickname' => $player['nickname'],
-                    'id_server' => $player['id_server'],
-                    'no_hp' => $player['no_hp'],
-                    'email' => $player['email'],
-                    'alamat' => $player['alamat'] ?? '-',
-                    'tanda_tangan' => $signaturePath,
-                    'foto' => $photoPath,
-                    'role' => $player['role']
-                ]);
             }
         }
 
@@ -120,8 +143,11 @@ class PlayerRegistrationController extends Controller
             $teamName = decrypt($encryptedTeamName);
 
             $team = FF_Team::where('team_name', $teamName)->firstOrFail();
+            
+            Log::info('Showing FF registration form', ['team_id' => $team->id, 'team_name' => $team->team_name]);
 
         } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+            Log::error('Invalid encrypted FF team name', ['error' => $e->getMessage()]);
             abort(403, 'This URL is no longer valid or was tampered with.');
         }
 
@@ -134,25 +160,33 @@ class PlayerRegistrationController extends Controller
     public function storeFF(FFPlayerRequest $request)
     {
         $validated = $request->validated();
-            $teamId = $validated['team_id'];
+        
+        Log::info('Processing FF team registration', [
+            'team_id' => $validated['team_id'] ?? 'not provided',
+            'player_count' => count($validated['ff_players'] ?? [])
+        ]);
+        
+        $teamId = $validated['team_id'];
         $team = FF_Team::findOrFail($teamId);
-            $teamSlug = Str::slug($team->team_name);
+        $teamSlug = Str::slug($team->team_name);
 
-            // Buat folder player jika belum ada
+        // Buat folder player jika belum ada
         $playerBasePath = "FF_teams/{$teamId}_{$teamSlug}/players";
-            $playerBaseStoragePath = storage_path("app/public/" . $playerBasePath);
-            if (!file_exists($playerBaseStoragePath)) {
-                mkdir($playerBaseStoragePath, 0777, true);
-            }
+        
+        // Gunakan Storage facade untuk membuat direktori
+        if (!Storage::disk('public')->exists($playerBasePath)) {
+            Storage::disk('public')->makeDirectory($playerBasePath, 0777, true);
+        }
 
-            foreach ($validated['ff_players'] as $index => $player) {
+        foreach ($validated['ff_players'] as $index => $player) {
+            try {
                 $photoPath = null;
                 if ($request->hasFile("ff_players_{$index}_foto")) {
                     $file = $request->file("ff_players_{$index}_foto");
                     if ($file && $file->isValid()) {
-                    $photoExtension = $file->getClientOriginalExtension();
-                    $photoFileName = "player_{$index}_foto.{$photoExtension}";
-                    $photoPath = $file->storeAs($playerBasePath, $photoFileName, 'public');
+                        $photoExtension = $file->getClientOriginalExtension();
+                        $photoFileName = "player_{$index}_foto.{$photoExtension}";
+                        $photoPath = $file->storeAs($playerBasePath, $photoFileName, 'public');
                     }
                 }
 
@@ -160,23 +194,22 @@ class PlayerRegistrationController extends Controller
                 if ($request->hasFile("ff_players_{$index}_tanda_tangan")) {
                     $file = $request->file("ff_players_{$index}_tanda_tangan");
                     if ($file && $file->isValid()) {
-                    $signatureExtension = $file->getClientOriginalExtension();
-                    $signatureFileName = "player_{$index}_ttd.{$signatureExtension}";
-                    $signaturePath = $file->storeAs($playerBasePath, $signatureFileName, 'public');
+                        $signatureExtension = $file->getClientOriginalExtension();
+                        $signatureFileName = "player_{$index}_ttd.{$signatureExtension}";
+                        $signaturePath = $file->storeAs($playerBasePath, $signatureFileName, 'public');
                     }
                 }
 
-            Log::info("Processing FF player {$index}", [
+                Log::info("Processing FF player {$index}", [
                     'has_foto' => $request->hasFile("ff_players_{$index}_foto"),
                     'has_tanda_tangan' => $request->hasFile("ff_players_{$index}_tanda_tangan"),
                     'foto_path' => $photoPath,
                     'tanda_tangan_path' => $signaturePath,
-                    'all_files' => $request->allFiles(),
                     'player_data' => $player
                 ]);
 
-            $player = FF_Participant::create([
-                'ff_team_id' => $teamId,
+                $participant = FF_Participant::create([
+                    'ff_team_id' => $teamId,
                     'name' => $player['name'],
                     'nickname' => $player['nickname'],
                     'id_server' => $player['id_server'],
@@ -187,9 +220,21 @@ class PlayerRegistrationController extends Controller
                     'foto' => $photoPath,
                     'role' => $player['role']
                 ]);
+                
+                Log::info("FF player saved", [
+                    'player_id' => $participant->id,
+                    'name' => $participant->name,
+                    'team_id' => $teamId
+                ]);
+            } catch (\Exception $e) {
+                Log::error("Error saving FF player {$index}", [
+                    'error' => $e->getMessage(),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]);
+            }
         }
 
         return to_route('home')->with('success', 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESSEGA!');
     }
-
 }

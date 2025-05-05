@@ -20,7 +20,7 @@ class StoreFFPlayerRegistrationRequest extends FormRequest
             'phone' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'email' => 'required|email',
             'role' => 'required|in:ketua,anggota,cadangan',
-            'team_id' => 'required|exists:FF_Team,id',
+            'team_id' => 'required|exists:ff_teams,id',
         ];
     }
 

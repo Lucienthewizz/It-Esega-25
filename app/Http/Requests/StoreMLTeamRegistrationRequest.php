@@ -14,7 +14,7 @@ class StoreMLTeamRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_name' => 'required|string|unique:ML_Team,team_name',
+            'team_name' => 'required|string|unique:ml_teams,team_name',
             'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'game_type' => 'required|in:ml',

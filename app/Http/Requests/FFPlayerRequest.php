@@ -14,8 +14,8 @@ class FFPlayerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ff_team_id' => ['required', 'exists:FF_Team,id'],
-            'team_id' => ['required', 'exists:FF_Team,id'],
+            'ff_team_id' => ['required', 'exists:ff_teams,id'],
+            'team_id' => ['required', 'exists:ff_teams,id'],
 
             'ff_players' => ['required', 'array', 'min:4', 'max:6'],
             'ff_players.*.name' => ['required', 'string', 'max:255'],

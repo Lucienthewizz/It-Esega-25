@@ -9,7 +9,7 @@ class ML_Participant extends Model
 {
     use HasFactory;
 
-    protected $table = 'ML_Participant';
+    protected $table = 'ml_participants';
 
     protected $fillable = [
         'ml_team_id', 'name', 'nickname', 'id_server', 'no_hp', 'email', 'alamat',

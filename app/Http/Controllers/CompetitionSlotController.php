@@ -16,6 +16,8 @@ class CompetitionSlotController extends Controller
     {
         $slots = CompetitionSlot::all();
         
+        Log::info('Getting all competition slots', ['count' => $slots->count()]);
+        
         return response()->json([
             'success' => true,
             'data' => $slots
@@ -30,11 +32,17 @@ class CompetitionSlotController extends Controller
         $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
         
         if (!$slot) {
+            Log::warning('Competition not found', ['competition_name' => $competitionName]);
             return response()->json([
                 'success' => false,
                 'message' => 'Kompetisi tidak ditemukan'
             ], 404);
         }
+        
+        Log::info('Getting competition slot', [
+            'competition_name' => $competitionName, 
+            'available_slots' => $slot->getAvailableSlots()
+        ]);
         
         return response()->json([
             'success' => true,
@@ -50,6 +58,7 @@ class CompetitionSlotController extends Controller
         $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
         
         if (!$slot) {
+            Log::warning('Competition not found in validateAvailability', ['competition_name' => $competitionName]);
             return response()->json([
                 'available' => false,
                 'message' => 'Kompetisi tidak ditemukan'
@@ -57,10 +66,19 @@ class CompetitionSlotController extends Controller
         }
         
         $hasSlot = $slot->hasAvailableSlots();
+        $availableSlots = $slot->getAvailableSlots();
+        
+        Log::info('Validating slot availability', [
+            'competition_name' => $competitionName,
+            'available' => $hasSlot,
+            'available_slots' => $availableSlots,
+            'total_slots' => $slot->total_slots,
+            'used_slots' => $slot->used_slots
+        ]);
         
         return response()->json([
             'available' => $hasSlot,
-            'availableSlots' => $slot->getAvailableSlots(),
+            'availableSlots' => $availableSlots,
             'totalSlots' => $slot->total_slots,
             'usedSlots' => $slot->used_slots,
             'filledPercentage' => $slot->getFilledPercentage(),
@@ -76,6 +94,10 @@ class CompetitionSlotController extends Controller
         $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
         
         if (!$slot) {
+            Log::warning('Competition not found in validateSlotType', [
+                'competition_name' => $competitionName,
+                'slot_type' => $slotType
+            ]);
             return response()->json([
                 'available' => false,
                 'message' => 'Kompetisi tidak ditemukan'
@@ -88,6 +110,14 @@ class CompetitionSlotController extends Controller
         // Cek apakah tersedia
         $availableSlots = $slot->getAvailableSlots();
         $isAvailable = $availableSlots >= $requiredSlots;
+        
+        Log::info('Validating slot type availability', [
+            'competition_name' => $competitionName,
+            'slot_type' => $slotType,
+            'required_slots' => $requiredSlots,
+            'available_slots' => $availableSlots,
+            'is_available' => $isAvailable
+        ]);
         
         return response()->json([
             'available' => $isAvailable,
@@ -110,6 +140,7 @@ class CompetitionSlotController extends Controller
         $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
         
         if (!$slot) {
+            Log::warning('Competition not found in incrementSlot', ['competition_name' => $competitionName]);
             return response()->json([
                 'success' => false,
                 'message' => 'Kompetisi tidak ditemukan'
@@ -118,7 +149,19 @@ class CompetitionSlotController extends Controller
         
         $count = $request->input('count', 1);
         
+        Log::info('Incrementing slot', [
+            'competition_name' => $competitionName,
+            'count' => $count,
+            'before_used_slots' => $slot->used_slots,
+            'available_slots' => $slot->getAvailableSlots()
+        ]);
+        
         if (!$slot->hasAvailableSlots() || $slot->used_slots + $count > $slot->total_slots) {
+            Log::warning('Not enough slots', [
+                'competition_name' => $competitionName,
+                'requested_count' => $count,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Slot tidak mencukupi',
@@ -128,6 +171,12 @@ class CompetitionSlotController extends Controller
         }
         
         if ($slot->incrementUsedSlots($count)) {
+            Log::info('Slot incremented successfully', [
+                'competition_name' => $competitionName,
+                'count' => $count,
+                'after_used_slots' => $slot->used_slots,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
             return response()->json([
                 'success' => true,
                 'message' => 'Slot berhasil ditambahkan',
@@ -136,6 +185,11 @@ class CompetitionSlotController extends Controller
                 'usedSlots' => $slot->used_slots
             ]);
         }
+        
+        Log::error('Failed to increment slot', [
+            'competition_name' => $competitionName,
+            'count' => $count
+        ]);
         
         return response()->json([
             'success' => false,
@@ -151,6 +205,7 @@ class CompetitionSlotController extends Controller
         $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
         
         if (!$slot) {
+            Log::warning('Competition not found in incrementSlotByType', ['competition_name' => $competitionName]);
             return response()->json([
                 'success' => false,
                 'message' => 'Kompetisi tidak ditemukan'
@@ -160,7 +215,21 @@ class CompetitionSlotController extends Controller
         $slotType = $request->input('slot_type', 'single');
         $count = ($slotType === 'double') ? 2 : 1;
         
+        Log::info('Incrementing slot by type', [
+            'competition_name' => $competitionName,
+            'slot_type' => $slotType,
+            'count' => $count,
+            'before_used_slots' => $slot->used_slots,
+            'available_slots' => $slot->getAvailableSlots()
+        ]);
+        
         if (!$slot->hasAvailableSlots() || $slot->used_slots + $count > $slot->total_slots) {
+            Log::warning('Not enough slots for type', [
+                'competition_name' => $competitionName,
+                'slot_type' => $slotType,
+                'count' => $count,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
             return response()->json([
                 'success' => false,
                 'message' => 'Slot tidak mencukupi',
@@ -170,6 +239,13 @@ class CompetitionSlotController extends Controller
         }
         
         if ($slot->incrementUsedSlots($count)) {
+            Log::info('Slot incremented by type successfully', [
+                'competition_name' => $competitionName,
+                'slot_type' => $slotType,
+                'count' => $count,
+                'after_used_slots' => $slot->used_slots,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
             return response()->json([
                 'success' => true,
                 'message' => "Berhasil menambahkan {$count} slot",
@@ -179,6 +255,12 @@ class CompetitionSlotController extends Controller
                 'slotType' => $slotType
             ]);
         }
+        
+        Log::error('Failed to increment slot by type', [
+            'competition_name' => $competitionName,
+            'slot_type' => $slotType,
+            'count' => $count
+        ]);
         
         return response()->json([
             'success' => false,

@@ -14,8 +14,8 @@ return new class extends Migration
         // Hanya lakukan migrasi jika tabel belum memiliki kolom yang diperlukan
         
         // Buat tabel jika belum ada
-        if (!Schema::hasTable('ML_Team')) {
-            Schema::create('ML_Team', function (Blueprint $table) {
+        if (!Schema::hasTable('ml_teams')) {
+            Schema::create('ml_teams', function (Blueprint $table) {
                 $table->id();
                 $table->string('team_name')->unique(); // Nama tim
                 $table->string('slot_type')->default('double'); // Default ke double slot
@@ -27,15 +27,15 @@ return new class extends Migration
             });
         } 
         // Jika tabel sudah ada tapi kolom belum
-        else if (Schema::hasTable('ML_Team')) {
-            if (!Schema::hasColumn('ML_Team', 'slot_type')) {
-                Schema::table('ML_Team', function (Blueprint $table) {
+        else if (Schema::hasTable('ml_teams')) {
+            if (!Schema::hasColumn('ml_teams', 'slot_type')) {
+                Schema::table('ml_teams', function (Blueprint $table) {
                     $table->string('slot_type')->default('double')->after('team_name'); // 'double' atau 'single'
                 });
             }
             
-            if (!Schema::hasColumn('ML_Team', 'slot_count')) {
-                Schema::table('ML_Team', function (Blueprint $table) {
+            if (!Schema::hasColumn('ml_teams', 'slot_count')) {
+                Schema::table('ml_teams', function (Blueprint $table) {
                     $table->integer('slot_count')->default(2)->after('slot_type'); // 2 untuk double, 1 untuk single
                 });
             }
@@ -48,12 +48,12 @@ return new class extends Migration
     public function down(): void
     {
         // Hapus kolom jika ada
-        if (Schema::hasTable('ML_Team')) {
-            Schema::table('ML_Team', function (Blueprint $table) {
-                if (Schema::hasColumn('ML_Team', 'slot_type')) {
+        if (Schema::hasTable('ml_teams')) {
+            Schema::table('ml_teams', function (Blueprint $table) {
+                if (Schema::hasColumn('ml_teams', 'slot_type')) {
                     $table->dropColumn('slot_type');
                 }
-                if (Schema::hasColumn('ML_Team', 'slot_count')) {
+                if (Schema::hasColumn('ml_teams', 'slot_count')) {
                     $table->dropColumn('slot_count');
                 }
             });

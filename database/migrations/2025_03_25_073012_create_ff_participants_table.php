@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ML_Participant', function (Blueprint $table) {
+        Schema::create('ff_participants', function (Blueprint $table) {
             $table->id(); 
-            $table->foreignId('ml_team_id')->constrained('ML_Team')->onDelete('cascade'); // Kolom ID tim
+            $table->foreignId('ff_team_id')->constrained('ff_teams')->onDelete('cascade'); // Kolom ID tim
             $table->string('name'); // Nama peserta
             $table->string('nickname'); // Nickname peserta
             $table->string('id_server'); // ID server peserta
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ML_Participant');
+        Schema::dropIfExists('ff_participants');
     }
 };

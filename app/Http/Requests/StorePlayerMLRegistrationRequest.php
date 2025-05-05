@@ -14,7 +14,7 @@ class StorePlayerMLRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_id' => 'required|exists:ML_Team,id',
+            'team_id' => 'required|exists:ml_teams,id',
             'ml_players' => 'array',
             'ml_players.*.name' => 'required|string',
             'ml_players.*.nickname' => 'required|string',

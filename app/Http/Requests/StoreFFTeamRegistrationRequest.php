@@ -14,7 +14,7 @@ class StoreFFTeamRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_name' => 'required|string|unique:FF_Team,team_name',
+            'team_name' => 'required|string|unique:ff_teams,team_name',
             'team_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'proof_of_payment' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'game_type' => 'required|in:ff',
