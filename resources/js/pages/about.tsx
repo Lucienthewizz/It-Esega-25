@@ -1,6 +1,6 @@
 import { Head, usePage } from "@inertiajs/react";
 import { Navbar } from '@/components/navbar';
-import AOS from 'aos';
+import * as AOS from 'aos';
 import 'aos/dist/aos.css';
 import { useEffect } from 'react';
 import { route } from 'ziggy-js';
@@ -60,16 +60,18 @@ export default function About() {
     }
 
     useEffect(() => {
-        // Reset scroll position when page loads
-        window.scrollTo(0, 0);
-        
-        // Initialize AOS
+        // Inisialisasi AOS hanya sekali saat komponen di-mount
         AOS.init({
-            duration: 1000,
+            duration: 800,
             once: true,
-            easing: 'ease-in-out',
+            easing: 'ease-out-cubic',
+            offset: 100,
+            delay: 0,
+            mirror: false,
+            anchorPlacement: 'top-bottom',
+            disable: 'mobile' // Opsional: menonaktifkan pada perangkat mobile jika perlu
         });
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once on mount
 
     const afterEventVideos = [
         {

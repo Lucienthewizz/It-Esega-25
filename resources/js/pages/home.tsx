@@ -4,7 +4,7 @@ import { Navbar } from '@/components/navbar';
 import { UserType } from '@/types/user';
 import { Disclosure } from '@headlessui/react';
 import { Head, Link, usePage } from '@inertiajs/react';
-import AOS from 'aos';
+import * as AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
 import { useEffect, useState, Fragment } from 'react';
@@ -63,6 +63,7 @@ export default function Home() {
     ];
 
     useEffect(() => {
+        // Inisialisasi AOS hanya sekali saat komponen di-mount
         AOS.init({
             duration: 800,
             once: true,
@@ -71,8 +72,9 @@ export default function Home() {
             delay: 0,
             mirror: false,
             anchorPlacement: 'top-bottom',
+            disable: 'mobile' // Opsional: menonaktifkan pada perangkat mobile jika perlu
         });
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once on mount
 
     const faqs = [
         {

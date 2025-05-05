@@ -6,7 +6,7 @@ import { TeamRegistrationForm } from "@/components/registration/team-registratio
 import type { TeamData, GameStats } from "@/types/register"
 import { Head, router } from "@inertiajs/react"
 import { motion } from "framer-motion"
-import AOS from "aos"
+import * as AOS from "aos"
 import "aos/dist/aos.css"
 import { ChevronLeft, ArrowLeft, CheckCircle } from "lucide-react"
 import axios from "axios"
@@ -24,6 +24,7 @@ export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
+        // Inisialisasi AOS hanya sekali saat komponen di-mount
         AOS.init({
             duration: 800,
             once: true,
@@ -32,6 +33,7 @@ export default function RegisterPage() {
             delay: 0,
             mirror: false,
             anchorPlacement: 'top-bottom',
+            disable: 'mobile' // Opsional: menonaktifkan pada perangkat mobile jika perlu
         });
         
         // Muat data slot kompetisi saat komponen dimuat
