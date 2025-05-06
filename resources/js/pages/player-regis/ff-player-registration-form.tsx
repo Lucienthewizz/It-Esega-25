@@ -329,27 +329,45 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         // Hapus data tim dari database
         if (teamData.id) {
             setShowLoadingScreen(true)
+            
+            // Simpan ID tim yang akan dihapus ke localStorage agar dapat digunakan kembali
+            const teamIdToSave = teamData.id?.toString() || "";
+            console.log("Saving FF team ID to localStorage:", {
+                id: teamIdToSave,
+                gameType: gameType,
+                idType: typeof teamData.id
+            });
+            
+            if (teamIdToSave) {
+                localStorage.setItem("last_deleted_team_id", teamIdToSave);
+                localStorage.setItem("last_deleted_game_type", gameType);
+                
+                // Log localStorage setelah disimpan untuk memastikan
+                console.log("localStorage after saving:", {
+                    saved_id: localStorage.getItem("last_deleted_team_id"),
+                    saved_type: localStorage.getItem("last_deleted_game_type")
+                });
+            }
+            
             axios.post(route('delete-incomplete-team'), {
                 team_id: teamData.id,
                 game_type: gameType
             })
             .then(() => {
-                console.log("Data tim berhasil dihapus dari database")
+                console.log("Data tim berhasil dihapus dari database, ID disimpan untuk digunakan kembali");
                 // Hapus data pemain dari localStorage
                 localStorage.removeItem("ff_players_data")
                 
-                // Arahkan ke halaman registrasi tim dengan parameter game_type
-                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
-                window.location.href = redirectUrl;
+                // Arahkan ke halaman registrasi tim dengan parameter game_type 
+                window.location.href = route('register') + '?step=2&game_type=' + gameType;
             })
             .catch((error) => {
                 console.error("Error deleting team data:", error)
                 // Hapus data pemain dari localStorage
                 localStorage.removeItem("ff_players_data")
                 
-                // Tetap arahkan ke halaman registrasi tim dengan parameter game_type meskipun ada error
-                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
-                window.location.href = redirectUrl;
+                // Tetap arahkan ke halaman registrasi tim
+                window.location.href = route('register') + '?step=2&game_type=' + gameType;
             })
             .finally(() => {
                 setShowLoadingScreen(false)
@@ -359,9 +377,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             // Jika tidak ada team_id, hanya hapus data dari localStorage
             localStorage.removeItem("ff_players_data")
             
-            // Arahkan ke halaman registrasi tim dengan parameter game_type
-            const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
-            window.location.href = redirectUrl;
+            // Arahkan ke halaman registrasi tim
+            window.location.href = route('register') + '?step=2&game_type=' + gameType;
         }
     }
 

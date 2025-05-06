@@ -10,6 +10,9 @@ import * as AOS from "aos"
 import "aos/dist/aos.css"
 import { ChevronLeft, ArrowLeft, CheckCircle } from "lucide-react"
 import axios from "axios"
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { AlertCircle } from 'lucide-react';
 
 export default function RegisterPage() {
     const [step, setStep] = useState(1)
@@ -22,6 +25,7 @@ export default function RegisterPage() {
     })
     const [gameStats, setGameStats] = useState<GameStats[] | undefined>(undefined)
     const [isLoading, setIsLoading] = useState(false)
+    const [showLastDeletedTeamIdDialog, setShowLastDeletedTeamIdDialog] = useState(false)
 
     useEffect(() => {
         // Inisialisasi AOS hanya sekali saat komponen di-mount
@@ -42,22 +46,63 @@ export default function RegisterPage() {
         // Cek apakah ada data tim yang dikirim dari halaman player registration
         const urlParams = new URLSearchParams(window.location.search);
         const teamDataParam = urlParams.get('teamData');
+        const urlGameType = urlParams.get('game_type');
+        
+        if (urlGameType) {
+            setGameType(urlGameType as "ml" | "ff");
+        }
+        
+        if (urlParams.get('step') === '2') {
+            setStep(2);
+        }
         
         if (teamDataParam) {
             try {
-                const parsedTeamData = JSON.parse(teamDataParam);
-                if (parsedTeamData.game_type) {
-                    setGameType(parsedTeamData.game_type);
-                    setTeamData({
-                        id: parsedTeamData.team_id || null,
-                        team_name: parsedTeamData.team_name || "",
-                        proof_of_payment: null, // File tidak bisa dilewatkan melalui query param
-                        team_logo: null, // File tidak bisa dilewatkan melalui query param
-                    });
-                    setStep(2); // Langsung ke step team registration
+                const decodedTeamData = JSON.parse(atob(teamDataParam));
+                setTeamData(decodedTeamData);
+            } catch (error) {
+                console.error("Error parsing team data from URL:", error);
+            }
+        }
+        
+        // Cek apakah ada ID tim yang sebelumnya dihapus dan tersimpan di localStorage
+        const lastDeletedTeamId = localStorage.getItem("last_deleted_team_id");
+        const lastDeletedGameType = localStorage.getItem("last_deleted_game_type");
+        
+        console.log("DEBUG localStorage values:", {
+            lastDeletedTeamId,
+            lastDeletedGameType,
+            currentGameType: urlGameType
+        });
+        
+        if (lastDeletedTeamId && lastDeletedGameType === urlGameType) {
+            console.log(`Found deleted team ID: ${lastDeletedTeamId} for game type: ${lastDeletedGameType}`);
+            
+            // Gunakan ID tim yang dihapus untuk pendaftaran baru
+            const parsedId = parseInt(lastDeletedTeamId);
+            
+            console.log("Parsed team ID:", {
+                asString: lastDeletedTeamId,
+                asNumber: parsedId,
+                isValid: !isNaN(parsedId)
+            });
+            
+            if (!isNaN(parsedId)) {
+                setTeamData(prevData => ({
+                    ...prevData,
+                    teamIdToReuse: parsedId
+                }));
+                
+                // Tampilkan dialog info jika berada di step 2
+                if (urlParams.get('step') === '2') {
+                    setShowLastDeletedTeamIdDialog(true);
                 }
-            } catch (err) {
-                console.error("Error parsing team data from URL", err);
+                
+                // Hapus data dari localStorage setelah digunakan
+                localStorage.removeItem("last_deleted_team_id");
+                localStorage.removeItem("last_deleted_game_type");
+            } else {
+                console.error("Invalid teamIdToReuse value from localStorage");
             }
         }
     }, []);
@@ -122,9 +167,93 @@ export default function RegisterPage() {
         }
     }
 
+    // Fungsi untuk truncate database (fungsi admin)
+    const adminTruncateTeams = async (gameType = 'all') => {
+        try {
+            if (process.env.NODE_ENV !== 'production') {
+                const response = await axios.post(route('admin.truncate-teams'), {
+                    game_type: gameType,
+                    reset_slots: true
+                });
+                
+                if (response.data.success) {
+                    console.log('🧹 Database truncated successfully!');
+                    window.location.reload();
+                } else {
+                    console.error('Error truncating database:', response.data.message);
+                }
+            }
+        } catch (error) {
+            console.error('Error executing admin command:', error);
+        }
+    };
+
+    // Tambahkan event listener untuk shortcut Ctrl+Shift+T untuk truncate database
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Shortcut: Ctrl+Shift+T untuk truncate all
+            if (e.ctrlKey && e.shiftKey && e.key === 'T') {
+                e.preventDefault();
+                adminTruncateTeams('all');
+            }
+            
+            // Shortcut: Ctrl+Shift+M untuk truncate ML
+            if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+                e.preventDefault();
+                adminTruncateTeams('ml');
+            }
+            
+            // Shortcut: Ctrl+Shift+F untuk truncate FF
+            if (e.ctrlKey && e.shiftKey && e.key === 'F') {
+                e.preventDefault();
+                adminTruncateTeams('ff');
+            }
+        };
+        
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
     return (
         <>
             <Head title="IT-ESEGA 2025 Official Website | Register Team" />
+            
+            {/* Dialog informasi ID tim yang akan digunakan kembali */}
+            <Dialog open={showLastDeletedTeamIdDialog} onOpenChange={setShowLastDeletedTeamIdDialog}>
+                <DialogContent className="w-[95%] max-w-md p-0 rounded-md border-0 shadow-md mx-auto">
+                    <div className="bg-white px-4 sm:px-5 pt-4 sm:pt-5 pb-4">
+                        <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-gray-100">
+                            <DialogTitle className="text-sm sm:text-base font-semibold text-gray-900">
+                                Konfirmasi Pendaftaran
+                            </DialogTitle>
+                        </div>
+                        
+                        <div className="py-4 sm:py-5">
+                            <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-700">
+                                Anda memiliki data tim yang baru saja dihapus.
+                            </p>
+                            <div className="flex items-start gap-2 p-2 sm:p-3 bg-red-50 border border-red-200 rounded-md mb-4 sm:mb-5">
+                                <AlertCircle className="h-4 sm:h-5 w-4 sm:w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                                <p className="text-xs sm:text-sm text-red-700">
+                                    Silahkan isi ulang data tim Anda untuk melanjutkan pendaftaran.
+                                </p>
+                            </div>
+                            
+                            <div className="flex justify-end">
+                                <Button 
+                                    onClick={() => setShowLastDeletedTeamIdDialog(false)} 
+                                    className="text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white font-normal px-3 sm:px-4 py-1 sm:py-2 h-auto transition-all duration-200"
+                                >
+                                    Saya Mengerti
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+            
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 overflow-y-auto">
                 {/* Navigation Container */}
                 <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm">

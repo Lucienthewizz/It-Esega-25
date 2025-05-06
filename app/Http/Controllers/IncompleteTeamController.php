@@ -10,6 +10,7 @@ use App\Models\FF_Participant;
 use App\Models\CompetitionSlot;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class IncompleteTeamController extends Controller
 {
@@ -35,7 +36,7 @@ class IncompleteTeamController extends Controller
             if ($team) {
                 // Simpan tipe slot dan jumlah slot
                 $slotType = $team->slot_type ?? 'single';
-                $slotCount = $slotType === 'double' ? 2 : 1;
+                $slotCount = $team->slot_count ?? ($slotType === 'double' ? 2 : 1);
                 $releaseSlot = true;
                 
                 // Hapus pemain ML
@@ -168,5 +169,67 @@ class IncompleteTeamController extends Controller
 
         // Kembalikan respons HTTP biasa (bukan JSON) dengan status 200
         return response()->noContent();
+    }
+
+    // Tambahkan metode truncateTeams untuk mem-flush tabel dan me-reset auto_increment
+    public function truncateTeams(Request $request)
+    {
+        try {
+            $gameType = $request->input('game_type', 'all');
+            
+            if ($gameType === 'ml' || $gameType === 'all') {
+                // Hapus semua relasi ke ML_Team terlebih dahulu
+                ML_Participant::query()->delete();
+                
+                // Gunakan query builder untuk reset auto_increment
+                DB::statement('ALTER TABLE ml_teams AUTO_INCREMENT = 1');
+                
+                // Hapus semua data tim
+                ML_Team::query()->delete();
+                
+                Log::info('Truncated ML_Team table and reset auto_increment');
+            }
+            
+            if ($gameType === 'ff' || $gameType === 'all') {
+                // Hapus semua relasi ke FF_Team terlebih dahulu
+                FF_Participant::query()->delete();
+                
+                // Gunakan query builder untuk reset auto_increment
+                DB::statement('ALTER TABLE ff_teams AUTO_INCREMENT = 1');
+                
+                // Hapus semua data tim
+                FF_Team::query()->delete();
+                
+                Log::info('Truncated FF_Team table and reset auto_increment');
+            }
+            
+            // Reset competition slots jika diminta
+            if ($request->input('reset_slots', false)) {
+                DB::table('competition_slots')
+                    ->where('competition_name', 'Mobile Legends')
+                    ->update(['used_slots' => 0]);
+                    
+                DB::table('competition_slots')
+                    ->where('competition_name', 'Free Fire')
+                    ->update(['used_slots' => 0]);
+                    
+                Log::info('Reset competition slots to 0');
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Teams truncated successfully'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error truncating teams', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error truncating teams: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

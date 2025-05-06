@@ -1,9 +1,16 @@
 import { ListChecks, CreditCard, DollarSign, Building, ChevronDown, X } from "lucide-react"
 import type { QRCodeSectionProps } from "@/types/register"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 
-export function QRCodeSection({ title, description, instructions, amount, gameType, resetStep }: QRCodeSectionProps) {
+export function QRCodeSection({ 
+    title, 
+    description, 
+    instructions, 
+    gameType, 
+    slotType = "single", // Tambahkan slotType dengan default "single"
+    resetStep 
+}: QRCodeSectionProps) {
     // Logging resetStep parameter to prevent "unused" linter error
     console.log("QR code section has reset step function:", !!resetStep);
     
@@ -13,10 +20,22 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
     // State untuk QR code modal
     const [isQRModalOpen, setIsQRModalOpen] = useState(false);
     
+    // State untuk biaya pendaftaran berdasarkan slotType
+    const [fee, setFee] = useState("Rp 100.000");
+    
     // Toggle instruksi dropdown
     const toggleInstructions = () => {
         setIsInstructionsOpen(!isInstructionsOpen);
     };
+    
+    // Update biaya berdasarkan slotType
+    useEffect(() => {
+        if (gameType === "ml" && slotType === "double") {
+            setFee("Rp 200.000");
+        } else {
+            setFee("Rp 100.000");
+        }
+    }, [gameType, slotType]);
 
     return (
         <div className="w-full lg:w-2/5 flex flex-col items-center justify-center 
@@ -80,7 +99,7 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
                                 <h3 className="font-semibold text-gray-800">Biaya Pendaftaran</h3>
                             </div>
                             <div className="text-center mt-2">
-                                <span className="font-bold text-lg text-red-700">{amount.replace('Biaya pendaftaran: ', '')}</span>
+                                <span className="font-bold text-lg text-red-700">{fee}</span>
                             </div>
                         </div>
                         
@@ -172,6 +191,7 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
                         {/* Footer dengan informasi */}
                         <div className="bg-gray-50 p-4 border-t border-gray-100 text-center">
                             <p className="text-sm text-gray-600">Pindai QR code ini menggunakan aplikasi mobile banking atau e-wallet Anda</p>
+                            <p className="text-sm font-semibold text-red-600 mt-1">Biaya pendaftaran: {fee}</p>
                         </div>
                     </div>
                 </DialogContent>

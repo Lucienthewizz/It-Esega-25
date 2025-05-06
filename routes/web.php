@@ -92,6 +92,9 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
         ->name('logout.admin');
 });
 
+// Tambahkan route baru untuk endpoint truncate
+Route::post('/admin/truncate-teams', [IncompleteTeamController::class, 'truncateTeams'])->name('admin.truncate-teams');
+
 
 
 

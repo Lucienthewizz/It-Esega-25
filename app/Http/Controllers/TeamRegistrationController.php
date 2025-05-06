@@ -26,10 +26,38 @@ class TeamRegistrationController extends Controller
             Log::info('TeamRegistration store method called', [
                 'request_data' => $request->except(['team_logo', 'proof_of_payment']),
                 'has_team_logo' => $request->hasFile('team_logo'),
-                'has_proof_of_payment' => $request->hasFile('proof_of_payment')
+                'has_proof_of_payment' => $request->hasFile('proof_of_payment'),
+                'all_request_keys' => $request->keys()
             ]);
             
             $gameType = $request->input('game_type');
+            
+            // Coba ambil team_id_to_reuse dari berbagai sumber
+            $teamIdToReuse = null;
+            
+            // Dari input normal
+            if ($request->has('team_id_to_reuse')) {
+                $teamIdToReuse = $request->input('team_id_to_reuse');
+            } 
+            // Dari query string
+            else if ($request->query('team_id_to_reuse')) {
+                $teamIdToReuse = $request->query('team_id_to_reuse');
+            }
+            
+            // Konversi ke integer jika string dan valid
+            if ($teamIdToReuse && is_string($teamIdToReuse) && is_numeric($teamIdToReuse)) {
+                $teamIdToReuse = (int)$teamIdToReuse;
+            }
+            
+            // Log khusus untuk team_id_to_reuse
+            Log::info('TeamRegistration team_id_to_reuse detail', [
+                'team_id_to_reuse' => $teamIdToReuse,
+                'team_id_to_reuse_type' => gettype($teamIdToReuse),
+                'has_input' => $request->has('team_id_to_reuse'),
+                'query_param' => $request->query('team_id_to_reuse'),
+                'uri' => $request->getRequestUri(),
+                'method' => $request->method()
+            ]);
             
             // Aturan validasi dasar
             $rules = [
@@ -51,7 +79,7 @@ class TeamRegistrationController extends Controller
                 $rules['team_name'] .= '|unique:ff_teams,team_name';
             }
             
-            // Pesan validasi custom
+            // Buat pesan validasi custom
             $messages = [
                 'team_name.required' => 'Nama tim wajib diisi.',
                 'team_name.max' => 'Nama tim maksimal 255 karakter.',
@@ -70,7 +98,7 @@ class TeamRegistrationController extends Controller
             
             $validated = $request->validate($rules, $messages);
             
-            Log::info('Validation passed', ['validated_data' => $validated]);
+            Log::info('Validation passed', ['validated_data' => $validated, 'teamIdToReuse' => $teamIdToReuse]);
 
             // Validasi ketersediaan slot berdasarkan game type dan slot type
             $competitionName = $gameType === 'ml' ? 'Mobile Legends' : 'Free Fire';
@@ -91,8 +119,8 @@ class TeamRegistrationController extends Controller
                 $isDoubleSlot = $slotType === 'double';
             }
             
-            // Untuk setiap pendaftaran, kita hanya mengurangi 1 slot
-            $slotCount = 1;
+            // Hitung jumlah slot yang dibutuhkan berdasarkan tipe slot
+            $slotCount = $isDoubleSlot ? 2 : 1;
             
             // Cek ketersediaan slot
             $availableSlots = $slot->getAvailableSlots();
@@ -122,11 +150,51 @@ class TeamRegistrationController extends Controller
                         Log::warning('Team already exists', ['team_name' => $validated['team_name'], 'game_type' => 'ml']);
                         return back()->withErrors(['team_name' => 'Nama tim Mobile Legends sudah digunakan. Silakan gunakan nama lain.'])->withInput();
                     }
+                    
+                    // Buat tim baru
                     $team = new ML_Team();
+                    
+                    // Jika ada ID yang ingin digunakan kembali, set ID tersebut
+                    if ($teamIdToReuse) {
+                        $existingTeamWithId = ML_Team::find($teamIdToReuse);
+                        if (!$existingTeamWithId) {
+                            // Atur ID secara manual jika ID tersebut tersedia
+                            $team->id = $teamIdToReuse;
+                            $team->setAttribute('id', $teamIdToReuse); // Memastikan ID diset dengan benar
+                            
+                            Log::info('Using specified team_id_to_reuse for ML team', [
+                                'team_id' => $teamIdToReuse,
+                                'team_id_type' => gettype($teamIdToReuse),
+                                'team_object' => $team
+                            ]);
+                            
+                            // Cara tambahan: set auto_increment untuk memastikan ID berikutnya lebih tinggi
+                            try {
+                                DB::statement('ALTER TABLE ml_teams AUTO_INCREMENT = ?', [$teamIdToReuse + 1]);
+                                Log::info('Changed ML_Team auto_increment', ['new_value' => $teamIdToReuse + 1]);
+                                
+                                // Tambahkan pesan ke session untuk ditampilkan di frontend
+                                session()->flash('team_id_reused', [
+                                    'message' => 'ID tim berhasil digunakan kembali',
+                                    'team_id' => $teamIdToReuse,
+                                    'game_type' => 'ml'
+                                ]);
+                            } catch (\Exception $e) {
+                                Log::error('Failed to change ML_Team auto_increment', [
+                                    'error' => $e->getMessage(),
+                                    'team_id' => $teamIdToReuse
+                                ]);
+                            }
+                        } else {
+                            Log::warning('Cannot use team_id_to_reuse, team with this ID already exists', [
+                                'team_id' => $teamIdToReuse
+                            ]);
+                        }
+                    }
                     
                     // Set slot type dan count untuk ML
                     $team->slot_type = $validated['slot_type'] ?? 'single';
-                    $team->slot_count = 1; // Selalu set 1 untuk setiap pendaftaran, karena kita menangani slot satu per satu
+                    $team->slot_count = $isDoubleSlot ? 2 : 1; // Set slot_count sesuai dengan tipe slot
                     
                 } else if ($isFF) {
                     $existingTeam = FF_Team::where('team_name', $validated['team_name'])->first();
@@ -134,13 +202,53 @@ class TeamRegistrationController extends Controller
                         Log::warning('Team already exists', ['team_name' => $validated['team_name'], 'game_type' => 'ff']);
                         return back()->withErrors(['team_name' => 'Nama tim Free Fire sudah digunakan. Silakan gunakan nama lain.'])->withInput();
                     }
+                    
+                    // Buat tim baru
                     $team = new FF_Team();
+                    
+                    // Jika ada ID yang ingin digunakan kembali, set ID tersebut
+                    if ($teamIdToReuse) {
+                        $existingTeamWithId = FF_Team::find($teamIdToReuse);
+                        if (!$existingTeamWithId) {
+                            // Atur ID secara manual jika ID tersebut tersedia
+                            $team->id = $teamIdToReuse;
+                            $team->setAttribute('id', $teamIdToReuse); // Memastikan ID diset dengan benar
+                            
+                            Log::info('Using specified team_id_to_reuse for FF team', [
+                                'team_id' => $teamIdToReuse,
+                                'team_id_type' => gettype($teamIdToReuse),
+                                'team_object' => $team
+                            ]);
+                            
+                            // Cara tambahan: set auto_increment untuk memastikan ID berikutnya lebih tinggi
+                            try {
+                                DB::statement('ALTER TABLE ff_teams AUTO_INCREMENT = ?', [$teamIdToReuse + 1]);
+                                Log::info('Changed FF_Team auto_increment', ['new_value' => $teamIdToReuse + 1]);
+                                
+                                // Tambahkan pesan ke session untuk ditampilkan di frontend
+                                session()->flash('team_id_reused', [
+                                    'message' => 'ID tim berhasil digunakan kembali',
+                                    'team_id' => $teamIdToReuse,
+                                    'game_type' => 'ff'
+                                ]);
+                            } catch (\Exception $e) {
+                                Log::error('Failed to change FF_Team auto_increment', [
+                                    'error' => $e->getMessage(),
+                                    'team_id' => $teamIdToReuse
+                                ]);
+                            }
+                        } else {
+                            Log::warning('Cannot use team_id_to_reuse for FF, team with this ID already exists', [
+                                'team_id' => $teamIdToReuse
+                            ]);
+                        }
+                    }
                     // Free Fire selalu single slot, tidak perlu set slot_type dan slot_count
                 }
 
                 $team->team_name = $validated['team_name'];
                 
-                // Simpan tim dulu untuk mendapatkan ID
+                // Simpan tim untuk mendapatkan/menggunakan ID
                 $team->save();
                 
                 // Debug log
@@ -197,9 +305,9 @@ class TeamRegistrationController extends Controller
                     'proof_of_payment' => $team->proof_of_payment
                 ]);
 
-                // Setelah berhasil mendaftar, tambah jumlah slot yang digunakan 
-                // Selalu kurangi 1 slot untuk setiap pendaftaran
-                $slot->incrementUsedSlots(1);
+                // Setelah berhasil mendaftar, tambah jumlah slot yang digunakan
+                // Kurangi slot sesuai dengan jumlah yang dibutuhkan (1 atau 2 tergantung tipe slot)
+                $slot->incrementUsedSlots($slotCount);
 
                 // Commit transaksi jika semua operasi berhasil
                 DB::commit();
@@ -251,3 +359,4 @@ class TeamRegistrationController extends Controller
         }
     }
 }
+

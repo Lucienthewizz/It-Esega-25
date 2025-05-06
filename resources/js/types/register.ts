@@ -5,6 +5,7 @@ export interface TeamData {
     team_logo: File | null
     game_type?: "ml" | "ff"
     slot_type?: "single" | "double"
+    teamIdToReuse?: number | null
 }
 
 
@@ -93,8 +94,9 @@ export interface QRCodeSectionProps {
     title: string
     description: string
     instructions: string[]
-    amount: string
+    amount?: string
     gameType: "ml" | "ff"
+    slotType?: "single" | "double"
     resetStep?: () => void
 }
 

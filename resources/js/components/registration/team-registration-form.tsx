@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "@inertiajs/react"
-import { ChevronRight, Users, HelpCircle, FileWarning, ZoomIn, X, Image } from "lucide-react"
+import { ChevronRight, Users, HelpCircle, FileWarning, ZoomIn, X, Image, Ticket } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,9 +32,11 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
         proof_of_payment: teamData.proof_of_payment || null,
         game_type: gameType,
         slot_type: isML ? (teamData.slot_type || "single") : "single",
+        teamIdToReuse: teamData.teamIdToReuse || null,
     })
 
     console.log('game type', gameType);
+    console.log('team id to reuse', data.teamIdToReuse);
 
     const [teamLogoPreview, setTeamLogoPreview] = useState<string | null>(null)
     const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null)
@@ -58,6 +60,8 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setFormErrors({})
+
+        console.log("Submitting form with team ID to reuse:", data.teamIdToReuse);
 
         // Basic validations
         if (!data.team_name.trim() || !data.team_logo || !data.proof_of_payment) {
@@ -85,31 +89,40 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
         const progressInterval = simulateFileUploadProgress();
 
         try {
-            // Proceed with form submission
-            post(route("team-registration.store"), {
+            // Buat URL dengan query parameter untuk team_id_to_reuse jika ada
+            let url = route("team-registration.store");
+            if (data.teamIdToReuse) {
+                url = `${url}?team_id_to_reuse=${data.teamIdToReuse}`;
+                console.log("Submitting to URL with query param:", url);
+            }
+            
+            // Gunakan URL dengan query parameter
+            post(url, {
                 onSuccess: (response) => {
                     clearInterval(progressInterval);
                     
                     // Di sini kita tidak menampilkan success dialog dulu karena user harus 
                     // langsung dialihkan ke registration form player
                     const responseData = response.props as unknown as { id: number | null }
+                    console.log("Response data:", responseData);
+                    
                     // Make sure we're passing the complete data
                     const submittedData = {
                         ...data,
                         id: responseData.id || null,
-                    }
+                    };
                     
                     // Setelah 1 detik, alihkan ke player registration
                     setTimeout(() => {
                         setShowLoadingScreen(false);
-                    onSubmit(submittedData)
+                        onSubmit(submittedData);
                     }, 1000);
                 },
                 onError: (errors) => {
                     clearInterval(progressInterval);
                     setShowLoadingScreen(false);
                     
-                    console.error('Validation errors:', errors)
+                    console.error('Validation errors:', errors);
                     
                     // Menambahkan visual feedback untuk semua jenis error
                     if (errors.team_name && errors.team_name.includes('unique')) {
@@ -119,37 +132,35 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                         });
                     } else {
                         // Tampilkan semua error yang ada
-                        setFormErrors(errors)
+                        setFormErrors(errors);
                         
                         // Tambahkan debugging helper
-                        console.log('Errors set in state:', errors)
+                        console.log('Errors set in state:', errors);
                         
                         // Log semua error ke konsol untuk debugging
                         Object.keys(errors).forEach(key => {
-                            console.log(`Error in field ${key}:`, errors[key])
-                        })
+                            console.log(`Error in field ${key}:`, errors[key]);
+                        });
                     }
                     
                     // Untuk semua jenis error, beri fokus pada field pertama yang error
-                    const fieldWithError = Object.keys(errors)[0]
+                    const fieldWithError = Object.keys(errors)[0];
                     if (fieldWithError) {
-                        const errorField = document.getElementById(fieldWithError)
+                        const errorField = document.getElementById(fieldWithError);
                         if (errorField) {
-                            errorField.focus()
-                            errorField.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                            errorField.focus();
+                            errorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
                     
                     // Scroll ke bagian form dengan error
-                    const firstError = document.querySelector('.text-red-500')
+                    const firstError = document.querySelector('.text-red-500');
                     if (firstError) {
-                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
-                },
-                onFinish: () => {
-                    console.log('Form submission finished')
                 }
-            })
+            });
+
         } catch (error) {
             clearInterval(progressInterval);
             setShowLoadingScreen(false);
@@ -235,6 +246,7 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                 ]}
                 amount={`Biaya pendaftaran: ${registrationFee}`}
                 gameType={gameType}
+                slotType={data.slot_type}
             />
 
                 <div className="w-full lg:w-3/5 p-4 sm:p-6 lg:p-10 flex items-center justify-center bg-gradient-to-br from-white to-red-50/40 backdrop-blur-sm overflow-y-auto min-h-[calc(100vh-4rem)]">
@@ -288,346 +300,297 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                         )}
                                     </div>
 
-                                    {/* Slot Type Selection for Mobile Legends */}
-                                    {isML && (
-                                        <div className="space-y-3">
-                                            <Label htmlFor="slot_type" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                                    <line x1="8" y1="21" x2="16" y2="21"></line>
-                                                    <line x1="12" y1="17" x2="12" y2="21"></line>
-                                                </svg>
-                                                Tipe Slot
-                                            </Label>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <div 
-                                                    className={`border rounded-xl p-4 shadow-sm transition-all duration-200 hover:shadow-md cursor-pointer
-                                                    ${data.slot_type === "single" 
-                                                        ? 'bg-red-50 border-red-200 ring-2 ring-red-500 ring-opacity-50' 
-                                                        : 'bg-white/50 border-gray-200 hover:border-red-200'}`}
-                                                    onClick={() => setData("slot_type", "single")}
-                                                >
-                                                    <div className="flex items-start space-x-3">
-                                                        <div className={`mt-0.5 rounded-full w-5 h-5 flex items-center justify-center border-2 
-                                                            ${data.slot_type === "single" 
-                                                                ? 'border-red-500 bg-red-500' 
-                                                                : 'border-gray-300'}`}
-                                                        >
-                                                            {data.slot_type === "single" && (
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h3 className="font-semibold text-gray-800">Single Slot</h3>
-                                                            <p className="text-xs text-gray-600 mt-1">1 Tim, 1 Slot Kompetisi</p>
-                                                            <div className="mt-2 flex items-center">
-                                                                <span className="inline-block px-2 py-1 text-xs font-medium rounded-md bg-red-100 text-red-800">Rp 100.000</span>
-                                                            </div>
-                                                        </div>
+                                    <div className="mb-6">
+                                        <Label className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <Ticket className="h-4 w-4 text-red-500" />
+                                            <span>Tipe Slot</span>
+                                        </Label>
+                                        
+                                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div
+                                                className={`relative rounded-lg border p-4 cursor-pointer transition-all duration-200 
+                                                ${data.slot_type === 'single' 
+                                                    ? 'border-red-600 bg-red-50/50' 
+                                                    : 'border-gray-200 hover:border-red-200 hover:bg-red-50/30'}`}
+                                                onClick={() => setData('slot_type', 'single')}
+                                            >
+                                                <div className="flex items-start gap-3">
+                                                    <div className={`h-5 w-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5
+                                                        ${data.slot_type === 'single' 
+                                                            ? 'border-red-600' 
+                                                            : 'border-gray-300'}`}
+                                                    >
+                                                        {data.slot_type === 'single' && (
+                                                            <div className="h-2.5 w-2.5 rounded-full bg-red-600"></div>
+                                                        )}
                                                     </div>
-                                                </div>
-                                                
-                                                <div 
-                                                    className={`border rounded-xl p-4 shadow-sm transition-all duration-200 hover:shadow-md cursor-pointer
-                                                    ${data.slot_type === "double" 
-                                                        ? 'bg-red-50 border-red-200 ring-2 ring-red-500 ring-opacity-50' 
-                                                        : 'bg-white/50 border-gray-200 hover:border-red-200'}`}
-                                                    onClick={() => setData("slot_type", "double")}
-                                                >
-                                                    <div className="flex items-start space-x-3">
-                                                        <div className={`mt-0.5 rounded-full w-5 h-5 flex items-center justify-center border-2 
-                                                            ${data.slot_type === "double" 
-                                                                ? 'border-red-500 bg-red-500' 
-                                                                : 'border-gray-300'}`}
-                                                        >
-                                                            {data.slot_type === "double" && (
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <h3 className="font-semibold text-gray-800">Double Slot</h3>
-                                                            <p className="text-xs text-gray-600 mt-1">2 Tim, 2 Slot Kompetisi</p>
-                                                            <div className="mt-2 flex items-center">
-                                                                <span className="inline-block px-2 py-1 text-xs font-medium rounded-md bg-red-100 text-red-800">Rp 200.000</span>
-                                                            </div>
+                                                    <div>
+                                                        <Label className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                                                            <span>Single Slot</span>
+                                                        </Label>
+                                                        <p className="text-xs text-gray-600 mt-1">1 Tim, 1 Slot Kompetisi</p>
+                                                        <div className="mt-2 bg-red-50 px-3 py-1.5 rounded-md inline-block">
+                                                            <p className="text-sm font-medium text-red-600">Rp 100.000</p>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                                {/* Pesan pengingat untuk Double Slot - Kotak terpisah */}
-                                                {data.slot_type === "double" && (
-                                                    <div className="mt-4 p-4 bg-white/80 border border-gray-200 rounded-lg shadow-sm animate-fade-in">
-                                                        <div className="flex items-start gap-3">
-                                                            <div className="bg-gray-100 rounded-full p-2 shadow-sm">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                                </svg>
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <h4 className="font-semibold text-gray-800 text-sm mb-1">Petunjuk Double Slot</h4>
-                                                                <p className="text-sm text-gray-600">
-                                                                    Untuk Double Slot, Anda perlu mengisi formulir pendaftaran dua kali. Setelah mendaftarkan tim pertama, silakan ulangi proses untuk mendaftarkan tim kedua.
-                                                                </p>
-                                                            </div>
+                                            
+                                            <div
+                                                className={`relative rounded-lg border p-4 cursor-pointer transition-all duration-200 
+                                                ${data.slot_type === 'double' 
+                                                    ? 'border-red-600 bg-red-50/50' 
+                                                    : 'border-gray-200 hover:border-red-200 hover:bg-red-50/30'}`}
+                                                onClick={() => setData('slot_type', 'double')}
+                                            >
+                                                <div className="flex items-start gap-3">
+                                                    <div className={`h-5 w-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center mt-0.5
+                                                        ${data.slot_type === 'double' 
+                                                            ? 'border-red-600' 
+                                                            : 'border-gray-300'}`}
+                                                    >
+                                                        {data.slot_type === 'double' && (
+                                                            <div className="h-2.5 w-2.5 rounded-full bg-red-600"></div>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                                                            <span>Double Slot</span>
+                                                        </Label>
+                                                        <p className="text-xs text-gray-600 mt-1">1 Tim, 2 Slot Kompetisi</p>
+                                                        <div className="mt-2 bg-red-50 px-3 py-1.5 rounded-md inline-block">
+                                                            <p className="text-sm font-medium text-red-600">Rp 200.000</p>
                                                         </div>
                                                     </div>
-                                                )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        {formErrors.slot_type && (
+                                            <p className="text-xs text-red-500 mt-2">{formErrors.slot_type}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Garis Pembatas */}
+                                    <div className="relative py-4 md:py-0">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                                        </div>
+                                        <div className="relative flex justify-center">
+                                            <div className="bg-white px-4 text-xs text-gray-500 shadow-sm rounded-full">Unggah Dokumen</div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-5">
+                                        <div className="space-y-3">
+                                        <Label htmlFor="proof_of_payment" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                            <Image className="h-4 w-4 text-red-500" />
+                                            <span>Bukti Pembayaran</span>
+                                        </Label>
+                                        <FileUploadField
+                                            id="proof_of_payment"
+                                            label=""
+                                            helpText="PNG, JPG, JPEG Maksimal 2MB"
+                                            accept="image/jpeg,image/png,image/jpg"
+                                            value={data.proof_of_payment}
+                                            onChange={(file) => handleFileChange(file, "proof_of_payment")}
+                                        />
+                                        {paymentProofPreview && (
+                                            <div className="mt-2 flex justify-center">
+                                                <div className="relative group">
+                                                    <img
+                                                        src={paymentProofPreview}
+                                                        alt="Payment Proof Preview"
+                                                        className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
+                                                        onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
+                                                            className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                                                        >
+                                                            <ZoomIn className="w-5 h-5 text-gray-700" />
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
-
-                                        {/* Slot type for Free Fire */}
-                                        {!isML && (
-                                            <div className="space-y-3">
-                                                <Label htmlFor="slot_type" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                                                        <line x1="8" y1="21" x2="16" y2="21"></line>
-                                                        <line x1="12" y1="17" x2="12" y2="21"></line>
-                                                    </svg>
-                                                    Tipe Slot
-                                                </Label>
-                                                <div className="grid grid-cols-1 gap-3">
-                                                    <div 
-                                                        className="border rounded-xl p-4 shadow-sm bg-red-50 border-red-200 ring-2 ring-red-500 ring-opacity-50"
-                                                    >
-                                                        <div className="flex items-start space-x-3">
-                                                            <div className="mt-0.5 rounded-full w-5 h-5 flex items-center justify-center border-2 border-red-500 bg-red-500">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                                </svg>
-                                                            </div>
-                                                            <div className="flex-1">
-                                                                <h3 className="font-semibold text-gray-800">Single Slot</h3>
-                                                                <p className="text-xs text-gray-600 mt-1">1 Tim, 1 Slot Kompetisi</p>
-                                                                <div className="mt-2 flex items-center">
-                                                                    <span className="inline-block px-2 py-1 text-xs font-medium rounded-md bg-red-100 text-red-800">Rp 100.000</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div className="bg-white/80 p-4 rounded-lg border border-red-100 text-sm text-gray-600">
-                                                        <p>Untuk game Free Fire, kami hanya menyediakan slot tunggal per tim.</p>
-                                                    </div>
+                                        {formErrors.proof_of_payment && (
+                                            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <div>
+                                                    <p className="font-semibold text-red-700 text-xs sm:text-sm">Bukti Pembayaran Diperlukan</p>
+                                                    <p className="text-red-600 text-xs sm:text-sm">{formErrors.proof_of_payment}</p>
                                                 </div>
-                                        </div>
-                                    )}
-
-                                        <div className="space-y-5">
-                                            <div className="space-y-3">
-                                            <Label htmlFor="proof_of_payment" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
-                                                <Image className="h-4 w-4 text-red-500" />
-                                                <span>Bukti Pembayaran</span>
-                                            </Label>
-                                            <FileUploadField
-                                                id="proof_of_payment"
-                                                label=""
-                                                helpText="PNG, JPG, JPEG Maksimal 2MB"
-                                                accept="image/jpeg,image/png,image/jpg"
-                                                value={data.proof_of_payment}
-                                                onChange={(file) => handleFileChange(file, "proof_of_payment")}
-                                            />
-                                            {paymentProofPreview && (
-                                                <div className="mt-2 flex justify-center">
-                                                    <div className="relative group">
-                                                        <img
-                                                            src={paymentProofPreview}
-                                                            alt="Payment Proof Preview"
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
-                                                            onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                                                            <button 
-                                                                type="button" 
-                                                                onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
-                                                                className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
-                                                            >
-                                                                <ZoomIn className="w-5 h-5 text-gray-700" />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {formErrors.proof_of_payment && (
-                                                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                    </svg>
-                                                    <div>
-                                                        <p className="font-semibold text-red-700 text-xs sm:text-sm">Bukti Pembayaran Diperlukan</p>
-                                                        <p className="text-red-600 text-xs sm:text-sm">{formErrors.proof_of_payment}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                            <div className="space-y-3">
-                                            <Label htmlFor="team_logo" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
-                                                <Image className="h-4 w-4 text-red-500" />
-                                                <span>Logo Tim</span>
-                                            </Label>
-                                            <FileUploadField
-                                                id="team_logo"
-                                                label=""
-                                                accept="image/jpeg,image/png,image/jpg"
-                                                helpText="PNG, JPG, JPEG Maksimal 2MB"
-                                                value={data.team_logo}
-                                                onChange={(file) => handleFileChange(file, "team_logo")}
-                                            />
-                                            {teamLogoPreview && (
-                                                <div className="mt-2 flex justify-center">
-                                                    <div className="relative group">
-                                                        <img
-                                                            src={teamLogoPreview}
-                                                            alt="Preview Logo Tim"
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
-                                                            onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
-                                                        />
-                                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                                                            <button 
-                                                                type="button" 
-                                                                onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
-                                                                className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
-                                                            >
-                                                                <ZoomIn className="w-5 h-5 text-gray-700" />
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                            {formErrors.team_logo && (
-                                                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                    </svg>
-                                                    <div>
-                                                        <p className="font-semibold text-red-700 text-xs sm:text-sm">Logo Tim Diperlukan</p>
-                                                        <p className="text-red-600 text-xs sm:text-sm">{formErrors.team_logo}</p>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className="pt-2 sm:pt-4">
-                                        <Button
-                                            type="submit"
-                                            disabled={processing}
-                                                className={`w-full py-4 sm:py-5 md:py-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600
-                                            text-white rounded-xl font-medium text-sm sm:text-base md:text-lg transition-all duration-300 
-                                                shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
-                                            flex items-center justify-center gap-1 sm:gap-2 relative overflow-hidden group`}
-                                        >
-                                            <span className="relative z-10 flex items-center gap-1 sm:gap-2">
-                                                {processing ? "Memproses..." : "Lanjut ke Pendaftaran Pemain"}
-                                                <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:translate-x-1" />
-                                            </span>
-                                        </Button>
+                                        <div className="space-y-3">
+                                        <Label htmlFor="team_logo" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                            <Image className="h-4 w-4 text-red-500" />
+                                            <span>Logo Tim</span>
+                                        </Label>
+                                        <FileUploadField
+                                            id="team_logo"
+                                            label=""
+                                            accept="image/jpeg,image/png,image/jpg"
+                                            helpText="PNG, JPG, JPEG Maksimal 2MB"
+                                            value={data.team_logo}
+                                            onChange={(file) => handleFileChange(file, "team_logo")}
+                                        />
+                                        {teamLogoPreview && (
+                                            <div className="mt-2 flex justify-center">
+                                                <div className="relative group">
+                                                    <img
+                                                        src={teamLogoPreview}
+                                                        alt="Preview Logo Tim"
+                                                        className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
+                                                        onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
+                                                        <button 
+                                                            type="button" 
+                                                            onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
+                                                            className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                                                        >
+                                                            <ZoomIn className="w-5 h-5 text-gray-700" />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {formErrors.team_logo && (
+                                            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                                <div>
+                                                    <p className="font-semibold text-red-700 text-xs sm:text-sm">Logo Tim Diperlukan</p>
+                                                    <p className="text-red-600 text-xs sm:text-sm">{formErrors.team_logo}</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-                            </form>
-                        </CardContent>
-                    </Card>
-                </div>
+
+                                <div className="pt-2 sm:pt-4">
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                            className={`w-full py-4 sm:py-5 md:py-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600
+                                        text-white rounded-xl font-medium text-sm sm:text-base md:text-lg transition-all duration-300 
+                                            shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
+                                        flex items-center justify-center gap-1 sm:gap-2 relative overflow-hidden group`}
+                                    >
+                                        <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                                            {processing ? "Memproses..." : "Lanjut ke Pendaftaran Pemain"}
+                                            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                                        </span>
+                                    </Button>
+                                </div>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
+        </div>
 
-            {/* Emergency Contact Button */}
-            <button
-                onClick={handleEmergencyContact}
-                    className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 bg-white hover:bg-red-50 text-red-600 p-2 sm:p-3 md:p-4 rounded-full
-                    shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(220,38,38,0.3)]
-                    transform hover:scale-110 transition-all duration-300 group z-50 border border-red-200"
-                title="Butuh bantuan? Hubungi panitia"
-            >
-                <div className="relative">
-                        <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
-                        <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+        {/* Emergency Contact Button */}
+        <button
+            onClick={handleEmergencyContact}
+                className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 bg-white hover:bg-red-50 text-red-600 p-2 sm:p-3 md:p-4 rounded-full
+                shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(220,38,38,0.3)]
+                transform hover:scale-110 transition-all duration-300 group z-50 border border-red-200"
+            title="Butuh bantuan? Hubungi panitia"
+        >
+            <div className="relative">
+                    <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                    <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+            </div>
+            <span className="sr-only">Hubungi Panitia</span>
+        </button>
+
+        {/* File Size Limit Dialog */}
+        <Dialog open={openDialog} onOpenChange={(open) => setOpenDialog(open)}>
+                <DialogContent className="sm:max-w-md bg-[#1a1a1a] border border-red-500/20 shadow-2xl p-0 overflow-hidden">
+                {/* Header */}
+                    <div className="p-6 border-b border-red-500/10 bg-gradient-to-r from-red-500/10 to-transparent">
+                    <div className="flex items-center gap-3">
+                            <div className="p-2 bg-red-500/10 rounded-full">
+                                <FileWarning className="h-5 w-5 text-red-500" />
+                        </div>
+                        <DialogTitle className="text-lg font-semibold text-white m-0">
+                            File Terlalu Besar
+                        </DialogTitle>
+                    </div>
                 </div>
-                <span className="sr-only">Hubungi Panitia</span>
-            </button>
 
-            {/* File Size Limit Dialog */}
-            <Dialog open={openDialog} onOpenChange={(open) => setOpenDialog(open)}>
-                    <DialogContent className="sm:max-w-md bg-[#1a1a1a] border border-red-500/20 shadow-2xl p-0 overflow-hidden">
-                    {/* Header */}
-                        <div className="p-6 border-b border-red-500/10 bg-gradient-to-r from-red-500/10 to-transparent">
-                        <div className="flex items-center gap-3">
-                                <div className="p-2 bg-red-500/10 rounded-full">
-                                    <FileWarning className="h-5 w-5 text-red-500" />
-                            </div>
-                            <DialogTitle className="text-lg font-semibold text-white m-0">
-                                File Terlalu Besar
-                            </DialogTitle>
+                {/* Content */}
+                <div className="p-6 bg-[#1a1a1a]">
+                    <DialogDescription className="text-base text-gray-400">
+                        File yang Anda pilih melebihi batas maksimum yang diizinkan (2MB).
+                        <div className="mt-4 p-4 bg-black/40 rounded-xl border border-red-500/10">
+                            <ul className="text-sm text-gray-300 space-y-3">
+                                <li className="flex items-center gap-3">
+                                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                    Pastikan ukuran file tidak lebih dari 2MB
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                    Format yang didukung: PNG, JPG, JPEG
+                                </li>
+                                <li className="flex items-center gap-3">
+                                    <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                                    Kompres file jika diperlukan
+                                </li>
+                            </ul>
                         </div>
-                    </div>
+                    </DialogDescription>
 
-                    {/* Content */}
-                    <div className="p-6 bg-[#1a1a1a]">
-                        <DialogDescription className="text-base text-gray-400">
-                            File yang Anda pilih melebihi batas maksimum yang diizinkan (2MB).
-                            <div className="mt-4 p-4 bg-black/40 rounded-xl border border-red-500/10">
-                                <ul className="text-sm text-gray-300 space-y-3">
-                                    <li className="flex items-center gap-3">
-                                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                        Pastikan ukuran file tidak lebih dari 2MB
-                                    </li>
-                                    <li className="flex items-center gap-3">
-                                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                        Format yang didukung: PNG, JPG, JPEG
-                                    </li>
-                                    <li className="flex items-center gap-3">
-                                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                                        Kompres file jika diperlukan
-                                    </li>
-                                </ul>
-                            </div>
-                        </DialogDescription>
-
-                        <div className="mt-6 flex justify-end">
-                            <button
-                                type="button"
-                                onClick={() => setOpenDialog(false)}
-                                className="bg-red-600 hover:bg-red-700 text-white 
-                                    px-6 py-2.5 rounded-lg 
-                                text-sm font-medium transition-all duration-300 
-                                    shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]"
-                            >
-                                Mengerti
-                            </button>
-                        </div>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
-            {/* Image Zoom Dialog */}
-            <Dialog open={imageZoomOpen} onOpenChange={setImageZoomOpen}>
-                <DialogContent className="max-w-[95vw] sm:max-w-[80vw] max-h-[90vh] overflow-hidden p-0 bg-white/5 backdrop-blur-xl border border-white/20" hasCloseButton={false}>
-                    <div className="relative h-full w-full flex items-center justify-center pt-10 sm:pt-12 pb-4 px-2 sm:px-4">
-                        {zoomedImage?.src && (
-                            <img 
-                                src={zoomedImage.src} 
-                                alt={zoomedImage.alt} 
-                                className="max-w-full max-h-[80vh] object-contain"
-                            />
-                        )}
-                        <button 
+                    <div className="mt-6 flex justify-end">
+                        <button
                             type="button"
-                            onClick={() => setImageZoomOpen(false)}
-                            className="absolute top-2 sm:top-4 right-2 sm:right-4 p-1.5 sm:p-2 rounded-full bg-black/70 text-white hover:bg-black/90 transition-colors z-10"
+                            onClick={() => setOpenDialog(false)}
+                            className="bg-red-600 hover:bg-red-700 text-white 
+                                px-6 py-2.5 rounded-lg 
+                            text-sm font-medium transition-all duration-300 
+                                shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]"
                         >
-                            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                            Mengerti
                         </button>
                     </div>
-                </DialogContent>
-            </Dialog>
-        </div>
-            
-            <LoadingScreen isOpen={showLoadingScreen} />
-        </>
-    )
+                </div>
+            </DialogContent>
+        </Dialog>
+
+        {/* Image Zoom Dialog */}
+        <Dialog open={imageZoomOpen} onOpenChange={setImageZoomOpen}>
+            <DialogContent className="max-w-[95vw] sm:max-w-[80vw] max-h-[90vh] overflow-hidden p-0 bg-white/5 backdrop-blur-xl border border-white/20" hasCloseButton={false}>
+                <div className="relative h-full w-full flex items-center justify-center pt-10 sm:pt-12 pb-4 px-2 sm:px-4">
+                    {zoomedImage?.src && (
+                        <img 
+                            src={zoomedImage.src} 
+                            alt={zoomedImage.alt} 
+                            className="max-w-full max-h-[80vh] object-contain"
+                        />
+                    )}
+                    <button 
+                        type="button"
+                        onClick={() => setImageZoomOpen(false)}
+                        className="absolute top-2 sm:top-4 right-2 sm:right-4 p-1.5 sm:p-2 rounded-full bg-black/70 text-white hover:bg-black/90 transition-colors z-10"
+                    >
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    </div>
+        
+        <LoadingScreen isOpen={showLoadingScreen} />
+    </>
+)
 }
