@@ -18,6 +18,7 @@ import { useMLPlayers } from "@/hooks/use-ml-player"
 import type { MLPlayer, PlayerRegistrationFormProps } from "@/types/register"
 import LoadingScreen from "@/components/ui/loading-screen"
 import SuccessDialog from "@/components/ui/success-dialog"
+import axios from "axios"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isML = gameType === "ml"
@@ -56,6 +57,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [successMessage, setSuccessMessage] = useState("")
     const [showLoadingScreen, setShowLoadingScreen] = useState(false)
     const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+
+    const [isBackDialogOpen, setBackDialogOpen] = useState(false)
 
     const progress = useProgress(formData.ml_players, minPlayers)
 
@@ -287,19 +290,46 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleBack = () => {
-        // Kembali ke halaman registrasi tim dengan membawa data tim yang sama
-        const formDataToPass = {
-            team_name: teamData.team_name || "",
-            game_type: gameType,
-            team_id: teamData.id || 0
-        };
-        
-        // Gunakan query string untuk membawa data tim
-        router.visit(route('register'), {
-            data: {
-                teamData: JSON.stringify(formDataToPass)
-            }
-        });
+        setBackDialogOpen(true)
+    }
+
+    const handleConfirmBack = () => {
+        // Hapus data tim dari database
+        if (teamData.id) {
+            setShowLoadingScreen(true)
+            axios.post(route('delete-incomplete-team'), {
+                team_id: teamData.id,
+                game_type: gameType
+            })
+            .then(() => {
+                console.log("Data tim berhasil dihapus dari database")
+                // Hapus data pemain dari localStorage
+                localStorage.removeItem("ml_players_data")
+                
+                // Arahkan ke halaman registrasi tim dengan parameter game_type
+                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+                window.location.href = redirectUrl;
+            })
+            .catch((error) => {
+                console.error("Error deleting team data:", error)
+                // Hapus data pemain dari localStorage
+                localStorage.removeItem("ml_players_data")
+                
+                // Tetap arahkan ke halaman registrasi tim dengan parameter game_type meskipun ada error
+                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+                window.location.href = redirectUrl;
+            })
+            .finally(() => {
+                setShowLoadingScreen(false)
+            })
+        } else {
+            // Jika tidak ada team_id, hanya hapus data dari localStorage
+            localStorage.removeItem("ml_players_data")
+            
+            // Arahkan ke halaman registrasi tim dengan parameter game_type
+            const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+            window.location.href = redirectUrl;
+        }
     }
 
     const handleEmergencyContact = () => {
@@ -309,7 +339,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleSuccessDialogClose = () => {
-        router.visit('/')
+        router.visit(route('register'))
     }
 
     return (
@@ -427,7 +457,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                 <div>
                                                     <CardTitle className="text-xl sm:text-4xl font-bold mb-1 sm:mb-2">{gameTitle} Registration</CardTitle>
                                                     <CardDescription className="text-white/90 text-sm sm:text-lg">
-                                                        Team: <span className="font-medium">{teamData.team_name}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span>Team:</span> 
+                                                            <span className="font-medium">{teamData.team_name}</span>
+                                                        </div>
                                                     </CardDescription>
                                                 </div>
                                             </div>
@@ -532,6 +565,29 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 </Button>
                                 <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
                                     <Trash2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Remove Player
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
+                    <Dialog open={isBackDialogOpen} onOpenChange={setBackDialogOpen}>
+                        <DialogContent className="sm:max-w-[425px] p-4 sm:p-6">
+                            <DialogHeader>
+                                <DialogTitle className="flex items-center text-base sm:text-lg">
+                                    <AlertCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                                    Kembali ke Registrasi Tim
+                                </DialogTitle>
+                                <DialogDescription className="text-xs sm:text-sm">
+                                    <p className="mb-2">Apakah Anda yakin ingin kembali ke halaman registrasi tim?</p>
+                                    <p className="font-semibold text-red-600">Perhatian: Data tim dan pemain yang belum selesai didaftarkan akan dihapus dari database!</p>
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full mt-4">
+                                <Button onClick={() => setBackDialogOpen(false)} variant="outline" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <X className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Batal
+                                </Button>
+                                <Button onClick={handleConfirmBack} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <ChevronLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Ya, Kembali
                                 </Button>
                             </DialogFooter>
                         </DialogContent>

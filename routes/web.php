@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
 use App\Http\Controllers\Admin\TeamPlayerController;
 use App\Http\Controllers\Admin\TimelineController;
+use App\Http\Controllers\IncompleteTeamController;
 use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +34,9 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/player-registration-ff/form/{encryptedTeamName}', [PlayerRegistrationController::class, 'showRegistrationFormFF'])
         ->name('player-registration-ff.form');
-
+        
+    // Tambahkan route untuk menghapus tim yang belum selesai didaftarkan
+    Route::post('/delete-incomplete-team', [IncompleteTeamController::class, 'destroy'])->name('delete-incomplete-team');
 });
 
 

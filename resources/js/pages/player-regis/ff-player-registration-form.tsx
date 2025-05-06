@@ -12,13 +12,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 // import { FFPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, PlusCircle, Trash2, X, Users, Trophy, HelpCircle, ArrowLeft } from "lucide-react"
+import { AlertCircle, PlusCircle, Trash2, X, Users, Trophy, HelpCircle, ChevronLeft, CheckCircle2 } from "lucide-react"
 import { useProgressFF } from "@/hooks/use-progress-ff"
 import { useFFPlayers } from "@/hooks/use-ff-player"
 import type { FFPlayer, PlayerRegistrationFormProps } from "@/types/register"
 import { FFPlayerForm } from "@/components/registration/ff-player-form"
 import LoadingScreen from "@/components/ui/loading-screen"
 import SuccessDialog from "@/components/ui/success-dialog"
+import axios from "axios"
 
 export default function PlayerRegistrationForm({ teamData, gameType }: PlayerRegistrationFormProps) {
     const isFF = gameType === "ff"
@@ -55,6 +56,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const [playerToDelete, setPlayerToDelete] = useState<number | null>(null)
     const [showLoadingScreen, setShowLoadingScreen] = useState(false)
     const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+    
+    // Tambahkan state baru untuk dialog konfirmasi kembali
+    const [isBackDialogOpen, setBackDialogOpen] = useState(false)
+    // Perbarui state untuk alert sukses yang digunakan dalam penambahan pemain
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false)
+    const [successMessage, setSuccessMessage] = useState("")
 
     const progress = useProgressFF(formData.ff_players, minPlayers)
 
@@ -282,6 +289,12 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const addNewPlayer = () => {
         if (formData.ff_players.length < maxPlayers) {
             addPlayer()
+            // Tambahkan alert sukses saat menambahkan pemain
+            setSuccessMessage("Player baru berhasil ditambahkan!")
+            setShowSuccessAlert(true)
+            setTimeout(() => {
+                setShowSuccessAlert(false)
+            }, 5000)
         }
     }
 
@@ -303,19 +316,48 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleBack = () => {
-        // Kembali ke halaman registrasi tim dengan membawa data tim yang sama
-        const formDataToPass = {
-            team_name: teamData.team_name || "",
-            game_type: gameType,
-            team_id: teamData.id || 0
-        };
-        
-        // Gunakan query string untuk membawa data tim
-        router.visit(route('register'), {
-            data: {
-                teamData: JSON.stringify(formDataToPass)
-            }
-        });
+        // Tampilkan dialog konfirmasi sebelum kembali
+        setBackDialogOpen(true)
+    }
+
+    // Update fungsi untuk handle konfirmasi kembali
+    const handleConfirmBack = () => {
+        // Hapus data tim dari database
+        if (teamData.id) {
+            setShowLoadingScreen(true)
+            axios.post(route('delete-incomplete-team'), {
+                team_id: teamData.id,
+                game_type: gameType
+            })
+            .then(() => {
+                console.log("Data tim berhasil dihapus dari database")
+                // Hapus data pemain dari localStorage
+                localStorage.removeItem("ff_players_data")
+                
+                // Arahkan ke halaman registrasi tim dengan parameter game_type
+                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+                window.location.href = redirectUrl;
+            })
+            .catch((error) => {
+                console.error("Error deleting team data:", error)
+                // Hapus data pemain dari localStorage
+                localStorage.removeItem("ff_players_data")
+                
+                // Tetap arahkan ke halaman registrasi tim dengan parameter game_type meskipun ada error
+                const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+                window.location.href = redirectUrl;
+            })
+            .finally(() => {
+                setShowLoadingScreen(false)
+            })
+        } else {
+            // Jika tidak ada team_id, hanya hapus data dari localStorage
+            localStorage.removeItem("ff_players_data")
+            
+            // Arahkan ke halaman registrasi tim dengan parameter game_type
+            const redirectUrl = `${route('register')}?teamData=${encodeURIComponent(JSON.stringify({game_type: gameType}))}`;
+            window.location.href = redirectUrl;
+        }
     }
 
     const handleEmergencyContact = () => {
@@ -326,7 +368,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleSuccessDialogClose = () => {
-        router.visit('/')
+        router.visit(route('register'))
     }
 
     return (
@@ -341,13 +383,13 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                             {/* Back Button */}
                             <motion.button
                                 onClick={handleBack}
-                                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-red-600 hover:text-red-700 transition-colors rounded-md hover:bg-red-50/50"
-                                initial={{ opacity: 0, x: -10 }}
+                                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors duration-300"
+                                initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                <span>Kembali</span>
+                                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                <span>Back to Team Registration</span>
                             </motion.button>
 
                             {/* Logo */}
@@ -395,6 +437,20 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     </Alert>
                                 </motion.div>
                             )}
+                            {showSuccessAlert && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                    <Alert className={`${themeColors.success} p-2 sm:p-3 text-xs sm:text-sm`}>
+                                        <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                        <AlertTitle className="text-xs sm:text-sm">Success</AlertTitle>
+                                        <AlertDescription className="text-slate-900 text-xs">{successMessage}</AlertDescription>
+                                    </Alert>
+                                </motion.div>
+                            )}
                         </AnimatePresence>
                     </div>
 
@@ -427,7 +483,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                 <div>
                                                     <CardTitle className="text-xl sm:text-4xl font-bold mb-1 sm:mb-2">{gameTitle} Registration</CardTitle>
                                                     <CardDescription className="text-white/90 text-sm sm:text-lg">
-                                                        Team: <span className="font-medium">{teamData.team_name}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span>Team:</span> 
+                                                            <span className="font-medium">{teamData.team_name}</span>
+                                                        </div>
                                                     </CardDescription>
                                                 </div>
                                             </div>
@@ -534,6 +593,30 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 </Button>
                                 <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
                                     <Trash2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Remove Player
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+
+                    {/* Dialog for Back Confirmation */}
+                    <Dialog open={isBackDialogOpen} onOpenChange={setBackDialogOpen}>
+                        <DialogContent className="sm:max-w-[425px] p-4 sm:p-6">
+                            <DialogHeader>
+                                <DialogTitle className="flex items-center text-base sm:text-lg">
+                                    <AlertCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
+                                    Kembali ke Registrasi Tim
+                                </DialogTitle>
+                                <DialogDescription className="text-xs sm:text-sm">
+                                    <p className="mb-2">Apakah Anda yakin ingin kembali ke halaman registrasi tim?</p>
+                                    <p className="font-semibold text-red-600">Perhatian: Data tim dan pemain yang belum selesai didaftarkan akan dihapus dari database!</p>
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full mt-4">
+                                <Button onClick={() => setBackDialogOpen(false)} variant="outline" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <X className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Batal
+                                </Button>
+                                <Button onClick={handleConfirmBack} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <ChevronLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Ya, Kembali
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
