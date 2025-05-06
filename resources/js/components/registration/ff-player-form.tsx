@@ -27,9 +27,10 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
             case 'alamat':
                 return value.trim().length >= 10 ? undefined : 'Alamat harus minimal 10 karakter.'
             case 'no_hp':
-                return /^\d{1,15}$/.test(value)
-                    ? undefined
-                    : 'No HP harus berupa angka dan maksimal 15 digit.'
+                if (!/^\d+$/.test(value)) {
+                    return 'No HP hanya boleh berisi angka';
+                }
+                return undefined;
             default:
                 return undefined
         }

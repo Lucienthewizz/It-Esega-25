@@ -51,7 +51,24 @@ class TeamRegistrationController extends Controller
                 $rules['team_name'] .= '|unique:ff_teams,team_name';
             }
             
-            $validated = $request->validate($rules);
+            // Pesan validasi custom
+            $messages = [
+                'team_name.required' => 'Nama tim wajib diisi.',
+                'team_name.max' => 'Nama tim maksimal 255 karakter.',
+                'team_name.unique' => 'Nama tim sudah digunakan. Silakan pilih nama lain.',
+                'team_logo.required' => 'Logo tim wajib diunggah.',
+                'team_logo.image' => 'Logo tim harus berupa file gambar (jpg, jpeg, png, bmp, gif, svg, atau webp).',
+                'team_logo.max' => 'Ukuran logo tim maksimal 2MB.',
+                'proof_of_payment.required' => 'Bukti pembayaran wajib diunggah.',
+                'proof_of_payment.image' => 'Bukti pembayaran harus berupa file gambar (jpg, jpeg, png, bmp, gif, svg, atau webp).',
+                'proof_of_payment.max' => 'Ukuran bukti pembayaran maksimal 2MB.',
+                'game_type.required' => 'Jenis game wajib dipilih.',
+                'game_type.in' => 'Jenis game tidak valid.',
+                'slot_type.required' => 'Tipe slot wajib dipilih.',
+                'slot_type.in' => 'Tipe slot tidak valid.',
+            ];
+            
+            $validated = $request->validate($rules, $messages);
             
             Log::info('Validation passed', ['validated_data' => $validated]);
 

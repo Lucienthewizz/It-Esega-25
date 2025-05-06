@@ -148,6 +148,52 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
+        // Validasi field wajib untuk semua pemain
+        const invalidPlayers = formData.ff_players.map((player, index) => {
+            const errors = [];
+            
+            // Cek field wajib
+            if (!player.name || player.name.trim() === '') errors.push('nama');
+            if (!player.nickname || player.nickname.trim() === '') errors.push('nickname');
+            if (!player.id_server || player.id_server.trim() === '') errors.push('ID server');
+            if (!player.no_hp || player.no_hp.trim() === '') errors.push('nomor HP');
+            if (!player.email || player.email.trim() === '') errors.push('email');
+            
+            return errors.length > 0 ? { index, errors } : null;
+        }).filter(Boolean);
+
+        if (invalidPlayers.length > 0) {
+            const firstInvalid = invalidPlayers[0] as { index: number, errors: string[] };
+            const playerNumber = firstInvalid.index + 1;
+            const fields = firstInvalid.errors.join(', ');
+            
+            setShowValidationError(true);
+            setAlertMessage(`Pemain #${playerNumber} memiliki field yang belum diisi: ${fields}. Silakan lengkapi semua field wajib.`);
+            setTimeout(() => {
+                setShowValidationError(false);
+            }, 10000);
+            return;
+        }
+
+        // Validasi format email
+        const invalidEmailPlayers = formData.ff_players.map((player, index) => {
+            if (!player.email) return null;
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return !emailRegex.test(player.email) ? index : null;
+        }).filter(item => item !== null);
+
+        if (invalidEmailPlayers.length > 0) {
+            const playerNumber = invalidEmailPlayers[0] + 1;
+            
+            setShowValidationError(true);
+            setAlertMessage(`Format email pemain #${playerNumber} tidak valid. Gunakan format email yang benar (contoh: nama@domain.com).`);
+            setTimeout(() => {
+                setShowValidationError(false);
+            }, 10000);
+            return;
+        }
+        
         // Validasi foto dan tanda tangan
         const playersWithoutFoto = formData.ff_players.filter(player => !player.foto);
         const playersWithoutTandaTangan = formData.ff_players.filter(player => !player.tanda_tangan);
@@ -170,20 +216,6 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
-        const invalidPhoneIndexes = formData.ff_players
-            .map((player, index) => (!player.no_hp || validatePhoneNumber(player.no_hp)) ? -1 : index)
-            .filter(index => index !== -1)
-        
-        if (invalidPhoneIndexes.length > 0) {
-            const playerNumbers = invalidPhoneIndexes.map(index => index + 1).join(', ')
-            setShowValidationError(true)
-            setAlertMessage(`Nomor HP tidak valid untuk pemain ${playerNumbers}. Pastikan nomor HP terdiri dari 10-15 digit angka.`)
-            setTimeout(() => {
-                setShowValidationError(false)
-            }, 10000)
-            return
-        }
-    
         setShowLoadingScreen(true)
         
         const progressInterval = simulateFileUploadProgress();
