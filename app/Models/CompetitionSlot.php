@@ -17,6 +17,13 @@ class CompetitionSlot extends Model
     ];
     
     /**
+     * Menunjukkan apakah model memiliki timestamps
+     * 
+     * @var bool
+     */
+    public $timestamps = true;
+    
+    /**
      * Cek apakah masih ada slot tersedia
      *
      * @return bool
@@ -76,5 +83,49 @@ class CompetitionSlot extends Model
         
         $this->used_slots += $count;
         return $this->save();
+    }
+    
+    /**
+     * Mengurangi jumlah slot yang digunakan
+     *
+     * @param int $count
+     * @return bool
+     */
+    public function decrementUsedSlots(int $count = 1): bool
+    {
+        // Log status awal
+        \Illuminate\Support\Facades\Log::debug("decrementUsedSlots dipanggil", [
+            'competition_name' => $this->competition_name,
+            'original_used_slots' => $this->used_slots,
+            'decrement_count' => $count,
+            'model_id' => $this->id
+        ]);
+        
+        // Pastikan used_slots tidak menjadi negatif
+        $oldValue = $this->used_slots;
+        $newValue = max(0, $this->used_slots - $count);
+        
+        // Update menggunakan query builder untuk memastikan perubahan disimpan
+        $updated = self::where('id', $this->id)
+                      ->update([
+                          'used_slots' => $newValue,
+                          'updated_at' => now()
+                      ]);
+        
+        // Refresh model untuk mendapatkan nilai terbaru
+        $this->refresh();
+        
+        // Log perubahan nilai
+        \Illuminate\Support\Facades\Log::debug("decrementUsedSlots perubahan nilai", [
+            'competition_name' => $this->competition_name,
+            'model_id' => $this->id,
+            'before' => $oldValue,
+            'after' => $this->used_slots,
+            'expected_after' => $newValue,
+            'difference' => $oldValue - $this->used_slots,
+            'updated_rows' => $updated
+        ]);
+        
+        return $updated > 0;
     }
 }
