@@ -185,7 +185,7 @@ export default function Home() {
                 <div
                     className="from-primary to-secondary absolute inset-0 z-0 bg-gradient-to-br opacity-8"
                     style={{
-                        backgroundImage: `url('/images/bg-image.png')`,
+                        backgroundImage: `url('/Images/bg-image.png')`,
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'contain',
                         backgroundPosition: 'top center',
@@ -198,7 +198,7 @@ export default function Home() {
                         user={user}
                         logo={
                             <div className="flex items-center justify-start">
-                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
+                                <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
                         items={navItems}
@@ -248,7 +248,7 @@ export default function Home() {
                             </div>
                             <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
                                 <motion.img
-                                    src="/images/LogoEsega25.png"
+                                    src="/Images/LogoEsega25.png"
                                     alt="IT-ESEGA Logo"
                                     className="w-auto h-[420px] object-contain"
                                     style={{
@@ -338,7 +338,7 @@ export default function Home() {
                                                 <div className="relative w-full" style={{ paddingTop: '56.25%' }}>
                                                     <iframe
                                                         className="absolute inset-0 w-full h-full"
-                                                        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                                                        src=""
                                                         title="How to Register IT-ESEGA 2025"
                                                         frameBorder="0"
                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -432,8 +432,8 @@ export default function Home() {
                                     scope: "NATIONAL COMPETITION",
                                     date: "JULY 12st, 13nd, 19th",
                                     mode: "ONLINE",
-                                    image: "/images/ML-logo.png",
-                                    bgImage: "/images/ML-bg-high.jpeg",
+                                    image: "/Images/ML-logo.png",
+                                    bgImage: "/Images/ML-bg-high.jpeg",
                                     delay: 0,
                                     animation: "fade-up",
                                     fee: "Rp 100.000"
@@ -444,8 +444,8 @@ export default function Home() {
                                     scope: "NATIONAL COMPETITION",
                                     date: "JULY 5st",
                                     mode: "ONLINE",
-                                    image: "/images/FF-logo.png",
-                                    bgImage: "/images/FF-bg-high.jpeg",
+                                    image: "/Images/FF-logo.png",
+                                    bgImage: "/Images/FF-bg-high.jpeg",
                                     delay: 100,
                                     animation: "fade-up",
                                     fee: "Rp 100.000"
@@ -536,7 +536,7 @@ export default function Home() {
                                     <div className="relative w-full pt-[56.25%] bg-black">
                                         <iframe
                                             className="absolute top-0 left-0 w-full h-full"
-                                            src="https://www.youtube.com/embed/YOUR_TEASER_VIDEO_ID"
+                                            src=""
                                             title="IT-ESEGA 2025 Official Teaser"
                                             frameBorder="0"
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

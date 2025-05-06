@@ -73,26 +73,26 @@ export default function About() {
         });
     }, []); // Empty dependency array ensures this runs only once on mount
 
-    const afterEventVideos = [
-        {
-            year: 2024,
-            title: "IT-ESEGA 2024 Highlights",
-            description: "Momen-momen terbaik dari kompetisi IT-ESEGA tahun 2024",
-            videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-        },
-        {
-            year: 2023,
-            title: "IT-ESEGA 2023 Recap",
-            description: "Kilas balik perjalanan sukses IT-ESEGA 2023",
-            videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-        },
-        {
-            year: 2022,
-            title: "Best Moments IT-ESEGA 2022",
-            description: "Kumpulan momen berkesan dari IT-ESEGA 2022",
-            videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-        }
-    ];
+    // const afterEventVideos = [
+    //     {
+    //         year: 2024,
+    //         title: "IT-ESEGA 2024 Highlights",
+    //         description: "Momen-momen terbaik dari kompetisi IT-ESEGA tahun 2024",
+    //         videoUrl: ""
+    //     },
+    //     {
+    //         year: 2023,
+    //         title: "IT-ESEGA 2023 Recap",
+    //         description: "Kilas balik perjalanan sukses IT-ESEGA 2023",
+    //         videoUrl: ""
+    //     },
+    //     {
+    //         year: 2022,
+    //         title: "Best Moments IT-ESEGA 2022",
+    //         description: "Kumpulan momen berkesan dari IT-ESEGA 2022",
+    //         videoUrl: ""
+    //     }
+    // ];
 
     return (
         <>
@@ -103,7 +103,7 @@ export default function About() {
                         user={user}
                         logo={
                             <div className="flex items-center justify-start">
-                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
+                                <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
                         items={navItems}
@@ -288,7 +288,7 @@ export default function About() {
                                         <div className="relative">
                                             <div className="absolute"></div>
                                             <motion.img 
-                                                src="/images/MascotEsega25.png" 
+                                                src="/Images/MascotEsega25.png" 
                                                 alt="IT-ESEGA Mascot" 
                                                 className="relative w-auto h-[300px] sm:h-[600px] object-contain"
                                                 animate={{
@@ -358,7 +358,7 @@ export default function About() {
                                     <div className="flex justify-center" data-aos="fade-right">
                                         <div className="relative">
                                             <motion.img 
-                                                src="/images/LogoEsega25.png" 
+                                                src="/Images/LogoEsega25.png" 
                                                 alt="IT-ESEGA Logo" 
                                                 className="w-auto h-[220px] sm:h-[400px] object-contain transform-none relative z-10"
                                                 animate={{
@@ -402,15 +402,16 @@ export default function About() {
                             </div>
                         </div>
 
-                        {/* After Event Videos Section */}
+                        {/* After Event Videos Section - Dinonaktifkan */}
+                        {/* 
                         <section className="relative overflow-hidden">
-                            {/* Background Layer */}
+                            {/* Background Layer *//*}
                             <div className="absolute inset-0 bg-white"></div>
                             
-                            {/* Gradient Overlay */}
+                            {/* Gradient Overlay *//*}
                             <div className="absolute inset-0 bg-gradient-to-b from-red-50/40 via-red-100/30 to-white"></div>
 
-                            {/* Cross Blob - Center Left Videos */}
+                            {/* Cross Blob - Center Left Videos *//*}
                             <div className="absolute left-1/4 top-1/2 w-16 h-16 opacity-5 pointer-events-none">
                                 <motion.div
                                     animate={{
@@ -429,7 +430,7 @@ export default function About() {
                                 </motion.div>
                             </div>
 
-                            {/* Cross Blob - Center Right Videos */}
+                            {/* Cross Blob - Center Right Videos *//*}
                             <div className="absolute right-1/4 top-3/4 w-20 h-20 opacity-5 pointer-events-none">
                                 <motion.div
                                     animate={{
@@ -448,7 +449,7 @@ export default function About() {
                                 </motion.div>
                             </div>
                             
-                            {/* Content Container */}
+                            {/* Content Container *//*}
                             <div className="relative py-16 md:py-24">
                                 <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
                                     <h2 className="mb-4 sm:mb-6 text-3xl sm:text-4xl font-bold text-[#333] text-center" data-aos="fade-down">
@@ -463,7 +464,7 @@ export default function About() {
                                                 data-aos="fade-up"
                                                 data-aos-delay={index * 100}
                                             >
-                                                {/* Video Container dengan Aspect Ratio 16:9 */}
+                                                {/* Video Container dengan Aspect Ratio 16:9 *//*}
                                                 <div className="relative w-full pt-[56.25%]">
                                                     <iframe
                                                         className="absolute top-0 left-0 w-full h-full"
@@ -497,6 +498,7 @@ export default function About() {
                                 </div>
                             </div>
                         </section>
+                        */}
                     </div>
 
                     {/* Footer */}

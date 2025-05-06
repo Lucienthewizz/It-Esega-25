@@ -354,13 +354,13 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                             ? `/storage/${teamData.team_logo}`
                                                             : teamData.team_logo instanceof File
                                                                 ? URL.createObjectURL(teamData.team_logo)
-                                                                : '/images/default-team-logo.png'
-                                                        : '/images/default-team-logo.png'
+                                                                : '/Images/default-team-logo.png'
+                                                        : '/Images/default-team-logo.png'
                                                 }
                                                 alt={`Team ${teamData.team_name} Logo`}
                                                 className="w-20 h-20 object-contain rounded-lg"
                                                 onError={(e) => {
-                                                    e.currentTarget.src = '/images/default-team-logo.png'
+                                                    e.currentTarget.src = '/Images/default-team-logo.png'
                                                 }}
                                             />
                                         </div>

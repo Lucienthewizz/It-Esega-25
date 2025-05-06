@@ -66,7 +66,7 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
         <Sidebar>
             <SidebarHeader>
                 <div className="flex items-center gap-2 px-4">
-                    <img src="/images/LogoEsega25.png" alt="Logo Essega" className="w-20" />
+                    <img src="/Images/LogoEsega25.png" alt="Logo Essega" className="w-20" />
                     <span className="text-lg font-semibold">IT Esega</span>
                 </div>
             </SidebarHeader>

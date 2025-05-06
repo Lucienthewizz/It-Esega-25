@@ -111,7 +111,7 @@ const defaultSocialMedia: SocialMedia[] = [
 
 // Default logo
 const defaultLogo = (
-    <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25" className="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105" />
+    <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25" className="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105" />
 );
 
 // Default description
