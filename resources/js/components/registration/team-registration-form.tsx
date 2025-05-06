@@ -300,6 +300,7 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                         )}
                                     </div>
 
+                                    {isML && (
                                     <div className="mb-6">
                                         <Label className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2">
                                             <Ticket className="h-4 w-4 text-red-500" />
@@ -370,6 +371,35 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                             <p className="text-xs text-red-500 mt-2">{formErrors.slot_type}</p>
                                         )}
                                     </div>
+                                    )}
+                                    
+                                    {!isML && (
+                                    <div className="mb-6">
+                                        <Label className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <Ticket className="h-4 w-4 text-red-500" />
+                                            <span>Informasi Biaya</span>
+                                        </Label>
+                                        
+                                        <div className="mt-3">
+                                            <div className="relative rounded-lg border border-red-600 bg-red-50/50 p-4">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="h-5 w-5 rounded-full border-2 border-red-600 flex-shrink-0 flex items-center justify-center mt-0.5">
+                                                        <div className="h-2.5 w-2.5 rounded-full bg-red-600"></div>
+                                                    </div>
+                                                    <div>
+                                                        <Label className="text-sm font-medium text-gray-900 flex items-center gap-1.5">
+                                                            <span>Single Slot</span>
+                                                        </Label>
+                                                        <p className="text-xs text-gray-600 mt-1">Free Fire hanya tersedia dalam format Single Slot</p>
+                                                        <div className="mt-2 bg-red-50 px-3 py-1.5 rounded-md inline-block">
+                                                            <p className="text-sm font-medium text-red-600">Rp 100.000</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    )}
 
                                     {/* Garis Pembatas */}
                                     <div className="relative py-4 md:py-0">

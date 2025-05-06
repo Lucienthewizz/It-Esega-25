@@ -25,13 +25,13 @@ const mainNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
+        title: 'Website',
+        href: 'https://itesega.hmekti-ulm.com',
         icon: Folder,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits',
+        title: 'Kontak',
+        href: 'https://itesega.hmekti-ulm.com/contact',
         icon: BookOpen,
     },
 ];

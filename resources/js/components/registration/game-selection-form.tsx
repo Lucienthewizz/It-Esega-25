@@ -202,19 +202,19 @@ export function GameSelectionForm({ onGameSelect, gameStats: initialGameStats }:
                                             <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
                                                 <div className="text-xs text-gray-500 mb-1">Single Slot</div>
                                                 <div className="text-red-600 font-bold">{game.fee}</div>
-                                                <div className="text-xs text-gray-500 mt-1">1 Tim</div>
+                                                <div className="text-xs text-gray-500 mt-1">1 Tim, 1 Slot</div>
                                             </div>
                                             <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
                                                 <div className="text-xs text-gray-500 mb-1">Double Slot</div>
                                                 <div className="text-red-600 font-bold">Rp 200.000</div>
-                                                <div className="text-xs text-gray-500 mt-1">2 Tim</div>
+                                                <div className="text-xs text-gray-500 mt-1">1 Tim, 2 Slot</div>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="bg-white p-3 rounded-lg border border-gray-200 text-center mt-3">
-                                            <div className="text-xs text-gray-500 mb-1">Single Slot</div>
+                                        <div className="bg-white p-3 rounded-lg border border-red-200 text-center mt-3">
+                                            <div className="text-xs text-gray-500 mb-1">Single Slot Only</div>
                                             <div className="text-red-600 font-bold">{game.fee}</div>
-                                            <div className="text-xs text-gray-500 mt-1">1 Tim</div>
+                                            <div className="text-xs text-gray-500 mt-1">Free Fire hanya tersedia dalam format Single Slot</div>
                                         </div>
                                     )}
                                 </div>
