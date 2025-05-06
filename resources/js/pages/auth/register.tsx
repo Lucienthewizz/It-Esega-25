@@ -38,6 +38,28 @@ export default function RegisterPage() {
         
         // Muat data slot kompetisi saat komponen dimuat
         loadGameStats();
+        
+        // Cek apakah ada data tim yang dikirim dari halaman player registration
+        const urlParams = new URLSearchParams(window.location.search);
+        const teamDataParam = urlParams.get('teamData');
+        
+        if (teamDataParam) {
+            try {
+                const parsedTeamData = JSON.parse(teamDataParam);
+                if (parsedTeamData.game_type) {
+                    setGameType(parsedTeamData.game_type);
+                    setTeamData({
+                        id: parsedTeamData.team_id || null,
+                        team_name: parsedTeamData.team_name || "",
+                        proof_of_payment: null, // File tidak bisa dilewatkan melalui query param
+                        team_logo: null, // File tidak bisa dilewatkan melalui query param
+                    });
+                    setStep(2); // Langsung ke step team registration
+                }
+            } catch (err) {
+                console.error("Error parsing team data from URL", err);
+            }
+        }
     }, []);
     
     // Fungsi untuk memuat data slot kompetisi

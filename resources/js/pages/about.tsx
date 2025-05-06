@@ -21,6 +21,11 @@ export default function About() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
     console.log('About page is rendering');
 
+    useEffect(() => {
+        // Reset scroll position ke atas 
+        window.scrollTo(0, 0);
+    }, []);
+
     const handleNavigation = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
         e.preventDefault();
         router.visit('/', {

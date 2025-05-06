@@ -241,7 +241,19 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     }
 
     const handleBack = () => {
-        router.visit('/register')
+        // Kembali ke halaman registrasi tim dengan membawa data tim yang sama
+        const formDataToPass = {
+            team_name: teamData.team_name || "",
+            game_type: gameType,
+            team_id: teamData.id || 0
+        };
+        
+        // Gunakan query string untuk membawa data tim
+        router.visit(route('register'), {
+            data: {
+                teamData: JSON.stringify(formDataToPass)
+            }
+        });
     }
 
     const handleEmergencyContact = () => {
