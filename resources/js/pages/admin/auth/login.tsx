@@ -37,7 +37,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     return (
         <AuthLayout>
-            <Head title="Admin Login" />
+            <Head title="IT-ESEGA 2025 Official Website | Admin Login" />
 
             <div className="flex min-h-screen w-full items-center justify-center bg-[#0e0e0e] p-4">
                 <Card className="w-full max-w-md shadow-2xl border-red-500/20 bg-[#1a1a1a]">

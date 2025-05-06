@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthenticatedAdminLayout from "@/layouts/admin/layout";
 import { UserType } from "@/types/user";
-import { usePage, useForm } from "@inertiajs/react";
+import { usePage, useForm, Head } from "@inertiajs/react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Terminal, Eye, EyeOff } from "lucide-react";
 import * as React from 'react'
@@ -96,104 +96,96 @@ export default function AdminUser() {
     };
 
     const renderForm = (
-        <form onSubmit={handleSubmit} className="space-y-6 p-6 shadow-lg rounded-2xl border">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name */}
-                <div>
-                    <Label htmlFor="name">Nama Lengkap</Label>
-                    <Input placeholder="Masukan Nama" id="name" value={formData.name} onChange={e => setData('name', e.target.value)} />
-                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-                </div>
-
-                {/* Email */}
-                <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input placeholder="Masukan Email" id="email" value={formData.email} onChange={e => setData('email', e.target.value)} />
-                    {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-                </div>
-
-                {/* Password */}
-                <div className="relative">
-                    <Label htmlFor="password">Password {editId && <span className="text-xs text-gray-500">(kosongkan jika tidak ingin mengubah)</span>}</Label>
-                    <Input placeholder="Masukan Password"
-                        id="password"
-                        type={showPassword ? "text" : "password"}
-                        value={formData.password}
-                        onChange={e => setData('password', e.target.value)}
-                        className="pr-10"
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                        id="name"
+                        placeholder="Enter name"
+                        value={formData.name}
+                        onChange={(e) => setData('name', e.target.value)}
                     />
-                    <button type="button" onClick={() => setShowPassword(prev => !prev)} className="absolute right-3 top-[38px] text-gray-500 hover:text-gray-700">
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                    </button>
-                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
                 </div>
 
-                {/* Phone */}
-                <div>
-                    <Label htmlFor="phone">No. HP</Label>
-                    <Input placeholder="Masukan NO. HP" id="phone" value={formData.phone} onChange={e => setData('phone', e.target.value)} />
-                    {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter email"
+                        value={formData.email}
+                        onChange={(e) => setData('email', e.target.value)}
+                    />
+                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                 </div>
 
-                {/* Address */}
-                <div>
-                    <Label htmlFor="address">Alamat</Label>
-                    <Input placeholder="Masukan Alamat" id="address" value={formData.address} onChange={e => setData('address', e.target.value)} />
-                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <div className="relative">
+                        <Input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder={editId ? "Leave blank to keep current password" : "Enter password"}
+                            value={formData.password}
+                            onChange={(e) => setData('password', e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                    </div>
+                    {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                 </div>
 
-                {/* KTM */}
-                <div>
-                    <Label htmlFor="KTM">Nomor KTM</Label>
-                    <Input placeholder="Masukan NIM" id="KTM" value={formData.KTM} onChange={e => setData('KTM', e.target.value)} />
-                    {errors.KTM && <p className="text-red-500 text-sm mt-1">{errors.KTM}</p>}
+                <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                        id="phone"
+                        placeholder="Enter phone number"
+                        value={formData.phone}
+                        onChange={(e) => setData('phone', e.target.value)}
+                    />
+                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                 </div>
 
-                {/* Role */}
-                <div>
+                <div className="space-y-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                        id="address"
+                        placeholder="Enter address"
+                        value={formData.address}
+                        onChange={(e) => setData('address', e.target.value)}
+                    />
+                    {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
+                </div>
+
+                <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
                     <Select value={formData.role} onValueChange={(value) => setData('role', value)}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Pilih Role Admin" />
+                            <SelectValue placeholder="Select role" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectLabel>Role</SelectLabel>
-                                <SelectItem value="admin">Admin</SelectItem>
+                                <SelectLabel>Roles</SelectLabel>
                                 <SelectItem value="super_admin">Super Admin</SelectItem>
+                                <SelectItem value="admin">Admin</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role}</p>}
-                </div>
-
-                {/* Status */}
-                <div>
-                    <Label htmlFor="status">Status</Label>
-                    <Select value={formData.status} onValueChange={(value) => setData('status', value)}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Pilih Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Status</SelectLabel>
-                                <SelectItem value="active">Active</SelectItem>
-                                <SelectItem value="inactive">Inactive</SelectItem>
-                                <SelectItem value="blocked">Blocked</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                    {errors.status && <p className="text-red-500 text-sm mt-1">{errors.status}</p>}
+                    {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
                 </div>
             </div>
 
-            <div className="text-right space-x-2">
+            <div className="flex justify-end">
                 <Button type="submit" disabled={processing}>
-                    {editId ? "Update Admin" : "Tambah Admin"}
+                    {editId ? 'Update Admin' : 'Add Admin'}
                 </Button>
-                {editId && (
-                    <Button variant="ghost" onClick={resetForm} type="button">Batal</Button>
-                )}
             </div>
         </form>
     );
@@ -201,6 +193,7 @@ export default function AdminUser() {
 
     return (
         <AuthenticatedAdminLayout title="Admin Management" headerTitle="Admin Management" user={auth}>
+            <Head title="IT-ESEGA 2025 Official Website | Admin Management" />
             <DataTable
                 isButtonAdd
                 isButtonRestore

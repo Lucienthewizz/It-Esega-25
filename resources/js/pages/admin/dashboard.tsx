@@ -1,6 +1,6 @@
 import AuthenticatedAdminLayout from "@/layouts/admin/layout";
 import { UserType } from "@/types/user";
-import { usePage } from "@inertiajs/react";
+import { usePage, Head } from "@inertiajs/react";
 
 export default function AdminDashboard() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
@@ -10,6 +10,7 @@ export default function AdminDashboard() {
 
     return (
         <AuthenticatedAdminLayout title="Admin Dashboard" headerTitle={'Dashboard'} user={auth}>
+            <Head title="IT-ESEGA 2025 Official Website | Dashboard" />
             <div>
                 {auth?.name}
             </div>

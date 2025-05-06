@@ -102,7 +102,7 @@ export default function RegisterPage() {
 
     return (
         <>
-            <Head title="Register Team" />
+            <Head title="IT-ESEGA 2025 Official Website | Register Team" />
             <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 overflow-y-auto">
                 {/* Navigation Container */}
                 <div className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm">

@@ -15,17 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { 
   Select,
   SelectContent, 
@@ -74,26 +63,33 @@ const TeamDetailPage: React.FC<Props> = ({ team }) => {
   };
 
   const updateStatus = async () => {
-    setIsProcessing(true);
-    try {
-      await axios.put(`/secure-admin-essega/teams/${team.game === 'Mobile Legends' ? 'ml' : 'ff'}/${team.id}/status`, {
-        status: selectedStatus
-      });
-      
-      toast.success('Status tim berhasil diperbarui');
-      // Refresh halaman untuk mendapatkan data terbaru
-      router.reload();
-    } catch (error) {
-      console.error('Error updating team status:', error);
-      toast.error('Gagal memperbarui status tim');
-    } finally {
-      setIsProcessing(false);
+    if (selectedStatus === team.status) {
+      toast.error('Status tidak berubah');
+      return;
+    }
+    
+    if (confirm(`Anda akan mengubah status tim dari "${team.status}" menjadi "${selectedStatus}". Apakah Anda yakin ingin melanjutkan?`)) {
+      setIsProcessing(true);
+      try {
+        await axios.put(`/secure-admin-essega/teams/${team.game === 'Mobile Legends' ? 'ml' : 'ff'}/${team.id}/status`, {
+          status: selectedStatus
+        });
+        
+        toast.success('Status tim berhasil diperbarui');
+        // Refresh halaman untuk mendapatkan data terbaru
+        router.reload();
+      } catch (error) {
+        console.error('Error updating team status:', error);
+        toast.error('Gagal memperbarui status tim');
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
   return (
     <AuthenticatedAdminLayout user={auth} title={`Detail Tim - ${team.name}`} headerTitle="Detail Tim">
-      <Head title={`Detail Tim - ${team.name}`} />
+      <Head title={`IT-ESEGA 2025 Official Website | Detail Tim - ${team.name}`} />
       
       <div className="container mx-auto py-6">
         <div className="flex justify-between items-center mb-6">
@@ -196,30 +192,14 @@ const TeamDetailPage: React.FC<Props> = ({ team }) => {
                   </Select>
                 </div>
                 
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      variant="default" 
-                      className="w-full" 
-                      disabled={selectedStatus === team.status || isProcessing}
-                    >
-                      {isProcessing ? 'Memproses...' : 'Simpan Perubahan'}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Konfirmasi Perubahan Status</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Anda akan mengubah status tim dari "{team.status}" menjadi "{selectedStatus}".
-                        Apakah Anda yakin ingin melanjutkan?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Batal</AlertDialogCancel>
-                      <AlertDialogAction onClick={updateStatus}>Lanjutkan</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                <Button 
+                  variant="default" 
+                  className="w-full" 
+                  disabled={selectedStatus === team.status || isProcessing}
+                  onClick={updateStatus}
+                >
+                  {isProcessing ? 'Memproses...' : 'Simpan Perubahan'}
+                </Button>
               </div>
             </CardFooter>
           </Card>

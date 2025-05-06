@@ -41,7 +41,7 @@ export default function AuthenticatedAdminLayout({ children, user, headerTitle, 
 
     return (
         <>
-            <Head title={title} />
+            <Head title={`IT-ESEGA 2025 Official Website | ${title}`} />
             <SidebarProvider>
                 <div className={`flex h-screen w-full ${theme === 'light' ? 'text-black' : 'text-white-400'}`}>
                     <SidebarNav activeItem={activeItem} setActiveItem={setActiveItem} user={user} />

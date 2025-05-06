@@ -6,10 +6,10 @@ import AuthenticatedAdminLayout from '@/layouts/admin/layout';
 //import { TeamData } from '@/types/register';
 import { TeamOverviews } from '@/types/teamOverviews';
 import { UserType } from '@/types/user';
-import { usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 
 export default function TeamPlayerPage() {
-    const { user, flash, teams, totalTeams, totalPlayers, achievementsTotal, winrate } = usePage<{
+    const { user, teams, totalTeams, totalPlayers, achievementsTotal, winrate } = usePage<{
         user: { data: UserType };
         flash: { success?: string; error?: string };
         teams: { data: TeamOverviews[] };
@@ -23,7 +23,8 @@ export default function TeamPlayerPage() {
 
     return (
         <>
-            <AuthenticatedAdminLayout title="Admin Management" headerTitle={'Team & Player Management'} user={auth}>
+            <AuthenticatedAdminLayout title="Team Management" headerTitle={'Team & Player Management'} user={auth}>
+                <Head title="IT-ESEGA 2025 Official Website | Team Management" />
                 <div className="from-background to-background/80 min-h-screen bg-gradient-to-b">
                     <div className="container mx-auto space-y-8 py-8">
                         <header className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
