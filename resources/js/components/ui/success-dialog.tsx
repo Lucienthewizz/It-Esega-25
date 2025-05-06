@@ -48,7 +48,7 @@ export default function SuccessDialog({
         const confettiContainer = document.getElementById('confetti-container');
         if (!confettiContainer) return;
 
-        for (let i = 0; i < 150; i++) {
+        for (let i = 0; i < 200; i++) {
           const confetti = document.createElement('div');
           confetti.className = 'confetti';
           
@@ -57,7 +57,7 @@ export default function SuccessDialog({
           const randomColor = colors[Math.floor(Math.random() * colors.length)];
           
           // Ukuran acak (kecil)
-          const size = Math.random() * 10 + 5;
+          const size = Math.random() * 12 + 5;
           
           // Posisi awal acak
           const startX = Math.random() * window.innerWidth;
@@ -128,25 +128,25 @@ export default function SuccessDialog({
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 relative overflow-hidden"
+        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 relative overflow-hidden"
       >
         {/* Dekorasi latar belakang */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-red-100 rounded-full"></div>
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-red-50 rounded-full"></div>
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-red-100 rounded-full"></div>
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-red-50 rounded-full"></div>
         
         {/* Garis atas */}
-        <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-600 h-2" />
+        <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-600 h-3" />
         
         {/* Tombol close */}
         <button 
           onClick={handleClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
         >
-          <X className="h-5 w-5" />
+          <X className="h-6 w-6" />
         </button>
         
-        <div className="p-8 relative z-10">
-          <div className="flex flex-col items-center gap-6 text-center">
+        <div className="px-8 sm:px-10 py-12 relative z-10">
+          <div className="flex flex-col items-center gap-8 text-center">
             {/* Icon sukses dengan efek */}
             <div className="relative inline-flex">
               <motion.div
@@ -159,20 +159,20 @@ export default function SuccessDialog({
                   ease: "easeInOut"
                 }}
               >
-                <div className="p-5 bg-green-50 rounded-full">
+                <div className="p-6 bg-green-50 rounded-full">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-20"></span>
-                  <CheckCircle2 className="h-12 w-12 text-green-600 relative z-10" />
+                  <CheckCircle2 className="h-16 w-16 text-green-600 relative z-10" />
                 </div>
               </motion.div>
             </div>
             
             {/* Judul dan pesan */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <motion.h2 
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-2xl font-bold text-gray-800"
+                className="text-3xl font-bold text-gray-800"
               >
                 {title}
               </motion.h2>
@@ -180,7 +180,7 @@ export default function SuccessDialog({
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="text-gray-600"
+                className="text-gray-600 text-lg leading-relaxed"
               >
                 {message}
               </motion.p>
@@ -191,12 +191,12 @@ export default function SuccessDialog({
               initial={{ y: 10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="w-full"
+              className="w-full pt-4"
             >
               <Button
                 onClick={handleClose}
                 className="w-full bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 
-                text-white py-3 px-5 rounded-xl font-medium transition-all duration-300 
+                text-white py-4 px-6 rounded-xl font-medium transition-all duration-300 text-lg
                 shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
                 flex items-center justify-center gap-2"
               >

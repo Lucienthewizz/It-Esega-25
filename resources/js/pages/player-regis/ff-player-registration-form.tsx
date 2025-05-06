@@ -9,10 +9,10 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 // import { FFPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, PlusCircle, Trash2, X, Users, Trophy, HelpCircle, ChevronLeft, CheckCircle2 } from "lucide-react"
+import { AlertCircle, PlusCircle, X, Users, Trophy, HelpCircle, ChevronLeft, CheckCircle2 } from "lucide-react"
 import { useProgressFF } from "@/hooks/use-progress-ff"
 import { useFFPlayers } from "@/hooks/use-ff-player"
 import type { FFPlayer, PlayerRegistrationFormProps } from "@/types/register"
@@ -39,7 +39,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         alert: "bg-red-600/90 border-red-200",
         success: "bg-green-600/90 border-green-200",
         card: "bg-white shadow-lg rounded-xl border border-gray-100",
-        section: "bg-gray-50/50 rounded-xl p-6"
+        section: "bg-white rounded-xl p-5 sm:p-6 border border-gray-100"
     }
 
     const [formData, setFormData] = useState<{
@@ -62,6 +62,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     // Perbarui state untuk alert sukses yang digunakan dalam penambahan pemain
     const [showSuccessAlert, setShowSuccessAlert] = useState(false)
     const [successMessage, setSuccessMessage] = useState("")
+    const [isBackButtonLoading, setIsBackButtonLoading] = useState(false)
 
     const progress = useProgressFF(formData.ff_players, minPlayers)
 
@@ -322,6 +323,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
     // Update fungsi untuk handle konfirmasi kembali
     const handleConfirmBack = () => {
+        // Aktifkan loading state
+        setIsBackButtonLoading(true)
+        
         // Hapus data tim dari database
         if (teamData.id) {
             setShowLoadingScreen(true)
@@ -349,6 +353,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             })
             .finally(() => {
                 setShowLoadingScreen(false)
+                setIsBackButtonLoading(false)
             })
         } else {
             // Jika tidak ada team_id, hanya hapus data dari localStorage
@@ -375,12 +380,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         <>
             <Head title={`${gameTitle} Player Registration`} />
 
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-6 sm:py-12 px-3 sm:px-4">
-                {/* Navigation Container */}
+            <div className="min-h-screen bg-white py-6 sm:py-12 px-3 sm:px-4">
                 <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-red-100 shadow-sm">
                     <div className="max-w-[1350px] mx-auto px-3 md:px-8 lg:px-12">
                         <div className="flex items-center justify-between h-14 sm:h-16">
-                            {/* Back Button */}
                             <motion.button
                                 onClick={handleBack}
                                 className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors duration-300"
@@ -392,35 +395,41 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                 <span>Back to Team Registration</span>
                             </motion.button>
 
-                            {/* Logo */}
-                            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                                <img
-                                    src="/logo.png"
-                                    alt="IT ESEGA"
-                                    className="h-8 sm:h-10 w-auto"
-                                />
-                            </div>
-
-                            {/* Registration Section Text */}
-                            <div className="text-xs sm:text-sm font-medium text-red-600 px-2 sm:px-4 py-1.5 sm:py-2 rounded-md bg-red-50/50">
-                                Pendaftaran Pemain
+                            <div className="flex items-center gap-3 sm:gap-6">
+                                <div className="flex items-center">
+                                    {[1, 2, 3].map((s, index) => (
+                                        <div key={s} className="flex items-center">
+                                            <div
+                                                className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                                                    s < 3 
+                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
+                                                        : s === 3
+                                                        ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200'
+                                                        : 'bg-red-100 text-red-400'
+                                                }`}
+                                            >
+                                                <span className="text-xs sm:text-sm font-semibold">{s}</span>
+                                            </div>
+                                            {index < 2 && (
+                                                <div className="w-4 sm:w-8 h-0.5 bg-red-200"></div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="hidden md:block">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-medium text-gray-700">Step</span>
+                                        <span className="text-sm font-semibold text-red-600">3</span>
+                                        <span className="text-sm font-medium text-gray-700">of</span>
+                                        <span className="text-sm font-semibold text-red-600">3</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Main Container */}
-                <div className="max-w-[1350px] mx-auto pt-8">
-                    <div className="mb-6 sm:mb-10">
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2 sm:mb-3 text-center">
-                            Pendaftaran Pemain
-                        </h1>
-                        <p className="text-sm sm:text-base text-gray-600 text-center max-w-2xl mx-auto">
-                            Silahkan isi formulir pendaftaran di bawah ini dengan informasi yang valid dan benar.
-                        </p>
-                    </div>
-
-                    {/* Alerts Section */}
+                <div className="pt-6 sm:pt-4">
                     <div className="fixed top-16 sm:top-20 right-3 sm:right-4 z-50 w-auto max-w-[90%] sm:max-w-[800px] space-y-2">
                         <AnimatePresence>
                             {showValidationError && (
@@ -455,8 +464,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </div>
 
                     <div className="flex flex-col lg:flex-row w-full min-h-[calc(100vh-8rem)] relative">
-                        <div className="w-full lg:w-4/5 p-4 sm:p-6 lg:p-10 flex items-center justify-center bg-gradient-to-br from-white to-red-50/40 backdrop-blur-sm overflow-y-auto mx-auto">
-                            <div className="w-full max-w-5xl my-4 sm:my-6">
+                        <div className="w-full lg:w-[95%] p-3 sm:p-5 lg:p-8 flex items-center justify-center bg-white overflow-y-auto mx-auto">
+                            <div className="w-full max-w-7xl my-2 sm:my-4">
                                 {/* Header Section */}
                                 <Card className={`${themeColors.card} border-0 shadow-xl`}>
                                     <CardHeader className={`p-4 sm:p-8 ${themeColors.gradient} text-white rounded-t-xl`}>
@@ -519,9 +528,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     </div>
                                 </Card>
 
-                                {/* Players Section */}
-                                <Card className={`${themeColors.card} mt-6 sm:mt-8`}>
-                                    <CardContent className="p-4 sm:p-7">
+                                
+                                <Card className={`${themeColors.card} mt-3 sm:mt-4`}>
+                                    <CardContent className="p-4 sm:p-6">
                                         <form onSubmit={handleSubmit} encType="multipart/form-data">
                                             <div className="space-y-4 sm:space-y-8">
                                                 <AnimatePresence>
@@ -533,6 +542,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                             exit={{ opacity: 0, y: -20 }}
                                                             transition={{ duration: 0.3 }}
                                                             data-player-form
+                                                            className="mb-6"
                                                         >
                                                             <div className={themeColors.section}>
                                                                 <FFPlayerForm
@@ -575,55 +585,107 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                         </div>
                     </div>
 
-                    {/* Dialog for Deletion */}
+                    
                     <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                        <DialogContent className="sm:max-w-[425px] p-4 sm:p-6">
-                            <DialogHeader>
-                                <DialogTitle className="flex items-center text-base sm:text-lg">
-                                    <AlertCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
-                                    Confirm Player Removal
-                                </DialogTitle>
-                                <DialogDescription className="text-xs sm:text-sm">
-                                    Are you sure you want to remove this player from your team? This action cannot be undone.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full mt-4">
-                                <Button onClick={closeDeleteDialog} variant="outline" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
-                                    <X className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Cancel
-                                </Button>
-                                <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
-                                    <Trash2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Remove Player
-                                </Button>
-                            </DialogFooter>
+                        <DialogContent className="w-[95%] max-w-md p-0 rounded-md border-0 shadow-md mx-auto">
+                            <div className="bg-white px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
+                                <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-gray-100">
+                                    <DialogTitle className="text-sm sm:text-base font-semibold text-gray-900">
+                                        Konfirmasi Hapus Pemain
+                                    </DialogTitle>
+                                    <button 
+                                        onClick={() => setDeleteDialogOpen(false)}
+                                        className="text-gray-400 hover:text-gray-500 transition-colors rounded-full hover:bg-gray-100 p-1"
+                                    >
+                                        <X className="h-4 sm:h-5 w-4 sm:w-5" />
+                                    </button>
+                                </div>
+                                
+                                <div className="py-4 sm:py-5">
+                                    <p className="mb-4 sm:mb-5 text-xs sm:text-sm text-gray-700">
+                                        Apakah Anda yakin ingin menghapus pemain ini dari tim Anda? Tindakan ini tidak dapat dibatalkan.
+                                    </p>
+                                    
+                                    <div className="flex justify-end gap-2 sm:gap-3 mt-4 sm:mt-6 pb-3">
+                                        <Button 
+                                            onClick={closeDeleteDialog} 
+                                            variant="outline" 
+                                            className="text-xs sm:text-sm bg-gray-900 text-white hover:bg-gray-800 border-0 font-normal px-3 sm:px-4 py-1 sm:py-2 h-auto transition-all duration-200"
+                                        >
+                                            Batal
+                                        </Button>
+                                        <Button 
+                                            onClick={deletePlayerHandler} 
+                                            className="text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white font-normal px-3 sm:px-4 py-1 sm:py-2 h-auto transition-all duration-200"
+                                        >
+                                            Hapus Pemain
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
                         </DialogContent>
                     </Dialog>
 
                     {/* Dialog for Back Confirmation */}
                     <Dialog open={isBackDialogOpen} onOpenChange={setBackDialogOpen}>
-                        <DialogContent className="sm:max-w-[425px] p-4 sm:p-6">
-                            <DialogHeader>
-                                <DialogTitle className="flex items-center text-base sm:text-lg">
-                                    <AlertCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
-                                    Kembali ke Registrasi Tim
-                                </DialogTitle>
-                                <DialogDescription className="text-xs sm:text-sm">
-                                    <p className="mb-2">Apakah Anda yakin ingin kembali ke halaman registrasi tim?</p>
-                                    <p className="font-semibold text-red-600">Perhatian: Data tim dan pemain yang belum selesai didaftarkan akan dihapus dari database!</p>
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full mt-4">
-                                <Button onClick={() => setBackDialogOpen(false)} variant="outline" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
-                                    <X className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Batal
-                                </Button>
-                                <Button onClick={handleConfirmBack} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
-                                    <ChevronLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Ya, Kembali
-                                </Button>
-                            </DialogFooter>
+                        <DialogContent className="w-[95%] max-w-md p-0 rounded-md border-0 shadow-md mx-auto">
+                            <div className="bg-white px-4 sm:px-5 pt-4 sm:pt-5 pb-0">
+                                <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-gray-100">
+                                    <DialogTitle className="text-sm sm:text-base font-semibold text-gray-900">
+                                        Konfirmasi Kembali
+                                    </DialogTitle>
+                                    <button 
+                                        onClick={() => setBackDialogOpen(false)}
+                                        className="text-gray-400 hover:text-gray-500 transition-colors rounded-full hover:bg-gray-100 p-1"
+                                    >
+                                        <X className="h-4 sm:h-5 w-4 sm:w-5" />
+                                    </button>
+                                </div>
+                                
+                                <div className="py-4 sm:py-5">
+                                    <p className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-700">
+                                        Apakah Anda yakin ingin kembali ke halaman registrasi tim?
+                                    </p>
+                                    <div className="flex items-start gap-2 p-2 sm:p-3 bg-amber-50 border border-amber-200 rounded-md mb-4 sm:mb-5">
+                                        <AlertCircle className="h-4 sm:h-5 w-4 sm:w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+                                        <p className="text-xs sm:text-sm text-amber-700">
+                                            Data tim dan pemain yang belum selesai didaftarkan akan dihapus!
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="flex justify-end gap-2 sm:gap-3 mt-4 sm:mt-6 pb-3">
+                                        <Button 
+                                            onClick={() => setBackDialogOpen(false)} 
+                                            variant="outline" 
+                                            className="text-xs sm:text-sm bg-gray-900 text-white hover:bg-gray-800 border-0 font-normal px-3 sm:px-4 py-1 sm:py-2 h-auto transition-all duration-200"
+                                            disabled={isBackButtonLoading}
+                                        >
+                                            Batal
+                                        </Button>
+                                        <Button 
+                                            onClick={handleConfirmBack} 
+                                            className="text-xs sm:text-sm bg-red-600 hover:bg-red-700 text-white font-normal px-3 sm:px-4 py-1 sm:py-2 h-auto transition-all duration-200"
+                                            disabled={isBackButtonLoading}
+                                        >
+                                            {isBackButtonLoading ? (
+                                                <>
+                                                    <svg className="animate-spin -ml-1 mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    <span className="text-xs sm:text-sm">Memproses...</span>
+                                                </>
+                                            ) : (
+                                                "Ya, Kembali"
+                                            )}
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
                         </DialogContent>
                     </Dialog>
                 </div>
 
-                {/* Emergency Contact Button */}
                 <button
                     onClick={handleEmergencyContact}
                     className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-3 sm:p-4 rounded-full

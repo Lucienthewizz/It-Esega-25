@@ -190,14 +190,14 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
     }
 
     return (
-        <div className="border border-red-100 rounded-xl p-4 sm:p-6 w-full bg-white shadow-sm">
+        <div className="border border-red-100 rounded-xl p-5 sm:p-6 w-full bg-white">
             <div className="flex justify-between items-start mb-4 sm:mb-6">
-                <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-red-50 flex items-center justify-center border border-red-100">
-                        <span className="text-red-700 font-medium text-xs sm:text-base">{index + 1}</span>
+                <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-red-50 flex items-center justify-center border border-red-100">
+                        <span className="text-red-700 font-bold text-base sm:text-lg">{index + 1}</span>
                     </div>
                     <div>
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Player {index + 1}</h3>
+                        <h3 className="text-lg sm:text-xl font-semibold text-gray-800">Player {index + 1}</h3>
                         <p className="text-xs sm:text-sm text-gray-500">Data Pemain</p>
                     </div>
                 </div>
@@ -206,18 +206,18 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                     variant="outline"
                     size="icon"
                     onClick={onDelete}
-                    className="w-7 h-7 sm:w-9 sm:h-9 text-red-700 hover:text-red-200 bg-red-50 hover:bg-red-500 border-red-200"
+                    className="w-8 h-8 sm:w-9 sm:h-9 text-red-700 hover:text-red-200 bg-red-50 hover:bg-red-500 border-red-200 transition-all duration-200"
                 >
-                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                    <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 sm:gap-x-6 gap-y-3 sm:gap-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-4 sm:gap-y-5">
                 {/* Personal Information Section */}
-                <div className="space-y-3 sm:space-y-4 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-name-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                <div className="space-y-4 sm:space-y-5 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-name-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 Nama Lengkap <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -225,15 +225,15 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.name || ""}
                                 onChange={handleInputChange("name")}
                                 placeholder="Nama lengkap pemain"
-                                className="py-1.5 sm:py-2.5 bg-white/60 border-gray-200 rounded-lg text-gray-900 
-                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                                className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                                 required
                             />
                             {renderError("name")}
                         </div>
 
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-nickname-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-nickname-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 Nickname <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -241,17 +241,17 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.nickname}
                                 onChange={handleInputChange("nickname")}
                                 placeholder="Nickname in-game"
-                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                                className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                                 required
                             />
                             {renderError("nickname")}
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-id_server-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-id_server-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 Server ID <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -259,23 +259,23 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.id_server}
                                 onChange={handleInputChange("id_server")}
                                 placeholder="Server ID"
-                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                                className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                                 required
                             />
                             {renderError("id_server")}
                         </div>
 
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-role-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-role-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 Role <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={player.role}
                                 onValueChange={handleRoleChange}
                             >
-                                <SelectTrigger className={`py-1.5 sm:py-2.5 px-3 sm:px-4 bg-white border-gray-200 rounded-lg text-gray-900 
-                                                text-xs sm:text-sm h-[34px] sm:h-[42px] ${errors.role ? 'border-red-500' : ''}`}>
+                                <SelectTrigger className={`py-2.5 sm:py-3.5 px-4 sm:px-5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                                text-sm sm:text-base h-[34px] sm:h-[42px] ${errors.role ? 'border-red-500' : ''}`}>
                                     <SelectValue placeholder="Pilih role pemain" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -290,10 +290,10 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="space-y-3 sm:space-y-4 md:col-span-2 mt-1 sm:mt-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-email-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                <div className="space-y-4 sm:space-y-5 md:col-span-2 mt-1 sm:mt-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-email-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 Email <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -302,15 +302,15 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 onChange={handleInputChange("email")}
                                 placeholder="Email address"
                                 type="email"
-                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                                className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                                 required
                             />
                             {renderError("email")}
                         </div>
 
-                        <div className="space-y-1 sm:space-y-2">
-                            <Label htmlFor={`ml-no_hp-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                        <div className="space-y-2 sm:space-y-3">
+                            <Label htmlFor={`ml-no_hp-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                 No. HP <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -318,16 +318,16 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.no_hp}
                                 onChange={handleInputChange("no_hp")}
                                 placeholder="Nomor handphone"
-                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                                className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                                 required
                             />
                             {renderError("no_hp")}
                         </div>
                     </div>
 
-                    <div className="space-y-1 sm:space-y-2">
-                        <Label htmlFor={`ml-alamat-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                    <div className="space-y-2 sm:space-y-3">
+                        <Label htmlFor={`ml-alamat-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                             Alamat <span className="text-red-500">*</span>
                         </Label>
                         <Input
@@ -335,8 +335,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                             value={player.alamat}
                             onChange={handleInputChange("alamat")}
                             placeholder="Alamat lengkap"
-                            className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                       px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                            className="py-2 sm:py-3 bg-white border-gray-200 rounded-lg text-gray-900 
+                                       px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                             required
                         />
                         {renderError("alamat")}
@@ -344,17 +344,17 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 </div>
 
                 {/* File Upload Section */}
-                <div className="space-y-3 sm:space-y-4 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
+                <div className="space-y-4 sm:space-y-6 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         {[
                             ["foto", "Foto Selfie", photoPreview, true, "Wajib terlihat wajah peserta, bukan gambar acak"] as const,
                             ["tanda_tangan", "Tanda Tangan", signaturePreview, true, "Tanda tangan harus jelas dan mudah dibaca"] as const,
                         ].map(([field, label, preview, required, guidance]) => (
-                            <div key={field} className="space-y-1 sm:space-y-2">
+                            <div key={field} className="space-y-2 sm:space-y-3">
                                 <div className="flex flex-col space-y-0.5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-baseline gap-1">
-                                            <Label htmlFor={`ml-${field}-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
+                                            <Label htmlFor={`ml-${field}-${index}`} className="text-sm sm:text-base font-medium text-gray-700">
                                                 {label}
                                                 {required && <span className="text-red-500">*</span>}
                                             </Label>
