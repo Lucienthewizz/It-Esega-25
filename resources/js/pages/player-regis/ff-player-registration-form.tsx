@@ -320,7 +320,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
     const handleEmergencyContact = () => {
         // Ganti nomor WhatsApp sesuai dengan nomor panitia yang diperlukan
-        const phoneNumber = "628113985061" // Format: kode negara tanpa + diikuti nomor HP
+        const phoneNumber = "6287861081640" // Format: kode negara tanpa + diikuti nomor HP
         const message = `Halo, saya butuh bantuan terkait pendaftaran pemain ${gameTitle}.`
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
     }
