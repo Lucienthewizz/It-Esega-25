@@ -5,14 +5,17 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Trash2 } from "lucide-react"
+import { Trash2, ZoomIn, X } from "lucide-react"
 import { FFPlayer, PlayerFFFormProps } from "@/types/register"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 
 export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, errorsBE }: PlayerFFFormProps) {
     const [photoPreview, setPhotoPreview] = useState<string | null>(null)
     const [signaturePreview, setSignaturePreview] = useState<string | null>(null)
     const [errors, setErrors] = useState<Partial<Record<keyof FFPlayer, string>>>({})
     const [fileNames, setFileNames] = useState<{ foto: string; tanda_tangan: string }>({ foto: '', tanda_tangan: '' })
+    const [imageZoomOpen, setImageZoomOpen] = useState(false)
+    const [zoomedImage, setZoomedImage] = useState<{src: string | null, alt: string} | null>(null)
 
     const validateField = (field: keyof FFPlayer, value: string) => {
         if (!value) return undefined; // Don't show error for empty fields initially
@@ -181,16 +184,21 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
         return null;
     };
 
+    const openImageZoom = (src: string, alt: string) => {
+        setZoomedImage({ src, alt })
+        setImageZoomOpen(true)
+    }
+
     return (
-        <div className="border border-red-100 rounded-xl p-6 w-full bg-white shadow-sm">
-            <div className="flex justify-between items-start mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center border border-red-100">
-                        <span className="text-red-700 font-medium">{index + 1}</span>
+        <div className="border border-red-100 rounded-xl p-4 sm:p-6 w-full bg-white shadow-sm">
+            <div className="flex justify-between items-start mb-4 sm:mb-6">
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-red-50 flex items-center justify-center border border-red-100">
+                        <span className="text-red-700 font-medium text-xs sm:text-base">{index + 1}</span>
                     </div>
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-800">Player {index + 1}</h3>
-                        <p className="text-sm text-gray-500">Data Pemain</p>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-800">Player {index + 1}</h3>
+                        <p className="text-xs sm:text-sm text-gray-500">Data Pemain</p>
                     </div>
                 </div>
                 <Button
@@ -198,18 +206,18 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                     variant="outline"
                     size="icon"
                     onClick={onDelete}
-                    className="text-red-700 hover:text-red-200 bg-red-50 hover:bg-red-500 border-red-200"
+                    className="w-7 h-7 sm:w-9 sm:h-9 text-red-700 hover:text-red-200 bg-red-50 hover:bg-red-500 border-red-200"
                 >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 sm:gap-x-6 gap-y-3 sm:gap-y-5">
                 {/* Personal Information Section */}
-                <div className="space-y-4 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-name-${index}`} className="text-sm font-medium text-gray-700">
+                <div className="space-y-3 sm:space-y-4 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-name-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 Nama Lengkap <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -217,14 +225,15 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.name}
                                 onChange={handleInputChange("name")}
                                 placeholder="Nama lengkap pemain"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                                 required
                             />
                             {renderError("name")}
                         </div>
 
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-nickname-${index}`} className="text-sm font-medium text-gray-700">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-nickname-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 Nickname <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -232,16 +241,17 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.nickname}
                                 onChange={handleInputChange("nickname")}
                                 placeholder="Nickname in-game"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                                 required
                             />
                             {renderError("nickname")}
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-id_server-${index}`} className="text-sm font-medium text-gray-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-id_server-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 Server ID <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -249,22 +259,23 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.id_server}
                                 onChange={handleInputChange("id_server")}
                                 placeholder="Server ID"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                                 required
                             />
                             {renderError("id_server")}
                         </div>
 
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-role-${index}`} className="text-sm font-medium text-gray-700">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-role-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 Role <span className="text-red-500">*</span>
                             </Label>
                             <Select
                                 value={player.role}
                                 onValueChange={handleRoleChange}
                             >
-                                <SelectTrigger className={`rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white ${errors.role ? 'border-red-500' : ''
-                                    }`}>
+                                <SelectTrigger className={`py-1.5 sm:py-2.5 px-3 sm:px-4 bg-white border-gray-200 rounded-lg text-gray-900 
+                                                text-xs sm:text-sm h-[34px] sm:h-[42px] ${errors.role ? 'border-red-500' : ''}`}>
                                     <SelectValue placeholder="Pilih role pemain" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -279,10 +290,10 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 </div>
 
                 {/* Contact Information Section */}
-                <div className="space-y-4 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-email-${index}`} className="text-sm font-medium text-gray-700">
+                <div className="space-y-3 sm:space-y-4 md:col-span-2 mt-1 sm:mt-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-5">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-email-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 Email <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -291,14 +302,15 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 onChange={handleInputChange("email")}
                                 placeholder="Email address"
                                 type="email"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                                 required
                             />
                             {renderError("email")}
                         </div>
 
-                        <div className="space-y-1.5">
-                            <Label htmlFor={`ml-no_hp-${index}`} className="text-sm font-medium text-gray-700">
+                        <div className="space-y-1 sm:space-y-2">
+                            <Label htmlFor={`ml-no_hp-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                 No. HP <span className="text-red-500">*</span>
                             </Label>
                             <Input
@@ -306,15 +318,16 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.no_hp}
                                 onChange={handleInputChange("no_hp")}
                                 placeholder="Nomor handphone"
-                                className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                                className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                           px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                                 required
                             />
                             {renderError("no_hp")}
                         </div>
                     </div>
 
-                    <div className="space-y-1.5">
-                        <Label htmlFor={`ml-alamat-${index}`} className="text-sm font-medium text-gray-700">
+                    <div className="space-y-1 sm:space-y-2">
+                        <Label htmlFor={`ml-alamat-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                             Alamat <span className="text-red-500">*</span>
                         </Label>
                         <Input
@@ -322,7 +335,8 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                             value={player.alamat}
                             onChange={handleInputChange("alamat")}
                             placeholder="Alamat lengkap"
-                            className="rounded-md border-gray-200 focus:border-red-300 focus:ring-red-200 text-sm text-gray-900 placeholder:text-gray-400 bg-white"
+                            className="py-1.5 sm:py-2.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                       px-3 sm:px-4 text-xs sm:text-sm placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
                             required
                         />
                         {renderError("alamat")}
@@ -330,17 +344,17 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 </div>
 
                 {/* File Upload Section */}
-                <div className="space-y-4 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3 sm:space-y-4 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
                         {[
                             ["foto", "Foto Selfie", photoPreview, true, "Wajib terlihat wajah peserta, bukan gambar acak"] as const,
                             ["tanda_tangan", "Tanda Tangan", signaturePreview, true, "Tanda tangan harus jelas dan mudah dibaca"] as const,
                         ].map(([field, label, preview, required, guidance]) => (
-                            <div key={field} className="space-y-2">
+                            <div key={field} className="space-y-1 sm:space-y-2">
                                 <div className="flex flex-col space-y-0.5">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-baseline gap-1">
-                                            <Label htmlFor={`ml-${field}-${index}`} className="text-sm font-medium text-gray-700">
+                                            <Label htmlFor={`ml-${field}-${index}`} className="text-xs sm:text-sm font-medium text-gray-700">
                                                 {label}
                                                 {required && <span className="text-red-500">*</span>}
                                             </Label>
@@ -349,17 +363,17 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                             <button
                                                 type="button"
                                                 onClick={() => handleDeleteFile(field as "foto" | "tanda_tangan")}
-                                                className="text-red-500 hover:text-red-600 text-xs flex items-center gap-1 transition-colors duration-200"
+                                                className="text-red-500 hover:text-red-600 text-[10px] sm:text-xs flex items-center gap-0.5 sm:gap-1 transition-colors duration-200"
                                             >
-                                                <Trash2 className="w-3.5 h-3.5" />
+                                                <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                                 <span>Hapus</span>
                                             </button>
                                         )}
                                     </div>
-                                    <p className="text-[11px] text-gray-500 -mt-0.5">{guidance}</p>
+                                    <p className="text-[9px] sm:text-[11px] text-gray-500 -mt-0.5">{guidance}</p>
                                 </div>
 
-                                <div className="space-y-2">
+                                <div className="space-y-1 sm:space-y-2">
                                     <div className="relative">
                                         <input
                                             type="file"
@@ -371,20 +385,20 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                         />
                                         <label
                                             htmlFor={`ml-${field}-${index}`}
-                                            className={`w-full py-2.5 px-3 bg-red-50/80 hover:bg-red-50 text-red-700 rounded-md border ${errors[field as keyof FFPlayer] ? 'border-red-500' : 'border-gray-200'
-                                                } cursor-pointer transition-colors duration-200 flex items-center gap-2 text-sm min-h-[40px]`}
+                                            className={`w-full py-1.5 sm:py-2.5 px-2 sm:px-3 bg-red-50/80 hover:bg-red-50 text-red-700 rounded-md border ${errors[field as keyof FFPlayer] ? 'border-red-500' : 'border-gray-200'
+                                                } cursor-pointer transition-colors duration-200 flex items-center gap-1 sm:gap-2 text-xs sm:text-sm min-h-[32px] sm:min-h-[40px]`}
                                         >
-                                            <div className="flex items-center gap-2 w-full">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                            <div className="flex items-center gap-1 sm:gap-2 w-full">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
                                                 </svg>
                                                 <span className="truncate flex-1">
                                                     {fileNames[field as "foto" | "tanda_tangan"]
                                                         ? (
                                                             <span className="flex items-center gap-1">
-                                                                <span className="truncate max-w-[150px]">{fileNames[field as "foto" | "tanda_tangan"]}</span>
+                                                                <span className="truncate max-w-[80px] sm:max-w-[150px]">{fileNames[field as "foto" | "tanda_tangan"]}</span>
                                                                 <span className="text-red-400 shrink-0">•</span>
-                                                                <span className="text-xs text-red-400 shrink-0">Klik untuk mengganti</span>
+                                                                <span className="text-[9px] sm:text-xs text-red-400 shrink-0">Klik untuk mengganti</span>
                                                             </span>
                                                         )
                                                         : 'Pilih File'
@@ -393,12 +407,12 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                             </div>
                                         </label>
                                     </div>
-                                    <div className="text-[11px] text-gray-500">
+                                    <div className="text-[9px] sm:text-[11px] text-gray-500">
                                         Format: JPG, PNG (Max: 1MB)
                                     </div>
                                     {errors[field as keyof FFPlayer] && (
-                                        <div className="flex items-center gap-1 text-red-500 text-xs">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <div className="flex items-center gap-1 text-red-500 text-[9px] sm:text-xs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                             </svg>
                                             <span>{errors[field as keyof FFPlayer]}</span>
@@ -406,11 +420,12 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                     )}
                                     {preview && (
                                         <div className="relative mt-1">
-                                            <div className="relative rounded-md overflow-hidden border border-gray-200 bg-gray-50/30">
+                                            <div className="relative rounded-md overflow-hidden border border-gray-200 bg-gray-50/30 group">
                                                 <img
                                                     src={preview}
                                                     alt={`${label} Preview`}
-                                                    className="w-full h-[120px] object-contain"
+                                                    className="w-full h-[90px] sm:h-[120px] object-contain cursor-pointer transition-transform duration-200 group-hover:scale-105"
+                                                    onClick={() => openImageZoom(preview, `${label} Preview`)}
                                                     onError={() => {
                                                         console.error(`Error loading ${field} preview`)
                                                         if (field === "foto") {
@@ -421,6 +436,15 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                                     }}
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
+                                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center bg-black/30 transition-opacity duration-200">
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={() => openImageZoom(preview, `${label} Preview`)}
+                                                        className="p-1.5 sm:p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                                                    >
+                                                        <ZoomIn className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     )}
@@ -430,6 +454,28 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                     </div>
                 </div>
             </div>
+
+            {/* Image Zoom Dialog */}
+            <Dialog open={imageZoomOpen} onOpenChange={setImageZoomOpen}>
+                <DialogContent className="max-w-[95vw] sm:max-w-[80vw] max-h-[90vh] overflow-hidden p-0 bg-white/5 backdrop-blur-xl border border-white/20" hasCloseButton={false}>
+                    <div className="relative h-full w-full flex items-center justify-center pt-10 sm:pt-12 pb-4 px-2 sm:px-4">
+                        {zoomedImage?.src && (
+                            <img 
+                                src={zoomedImage.src} 
+                                alt={zoomedImage.alt} 
+                                className="max-w-full max-h-[80vh] object-contain"
+                            />
+                        )}
+                        <button 
+                            type="button"
+                            onClick={() => setImageZoomOpen(false)}
+                            className="absolute top-2 sm:top-4 right-2 sm:right-4 p-1.5 sm:p-2 rounded-full bg-black/70 text-white hover:bg-black/90 transition-colors z-10"
+                        >
+                            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

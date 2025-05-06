@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import { MLPlayerForm } from "@/components/registration/ml-player-form"
-import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, ChevronLeft, HelpCircle } from "lucide-react"
+import { AlertCircle, CheckCircle2, PlusCircle, Trash2, X, Users, Trophy, HelpCircle, ChevronLeft } from "lucide-react"
 import { useProgress } from "@/hooks/use-progress"
 import { useMLPlayers } from "@/hooks/use-ml-player"
 import type { MLPlayer, PlayerRegistrationFormProps } from "@/types/register"
@@ -316,27 +316,27 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         <>
             <Head title={`${gameTitle} Player Registration`} />
 
-            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
+            <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-6 sm:py-12 px-3 sm:px-4">
                 <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-red-100 shadow-sm">
-                    <div className="max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12">
-                        <div className="flex items-center justify-between h-16">
+                    <div className="max-w-[1350px] mx-auto px-3 md:px-8 lg:px-12">
+                        <div className="flex items-center justify-between h-14 sm:h-16">
                             <motion.button
                                 onClick={handleBack}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors duration-300"
+                                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-gray-700 hover:text-red-600 rounded-lg transition-colors duration-300"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3 }}
                             >
-                                <ChevronLeft className="w-5 h-5" />
+                                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                                 <span>Back to Team Registration</span>
                             </motion.button>
 
-                            <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-3 sm:gap-6">
                                 <div className="flex items-center">
                                     {[1, 2, 3].map((s, index) => (
                                         <div key={s} className="flex items-center">
                                             <div
-                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                                                className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors duration-300 ${
                                                     s < 3 
                                                         ? 'bg-gradient-to-br from-red-600 to-red-500 text-white shadow-lg shadow-red-200' 
                                                         : s === 3
@@ -344,10 +344,10 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                                         : 'bg-red-100 text-red-400'
                                                 }`}
                                             >
-                                                <span className="text-sm font-semibold">{s}</span>
+                                                <span className="text-xs sm:text-sm font-semibold">{s}</span>
                                             </div>
                                             {index < 2 && (
-                                                <div className="w-8 h-0.5 bg-red-200"></div>
+                                                <div className="w-4 sm:w-8 h-0.5 bg-red-200"></div>
                                             )}
                                         </div>
                                     ))}
@@ -365,8 +365,8 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                     </div>
                 </div>
 
-                <div className="pt-16">
-                    <div className="fixed top-20 right-4 z-50 w-auto max-w-[800px] space-y-2">
+                <div className="pt-12 sm:pt-16">
+                    <div className="fixed top-16 sm:top-20 right-3 sm:right-4 z-50 w-auto max-w-[90%] sm:max-w-[800px] space-y-2">
                         <AnimatePresence>
                             {showValidationError && (
                                 <motion.div
@@ -375,9 +375,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <Alert variant="destructive" className={`${themeColors.alert} p-3`}>
-                                        <AlertCircle className="h-4 w-4" />
-                                        <AlertTitle className="text-sm">Error</AlertTitle>
+                                    <Alert variant="destructive" className={`${themeColors.alert} p-2 sm:p-3 text-xs sm:text-sm`}>
+                                        <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                                        <AlertTitle className="text-xs sm:text-sm">Error</AlertTitle>
                                         <AlertDescription className="text-slate-900 text-xs">{alertMessage}</AlertDescription>
                                     </Alert>
                                 </motion.div>
@@ -389,9 +389,9 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                                     exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
                                 >
-                                    <Alert className={`${themeColors.success} p-3`}>
-                                        <CheckCircle2 className="h-4 w-4" />
-                                        <AlertTitle className="text-sm">Success</AlertTitle>
+                                    <Alert className={`${themeColors.success} p-2 sm:p-3 text-xs sm:text-sm`}>
+                                        <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                        <AlertTitle className="text-xs sm:text-sm">Success</AlertTitle>
                                         <AlertDescription className="text-slate-900 text-xs">{successMessage}</AlertDescription>
                                     </Alert>
                                 </motion.div>
@@ -399,135 +399,139 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                         </AnimatePresence>
                     </div>
 
-                    <div className="max-w-6xl mx-auto space-y-8">
-                        <Card className={`${themeColors.card} border-0 shadow-xl`}>
-                            <CardHeader className={`p-8 ${themeColors.gradient} text-white rounded-t-xl`}>
-                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                                    <div className="flex items-center gap-6">
-                                        <div className="bg-white/10 p-4 rounded-xl">
-                                            <img
-                                                src={
-                                                    teamData.team_logo
-                                                        ? typeof teamData.team_logo === 'string'
-                                                            ? `/storage/${teamData.team_logo}`
-                                                            : teamData.team_logo instanceof File
-                                                                ? URL.createObjectURL(teamData.team_logo)
+                    <div className="flex flex-col lg:flex-row w-full min-h-[calc(100vh-8rem)] relative">
+                        <div className="w-full lg:w-4/5 p-4 sm:p-6 lg:p-10 flex items-center justify-center bg-gradient-to-br from-white to-red-50/40 backdrop-blur-sm overflow-y-auto mx-auto">
+                            <div className="w-full max-w-5xl my-4 sm:my-6">
+                                <Card className={`${themeColors.card} border-0 shadow-xl`}>
+                                    <CardHeader className={`p-4 sm:p-8 ${themeColors.gradient} text-white rounded-t-xl`}>
+                                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 sm:gap-6">
+                                            <div className="flex items-center gap-4 sm:gap-6">
+                                                <div className="bg-white/10 p-2 sm:p-4 rounded-xl">
+                                                    <img
+                                                        src={
+                                                            teamData.team_logo
+                                                                ? typeof teamData.team_logo === 'string'
+                                                                    ? `/storage/${teamData.team_logo}`
+                                                                    : teamData.team_logo instanceof File
+                                                                        ? URL.createObjectURL(teamData.team_logo)
+                                                                        : '/Images/default-team-logo.png'
                                                                 : '/Images/default-team-logo.png'
-                                                        : '/Images/default-team-logo.png'
-                                                }
-                                                alt={`Team ${teamData.team_name} Logo`}
-                                                className="w-20 h-20 object-contain rounded-lg"
-                                                onError={(e) => {
-                                                    e.currentTarget.src = '/Images/default-team-logo.png'
-                                                }}
-                                            />
+                                                        }
+                                                        alt={`Team ${teamData.team_name} Logo`}
+                                                        className="w-12 h-12 sm:w-20 sm:h-20 object-contain rounded-lg"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = '/Images/default-team-logo.png'
+                                                        }}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <CardTitle className="text-xl sm:text-4xl font-bold mb-1 sm:mb-2">{gameTitle} Registration</CardTitle>
+                                                    <CardDescription className="text-white/90 text-sm sm:text-lg">
+                                                        Team: <span className="font-medium">{teamData.team_name}</span>
+                                                    </CardDescription>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-2 sm:gap-4 w-full md:w-auto justify-between md:justify-end">
+                                                <div className="flex items-center gap-1 sm:gap-2 bg-white/10 px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-base">
+                                                    <Users className="w-3 h-3 sm:w-5 sm:h-5" />
+                                                    <span className="font-medium">{formData.ml_players.length}/{maxPlayers}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1 sm:gap-2 bg-white/10 px-2 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-base">
+                                                    <Trophy className="w-3 h-3 sm:w-5 sm:h-5" />
+                                                    <span className="font-medium">Min. {minPlayers}</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <CardTitle className="text-4xl font-bold mb-2">{gameTitle} Registration</CardTitle>
-                                            <CardDescription className="text-white/90 text-lg">
-                                                Team: <span className="font-medium">{teamData.team_name}</span>
-                                            </CardDescription>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                            <Users className="w-5 h-5" />
-                                            <span className="font-medium">{formData.ml_players.length}/{maxPlayers} Players</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                            <Trophy className="w-5 h-5" />
-                                            <span className="font-medium">Min. {minPlayers} Players</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardHeader>
+                                    </CardHeader>
 
-                            <div className="p-6">
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm font-medium text-gray-600">Registration Progress</span>
-                                        <Badge className={themeColors.badge}>
-                                            {formData.ml_players.length}/{minPlayers} required players
-                                        </Badge>
+                                    <div className="p-4 sm:p-6">
+                                        <div className="flex items-center justify-between mb-2 sm:mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs sm:text-sm font-medium text-gray-600">Registration Progress</span>
+                                                <Badge className={themeColors.badge}>
+                                                    {formData.ml_players.length}/{minPlayers}
+                                                </Badge>
+                                            </div>
+                                            <span className="text-xs sm:text-sm font-medium text-gray-600">{Math.round(progress)}%</span>
+                                        </div>
+                                        <Progress value={progress} className={`h-1.5 sm:h-2 ${themeColors.progressBg}`}>
+                                            <div className={`h-full ${themeColors.progress} rounded-full`} style={{ width: `${progress}%` }} />
+                                        </Progress>
                                     </div>
-                                    <span className="text-sm font-medium text-gray-600">{Math.round(progress)}%</span>
-                                </div>
-                                <Progress value={progress} className={`h-2 ${themeColors.progressBg}`}>
-                                    <div className={`h-full ${themeColors.progress} rounded-full`} style={{ width: `${progress}%` }} />
-                                </Progress>
+                                </Card>
+
+                                <Card className={`${themeColors.card} mt-6 sm:mt-8`}>
+                                    <CardContent className="p-4 sm:p-7">
+                                        <form onSubmit={handleSubmit} encType="multipart/form-data">
+                                            <div className="space-y-4 sm:space-y-8">
+                                                <AnimatePresence>
+                                                    {formData.ml_players.map((player, index) => (
+                                                        <motion.div
+                                                            key={index}
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            exit={{ opacity: 0, y: -20 }}
+                                                            transition={{ duration: 0.3 }}
+                                                            data-player-form
+                                                        >
+                                                            <div className={themeColors.section}>
+                                                                <MLPlayerForm
+                                                                    player={player}
+                                                                    index={index}
+                                                                    errorsBE={{}}
+                                                                    allPlayers={formData.ml_players}
+                                                                    onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
+                                                                    onDelete={() => openDeleteDialog(index)}
+                                                                />
+                                                            </div>
+                                                        </motion.div>
+                                                    ))}
+                                                </AnimatePresence>
+
+                                                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between items-center pt-4 sm:pt-6 border-t border-gray-200">
+                                                    <Button
+                                                        type="button"
+                                                        onClick={addNewPlayer}
+                                                        disabled={formData.ml_players.length >= maxPlayers}
+                                                        className={`${themeColors.secondary} w-full sm:w-auto text-xs sm:text-sm py-1.5 sm:py-2`}
+                                                    >
+                                                        <PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                                                        Add Player {formData.ml_players.length < maxPlayers && `(${formData.ml_players.length}/${maxPlayers})`}
+                                                    </Button>
+
+                                                    <Button
+                                                        type="submit"
+                                                        disabled={formData.ml_players.length < minPlayers}
+                                                        className={`w-full sm:w-auto ${themeColors.primary} relative text-xs sm:text-sm py-1.5 sm:py-2`}
+                                                    >
+                                                        Submit Team Registration
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </CardContent>
+                                </Card>
                             </div>
-                        </Card>
-
-                        <Card className={themeColors.card}>
-                            <CardContent className="p-8">
-                                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                    <div className="space-y-8">
-                                        <AnimatePresence>
-                                            {formData.ml_players.map((player, index) => (
-                                                <motion.div
-                                                    key={index}
-                                                    initial={{ opacity: 0, y: 20 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    exit={{ opacity: 0, y: -20 }}
-                                                    transition={{ duration: 0.3 }}
-                                                    data-player-form
-                                                >
-                                                    <div className={themeColors.section}>
-                                                        <MLPlayerForm
-                                                            player={player}
-                                                            index={index}
-                                                            errorsBE={{}}
-                                                            allPlayers={formData.ml_players}
-                                                            onChange={(idx, field, val) => handlePlayerChange(idx, field, val)}
-                                                            onDelete={() => openDeleteDialog(index)}
-                                                        />
-                                                    </div>
-                                                </motion.div>
-                                            ))}
-                                        </AnimatePresence>
-
-                                        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-6 border-t border-gray-200">
-                                            <Button
-                                                type="button"
-                                                onClick={addNewPlayer}
-                                                disabled={formData.ml_players.length >= maxPlayers}
-                                                className={themeColors.secondary}
-                                            >
-                                                <PlusCircle className="mr-2 h-4 w-4" />
-                                                Add Player {formData.ml_players.length < maxPlayers && `(${formData.ml_players.length}/${maxPlayers})`}
-                                            </Button>
-
-                                            <Button
-                                                type="submit"
-                                                disabled={formData.ml_players.length < minPlayers}
-                                                className={`w-full sm:w-auto ${themeColors.primary} relative`}
-                                            >
-                                                Submit Team Registration
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
+                        </div>
                     </div>
 
                     <Dialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                        <DialogContent className="sm:max-w-[425px]">
+                        <DialogContent className="sm:max-w-[425px] p-4 sm:p-6">
                             <DialogHeader>
-                                <DialogTitle className="flex items-center">
-                                    <AlertCircle className="mr-2 h-5 w-5 text-red-500" />
+                                <DialogTitle className="flex items-center text-base sm:text-lg">
+                                    <AlertCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-red-500" />
                                     Confirm Player Removal
                                 </DialogTitle>
-                                <DialogDescription>
+                                <DialogDescription className="text-xs sm:text-sm">
                                     Are you sure you want to remove this player from your team? This action cannot be undone.
                                 </DialogDescription>
                             </DialogHeader>
                             <DialogFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between w-full mt-4">
-                                <Button onClick={closeDeleteDialog} variant="outline" className="w-full sm:w-auto">
-                                    <X className="mr-2 h-4 w-4" /> Cancel
+                                <Button onClick={closeDeleteDialog} variant="outline" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <X className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Cancel
                                 </Button>
-                                <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto">
-                                    <Trash2 className="mr-2 h-4 w-4" /> Remove Player
+                                <Button onClick={deletePlayerHandler} variant="destructive" className="w-full sm:w-auto text-xs sm:text-sm py-1.5">
+                                    <Trash2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Remove Player
                                 </Button>
                             </DialogFooter>
                         </DialogContent>
@@ -536,14 +540,14 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
                 <button
                     onClick={handleEmergencyContact}
-                    className="fixed bottom-6 right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-4 rounded-full
+                    className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 bg-white hover:bg-[#ba0000]/10 text-[#ba0000] p-3 sm:p-4 rounded-full
                     shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(186,0,0,0.2)]
                     transform hover:scale-110 transition-all duration-300 group z-50 border border-[#ba0000]/20"
                     title="Need help? Contact committee"
                 >
                     <div className="relative">
-                        <HelpCircle className="w-6 h-6" />
-                        <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        <HelpCircle className="w-4 h-4 sm:w-6 sm:h-6" />
+                        <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
                     </div>
                     <span className="sr-only">Contact Committee</span>
                 </button>

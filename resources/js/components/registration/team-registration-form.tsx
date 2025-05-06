@@ -1,14 +1,14 @@
 "use client"
 
 import { useForm } from "@inertiajs/react"
-import { ChevronRight, Users, HelpCircle, FileWarning } from "lucide-react"
+import { ChevronRight, Users, HelpCircle, FileWarning, ZoomIn, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { QRCodeSection } from "@/components/registration/qr-code-section"
 import { FileUploadField } from "@/components/registration/file-upload-field"
-import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import type { TeamRegistrationFormProps } from "@/types/register"
 import { useState } from "react"
 import LoadingScreen from "@/components/ui/loading-screen"
@@ -39,6 +39,10 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
     const [teamLogoPreview, setTeamLogoPreview] = useState<string | null>(null)
     const [paymentProofPreview, setPaymentProofPreview] = useState<string | null>(null)
     const [openDialog, setOpenDialog] = useState(false)
+
+    // State untuk image zoom
+    const [imageZoomOpen, setImageZoomOpen] = useState(false)
+    const [zoomedImage, setZoomedImage] = useState<{src: string | null, alt: string} | null>(null)
 
     const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB in bytes
 
@@ -191,6 +195,11 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
         window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank')
     }
 
+    const openImageZoom = (src: string, alt: string) => {
+        setZoomedImage({ src, alt })
+        setImageZoomOpen(true)
+    }
+
     return (
         <>
             <div className="flex flex-col lg:flex-row w-full min-h-[calc(100vh-4rem)] pt-16 relative">
@@ -209,26 +218,26 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                 gameType={gameType}
             />
 
-                <div className="w-full lg:w-3/5 p-5 sm:p-8 lg:p-10 flex items-center justify-center bg-gradient-to-br from-white to-red-50/40 backdrop-blur-sm overflow-y-auto min-h-[calc(100vh-4rem)]">
-                    <div className="max-w-2xl w-full my-6">
-                    <div className="mb-8 text-center space-y-2">
-                            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-red-800 bg-clip-text text-transparent">
+                <div className="w-full lg:w-3/5 p-4 sm:p-6 lg:p-10 flex items-center justify-center bg-gradient-to-br from-white to-red-50/40 backdrop-blur-sm overflow-y-auto min-h-[calc(100vh-4rem)]">
+                    <div className="max-w-2xl w-full my-4 sm:my-6">
+                    <div className="mb-4 sm:mb-8 text-center space-y-1 sm:space-y-2">
+                            <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-red-800 bg-clip-text text-transparent">
                             {gameTitle} Team Registration
                         </h1>
-                        <p className="text-sm text-gray-600">Lengkapi detail tim Anda untuk melanjutkan pendaftaran</p>
+                        <p className="text-xs sm:text-sm text-gray-600">Lengkapi detail tim Anda untuk melanjutkan pendaftaran</p>
                     </div>
 
                         <Card className="border-0 shadow-xl bg-white/90 backdrop-blur rounded-2xl">
-                            <CardContent className="p-5 sm:p-7">
-                            <form className="flex flex-col gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
-                                <div className="md:grid gap-6 flex flex-col">
-                                    <div className="relative space-y-2">
-                                        <Label htmlFor="team_name" className="text-sm font-semibold text-gray-700">
+                            <CardContent className="p-4 sm:p-7">
+                            <form className="flex flex-col gap-4 sm:gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
+                                <div className="md:grid gap-4 sm:gap-6 flex flex-col">
+                                    <div className="relative space-y-1 sm:space-y-2">
+                                        <Label htmlFor="team_name" className="text-xs sm:text-sm font-semibold text-gray-700">
                                             Nama Tim
                                         </Label>
                                         <div className="relative group">
-                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 bg-red-50 p-1.5 rounded-md group-hover:bg-red-100 transition-colors duration-200 shadow-sm">
-                                                <Users className="h-5 w-5 text-red-600" />
+                                            <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-red-50 p-1 sm:p-1.5 rounded-md group-hover:bg-red-100 transition-colors duration-200 shadow-sm">
+                                                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
                                             </div>
                                             <Input
                                                 id="team_name"
@@ -237,15 +246,15 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                 value={data.team_name}
                                                 onChange={(e) => setData("team_name", e.target.value)}
                                                 placeholder="Masukkan nama tim esports Anda"
-                                                className={`pl-14 py-5 bg-white border-gray-200 text-gray-900 rounded-xl 
+                                                className={`pl-10 sm:pl-14 py-4 sm:py-5 bg-white border-gray-200 text-gray-900 text-sm rounded-xl 
                                                     focus:border-red-500 focus:ring focus:ring-red-500/20 focus:ring-opacity-50
-                                                    [&::placeholder]:text-gray-500 [&::placeholder]:font-normal
+                                                    [&::placeholder]:text-gray-500 [&::placeholder]:text-xs sm:[&::placeholder]:text-sm [&::placeholder]:font-normal
                                                 ${formErrors.team_name ? 'border-red-500' : ''}`}
                                             />
                                         </div>
                                         {formErrors.team_name && (
-                                            <div className="flex items-center gap-2 text-red-500 text-sm mt-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <div className="flex items-center gap-1 sm:gap-2 text-red-500 text-xs sm:text-sm mt-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                 </svg>
                                                 <p>{formErrors.team_name}</p>
@@ -399,10 +408,17 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                         <img
                                                             src={paymentProofPreview}
                                                             alt="Payment Proof Preview"
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105"
+                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
+                                                            onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
                                                         />
                                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                                                            <p className="text-white text-sm">Preview</p>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => openImageZoom(paymentProofPreview, "Payment Proof Preview")}
+                                                                className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                                                            >
+                                                                <ZoomIn className="w-5 h-5 text-gray-700" />
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -432,10 +448,17 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                         <img
                                                             src={teamLogoPreview}
                                                             alt="Preview Logo Tim"
-                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105"
+                                                            className="w-40 h-auto rounded-lg shadow-md transition-transform duration-200 group-hover:scale-105 cursor-pointer"
+                                                            onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
                                                         />
                                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                                                            <p className="text-white text-sm">Preview</p>
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => openImageZoom(teamLogoPreview, "Preview Logo Tim")}
+                                                                className="p-2 bg-white/90 rounded-full shadow-sm hover:bg-white transition-colors"
+                                                            >
+                                                                <ZoomIn className="w-5 h-5 text-gray-700" />
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -451,18 +474,18 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                         </div>
                                     </div>
 
-                                    <div className="pt-4">
+                                    <div className="pt-2 sm:pt-4">
                                         <Button
                                             type="submit"
                                             disabled={processing}
-                                                className={`w-full py-5 sm:py-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600
-                                            text-white rounded-xl font-medium text-lg transition-all duration-300 
+                                                className={`w-full py-4 sm:py-5 md:py-6 bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600
+                                            text-white rounded-xl font-medium text-sm sm:text-base md:text-lg transition-all duration-300 
                                                 shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]
-                                            flex items-center justify-center gap-2 relative overflow-hidden group`}
+                                            flex items-center justify-center gap-1 sm:gap-2 relative overflow-hidden group`}
                                         >
-                                            <span className="relative z-10 flex items-center gap-2">
+                                            <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                                                 {processing ? "Memproses..." : "Lanjut ke Pendaftaran Pemain"}
-                                                <ChevronRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+                                                <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-300 group-hover:translate-x-1" />
                                             </span>
                                         </Button>
                                     </div>
@@ -476,14 +499,14 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
             {/* Emergency Contact Button */}
             <button
                 onClick={handleEmergencyContact}
-                    className="fixed bottom-6 right-6 bg-white hover:bg-red-50 text-red-600 p-3 sm:p-4 rounded-full
+                    className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 bg-white hover:bg-red-50 text-red-600 p-2 sm:p-3 md:p-4 rounded-full
                     shadow-[0_4px_20px_-3px_rgba(0,0,0,0.1)] hover:shadow-[0_8px_25px_-5px_rgba(220,38,38,0.3)]
                     transform hover:scale-110 transition-all duration-300 group z-50 border border-red-200"
                 title="Butuh bantuan? Hubungi panitia"
             >
                 <div className="relative">
-                        <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
-                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                        <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
+                        <span className="absolute -top-1 -right-1 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
                 </div>
                 <span className="sr-only">Hubungi Panitia</span>
             </button>
@@ -526,17 +549,39 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                         </DialogDescription>
 
                         <div className="mt-6 flex justify-end">
-                            <DialogClose asChild>
-                                <Button
-                                        className="bg-red-600 hover:bg-red-700 text-white 
-                                        px-6 py-2.5 rounded-lg 
-                                    text-sm font-medium transition-all duration-300 
-                                        shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]"
-                                >
-                                    Mengerti
-                                </Button>
-                            </DialogClose>
+                            <button
+                                type="button"
+                                onClick={() => setOpenDialog(false)}
+                                className="bg-red-600 hover:bg-red-700 text-white 
+                                    px-6 py-2.5 rounded-lg 
+                                text-sm font-medium transition-all duration-300 
+                                    shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)]"
+                            >
+                                Mengerti
+                            </button>
                         </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Image Zoom Dialog */}
+            <Dialog open={imageZoomOpen} onOpenChange={setImageZoomOpen}>
+                <DialogContent className="max-w-[95vw] sm:max-w-[80vw] max-h-[90vh] overflow-hidden p-0 bg-white/5 backdrop-blur-xl border border-white/20" hasCloseButton={false}>
+                    <div className="relative h-full w-full flex items-center justify-center pt-10 sm:pt-12 pb-4 px-2 sm:px-4">
+                        {zoomedImage?.src && (
+                            <img 
+                                src={zoomedImage.src} 
+                                alt={zoomedImage.alt} 
+                                className="max-w-full max-h-[80vh] object-contain"
+                            />
+                        )}
+                        <button 
+                            type="button"
+                            onClick={() => setImageZoomOpen(false)}
+                            className="absolute top-2 sm:top-4 right-2 sm:right-4 p-1.5 sm:p-2 rounded-full bg-black/70 text-white hover:bg-black/90 transition-colors z-10"
+                        >
+                            <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </button>
                     </div>
                 </DialogContent>
             </Dialog>
