@@ -53,7 +53,7 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
                         >
                             <div className="p-4">
                                 <img
-                                    src="/Images/qr-code-esega2025.jpeg"
+                                    src="/Images/qrcode.jpeg"
                                     alt={`${gameType.toUpperCase()} Payment QR Code`}
                                     className="w-full aspect-square object-contain rounded-lg"
                                 />
@@ -163,7 +163,7 @@ export function QRCodeSection({ title, description, instructions, amount, gameTy
                         {/* QR Code yang lebih besar */}
                         <div className="p-6 sm:p-8">
                             <img
-                                src="/Images/qr-code-esega2025.jpeg"
+                                src="/Images/qrcode.jpeg"
                                 alt={`${gameType.toUpperCase()} Payment QR Code`}
                                 className="w-full aspect-square object-contain rounded-lg max-w-full max-h-[70vh]"
                             />
