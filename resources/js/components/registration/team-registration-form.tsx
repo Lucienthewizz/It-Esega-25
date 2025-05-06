@@ -1,7 +1,7 @@
 "use client"
 
 import { useForm } from "@inertiajs/react"
-import { ChevronRight, Users, HelpCircle, FileWarning, ZoomIn, X } from "lucide-react"
+import { ChevronRight, Users, HelpCircle, FileWarning, ZoomIn, X, Image } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -111,14 +111,33 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                     
                     console.error('Validation errors:', errors)
                     
-                    // Tampilkan pesan error duplikat nama tim dengan lebih jelas
+                    // Menambahkan visual feedback untuk semua jenis error
                     if (errors.team_name && errors.team_name.includes('unique')) {
                         setFormErrors({
                             ...errors,
                             team_name: `Tim dengan nama "${data.team_name}" sudah terdaftar. Silakan gunakan nama tim yang lain.`
-                        })
+                        });
                     } else {
+                        // Tampilkan semua error yang ada
                         setFormErrors(errors)
+                        
+                        // Tambahkan debugging helper
+                        console.log('Errors set in state:', errors)
+                        
+                        // Log semua error ke konsol untuk debugging
+                        Object.keys(errors).forEach(key => {
+                            console.log(`Error in field ${key}:`, errors[key])
+                        })
+                    }
+                    
+                    // Untuk semua jenis error, beri fokus pada field pertama yang error
+                    const fieldWithError = Object.keys(errors)[0]
+                    if (fieldWithError) {
+                        const errorField = document.getElementById(fieldWithError)
+                        if (errorField) {
+                            errorField.focus()
+                            errorField.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                        }
                     }
                     
                     // Scroll ke bagian form dengan error
@@ -232,13 +251,11 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                             <form className="flex flex-col gap-4 sm:gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
                                 <div className="md:grid gap-4 sm:gap-6 flex flex-col">
                                     <div className="relative space-y-1 sm:space-y-2">
-                                        <Label htmlFor="team_name" className="text-xs sm:text-sm font-semibold text-gray-700">
-                                            Nama Tim
+                                        <Label htmlFor="team_name" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2">
+                                            <Users className="h-4 w-4 text-red-500" />
+                                            <span>Nama Tim</span>
                                         </Label>
-                                        <div className="relative group">
-                                            <div className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 bg-red-50 p-1 sm:p-1.5 rounded-md group-hover:bg-red-100 transition-colors duration-200 shadow-sm">
-                                                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-red-600" />
-                                            </div>
+                                        <div className="relative">
                                             <Input
                                                 id="team_name"
                                                 type="text"
@@ -246,18 +263,27 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                 value={data.team_name}
                                                 onChange={(e) => setData("team_name", e.target.value)}
                                                 placeholder="Masukkan nama tim esports Anda"
-                                                className={`pl-10 sm:pl-14 py-4 sm:py-5 bg-white border-gray-200 text-gray-900 text-sm rounded-xl 
+                                                className={`py-4 sm:py-5 bg-white border-gray-200 text-gray-900 text-sm rounded-xl 
                                                     focus:border-red-500 focus:ring focus:ring-red-500/20 focus:ring-opacity-50
                                                     [&::placeholder]:text-gray-500 [&::placeholder]:text-xs sm:[&::placeholder]:text-sm [&::placeholder]:font-normal
                                                 ${formErrors.team_name ? 'border-red-500' : ''}`}
                                             />
                                         </div>
                                         {formErrors.team_name && (
-                                            <div className="flex items-center gap-1 sm:gap-2 text-red-500 text-xs sm:text-sm mt-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <div className={`flex items-start gap-1 sm:gap-2 ${formErrors.team_name.includes('sudah terdaftar') ? 'bg-red-50 border border-red-200 rounded-lg p-3 mt-2' : 'mt-1'}`}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" className={`${formErrors.team_name.includes('sudah terdaftar') ? 'h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5' : 'h-3 w-3 sm:h-4 sm:w-4 text-red-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                 </svg>
-                                                <p>{formErrors.team_name}</p>
+                                                <div>
+                                                    {formErrors.team_name.includes('sudah terdaftar') ? (
+                                                        <>
+                                                            <p className="font-semibold text-red-700 text-xs sm:text-sm">Nama Tim Sudah Digunakan</p>
+                                                            <p className="text-red-600 text-xs sm:text-sm">{formErrors.team_name}</p>
+                                                        </>
+                                                    ) : (
+                                                        <p className="text-red-500 text-xs sm:text-sm">{formErrors.team_name}</p>
+                                                    )}
+                                                </div>
                                             </div>
                                         )}
                                     </div>
@@ -394,9 +420,13 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
 
                                         <div className="space-y-5">
                                             <div className="space-y-3">
+                                            <Label htmlFor="proof_of_payment" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                                <Image className="h-4 w-4 text-red-500" />
+                                                <span>Bukti Pembayaran</span>
+                                            </Label>
                                             <FileUploadField
                                                 id="proof_of_payment"
-                                                label="Bukti Pembayaran"
+                                                label=""
                                                 helpText="PNG, JPG, JPEG Maksimal 2MB"
                                                 accept="image/jpeg,image/png,image/jpg"
                                                 value={data.proof_of_payment}
@@ -424,19 +454,26 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                 </div>
                                             )}
                                             {formErrors.proof_of_payment && (
-                                                <div className="flex items-center gap-2 text-red-500 text-sm mt-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                     </svg>
-                                                    <p>{formErrors.proof_of_payment}</p>
+                                                    <div>
+                                                        <p className="font-semibold text-red-700 text-xs sm:text-sm">Bukti Pembayaran Diperlukan</p>
+                                                        <p className="text-red-600 text-xs sm:text-sm">{formErrors.proof_of_payment}</p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
 
                                             <div className="space-y-3">
+                                            <Label htmlFor="team_logo" className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-2 mb-2">
+                                                <Image className="h-4 w-4 text-red-500" />
+                                                <span>Logo Tim</span>
+                                            </Label>
                                             <FileUploadField
                                                 id="team_logo"
-                                                label="Logo Tim"
+                                                label=""
                                                 accept="image/jpeg,image/png,image/jpg"
                                                 helpText="PNG, JPG, JPEG Maksimal 2MB"
                                                 value={data.team_logo}
@@ -464,11 +501,14 @@ export function TeamRegistrationForm({ teamData, gameType, onSubmit, resetStep }
                                                 </div>
                                             )}
                                             {formErrors.team_logo && (
-                                                <div className="flex items-center gap-2 text-red-500 text-sm mt-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5 text-red-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                                     </svg>
-                                                    <p>{formErrors.team_logo}</p>
+                                                    <div>
+                                                        <p className="font-semibold text-red-700 text-xs sm:text-sm">Logo Tim Diperlukan</p>
+                                                        <p className="text-red-600 text-xs sm:text-sm">{formErrors.team_logo}</p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
