@@ -223,27 +223,7 @@ export default function Home() {
                                     >
                                         Register Now!
                                     </Link>
-                                    <button
-                                        onClick={() => setIsOpen(true)}
-                                        className="group inline-flex items-center px-5 sm:px-6 py-3 sm:py-4 text-base sm:text-lg font-medium
-                                            text-red-600 rounded-lg transition-all duration-300 relative
-                                            hover:text-red-700 border border-red-200 hover:border-red-300 hover:shadow-md
-                                            after:absolute after:inset-0 after:bg-red-50/0 hover:after:bg-red-50/80 after:transition-colors after:duration-300 after:rounded-lg overflow-hidden"
-                                    >
-                                        <span className="relative z-10 flex items-center">
-                                            <span className="mr-2">How to Register</span>
-                                            <div className="relative w-6 h-6">
-                                                <div className="absolute inset-0 bg-red-100 rounded-full transition-opacity duration-300 group-hover:bg-red-200"></div>
-                                                <svg
-                                                    className="relative w-6 h-6 text-red-600 group-hover:text-red-700 transition-colors duration-300"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path d="M8 5v14l11-7z" />
-                                                </svg>
-                                            </div>
-                                        </span>
-                                    </button>
+                                    {/* Tombol "How to Register" dinonaktifkan sementara */}
                                 </div>
                             </div>
                             <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">
@@ -532,15 +512,15 @@ export default function Home() {
 
                             <div className="max-w-4xl mx-auto px-4 sm:px-0">
                                 <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border-4 border-red-500/20 hover:border-red-500/40 transition-all duration-500" data-aos="fade-up" data-aos-delay="150">
-                                    {/* Video Container dengan Aspect Ratio 16:9 */}
-                                    <div className="relative w-full pt-[56.25%] bg-black">
+                                    {/* Instagram Reel Embed */}
+                                    <div className="relative w-full pt-[125%] bg-black">
                                         <iframe
                                             className="absolute top-0 left-0 w-full h-full"
-                                            src=""
-                                            title="IT-ESEGA 2025 Official Teaser"
+                                            src="https://www.instagram.com/reel/DIlLmrxSbpP/embed/"
                                             frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                            allowFullScreen
+                                            scrolling="no"
+                                            allowTransparency={true}
+                                            allowFullScreen={true}
                                         ></iframe>
                                     </div>
 
