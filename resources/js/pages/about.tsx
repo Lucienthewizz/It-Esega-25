@@ -169,7 +169,7 @@ export default function About() {
                                     </h2>
                                     <div className="max-w-4xl mx-auto">
                                         <p className="mb-8 text-base sm:text-lg text-[#333] leading-relaxed px-4 sm:px-0">
-                                            IT-ESEGA merupakan ajang tahunan bergengsi yang diselenggarakan oleh Himpunan Mahasiswa Teknologi Informasi, Universitas Udayana. Kompetisi ini mempertemukan para gamers dari berbagai kalangan dalam dua cabang E-Sport populer, yaitu Mobile Legends dan Free Fire. IT-ESEGA hadir sebagai representasi semangat kolaborasi, sportivitas, serta wadah untuk mengembangkan potensi, menjalin komunitas, dan mendorong lahirnya atlet E-Sport berbakat yang siap bersaing di tingkat nasional hingga internasional.
+                                            IT-ESEGA(Information Technology Electronic Sport Based On Excellent Games) merupakan ajang tahunan bergengsi yang diselenggarakan oleh Himpunan Mahasiswa Teknologi Informasi, Universitas Udayana. Kompetisi ini mempertemukan para gamers dari berbagai kalangan dalam dua cabang E-Sport populer, yaitu Mobile Legends dan Free Fire. IT-ESEGA hadir sebagai representasi semangat kolaborasi, sportivitas, serta wadah untuk mengembangkan potensi, menjalin komunitas, dan mendorong lahirnya atlet E-Sport berbakat yang siap bersaing di tingkat nasional hingga internasional.
                                         </p>
                                     </div>
                                 </div>

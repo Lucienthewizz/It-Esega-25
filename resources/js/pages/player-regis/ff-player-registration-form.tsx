@@ -37,7 +37,7 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
         text: "text-red-600",
         gradient: "bg-gradient-to-r from-red-600 to-red-800",
         alert: "bg-red-600/90 border-red-200",
-        success: "bg-green-600/90 border-green-200",
+        success: "bg-green-600 border-green-200 shadow-md",
         card: "bg-white shadow-lg rounded-xl border border-gray-100",
         section: "bg-white rounded-xl p-5 sm:p-6 border border-gray-100"
     }
@@ -289,13 +289,14 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
 
     const addNewPlayer = () => {
         if (formData.ff_players.length < maxPlayers) {
+            const playerNumber = formData.ff_players.length + 1;
             addPlayer()
             // Tambahkan alert sukses saat menambahkan pemain
-            setSuccessMessage("Player baru berhasil ditambahkan!")
+            setSuccessMessage(`Pemain #${playerNumber} berhasil ditambahkan!`)
             setShowSuccessAlert(true)
             setTimeout(() => {
                 setShowSuccessAlert(false)
-            }, 5000)
+            }, 3000)
         }
     }
 
@@ -465,15 +466,20 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
                             )}
                             {showSuccessAlert && (
                                 <motion.div
-                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
+                                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    transition={{ 
+                                        type: "spring", 
+                                        stiffness: 500, 
+                                        damping: 30,
+                                        duration: 0.4 
+                                    }}
                                 >
-                                    <Alert className={`${themeColors.success} p-2 sm:p-3 text-xs sm:text-sm`}>
-                                        <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                                        <AlertTitle className="text-xs sm:text-sm">Success</AlertTitle>
-                                        <AlertDescription className="text-slate-900 text-xs">{successMessage}</AlertDescription>
+                                    <Alert className={`${themeColors.success} p-2 sm:p-3 text-xs sm:text-sm rounded-md`}>
+                                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+                                        <AlertTitle className="text-xs sm:text-sm font-semibold text-white">Success</AlertTitle>
+                                        <AlertDescription className="text-white font-medium text-xs sm:text-sm">{successMessage}</AlertDescription>
                                     </Alert>
                                 </motion.div>
                             )}
