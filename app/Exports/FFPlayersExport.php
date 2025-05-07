@@ -25,6 +25,19 @@ class FFPlayersExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        return ['ID', 'Team ID', 'Name', 'Nickname', 'ID Server', 'No HP', 'Email', 'Alamat', 'Tanda Tangan', 'Foto', 'Role', 'Status', 'Created At', 'Updated At'];
+        return [
+            'ID', 
+            'Nama', 
+            'Nickname', 
+            'ID Server', 
+            'No HP', 
+            'Email', 
+            'Alamat', 
+            'Role', 
+            'Tim',
+            'Status', 
+            'Tanggal Daftar', 
+            'Terakhir Diperbarui'
+        ];
     }
 }

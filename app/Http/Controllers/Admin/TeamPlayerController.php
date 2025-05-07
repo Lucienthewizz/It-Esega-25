@@ -35,6 +35,7 @@ class TeamPlayerController extends Controller
                 'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : '/placeholder.svg',
                 'color' => 'from-orange-500 to-red-600',
                 'status' => $team->status,
+                'slot_type' => 'Single',
                 'created_at' => $team->created_at->format('d M Y'),
             ];
         })->all(); // Konversi ke array
@@ -49,7 +50,7 @@ class TeamPlayerController extends Controller
                 'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : '/placeholder.svg',
                 'color' => 'from-blue-500 to-purple-600',
                 'status' => $team->status,
-                'slot_type' => $team->slot_type,
+                'slot_type' => $team->slot_type ?? 'Standar',
                 'created_at' => $team->created_at->format('d M Y'),
             ];
         })->all(); // Konversi ke array
@@ -81,6 +82,7 @@ class TeamPlayerController extends Controller
                 'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : '/placeholder.svg',
                 'payment_proof' => $team->proof_of_payment ? asset('storage/' . $team->proof_of_payment) : null,
                 'status' => $team->status,
+                'slot_type' => 'Single',
                 'created_at' => $team->created_at->format('d M Y'),
                 'players' => $team->participants->map(function($player) {
                     return [
@@ -162,13 +164,49 @@ class TeamPlayerController extends Controller
     }
 
     public function ffPlayer(){
-        $players = FF_Participant::all();
-        return Excel::download(new FFPlayersExport($players), 'ff_players.xlsx');
+        $players = FF_Participant::with('team')->get();
+        
+        $formattedPlayers = $players->map(function($player) {
+            return [
+                'ID' => $player->id,
+                'Nama' => $player->name,
+                'Nickname' => $player->nickname,
+                'ID Server' => $player->id_server,
+                'No HP' => $player->no_hp,
+                'Email' => $player->email,
+                'Alamat' => $player->alamat,
+                'Role' => $player->role ?? 'Anggota',
+                'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
+            ];
+        });
+        
+        return Excel::download(new FFPlayersExport($formattedPlayers), 'ff_players.xlsx');
     }
     
     public function mlPlayer(){
-        $players = ML_Participant::all();
-        return Excel::download(new MLPlayersExport($players), 'ml_players.xlsx');
+        $players = ML_Participant::with('team')->get();
+        
+        $formattedPlayers = $players->map(function($player) {
+            return [
+                'ID' => $player->id,
+                'Nama' => $player->name,
+                'Nickname' => $player->nickname,
+                'ID Server' => $player->id_server,
+                'No HP' => $player->no_hp,
+                'Email' => $player->email,
+                'Alamat' => $player->alamat,
+                'Role' => $player->role ?? 'Anggota',
+                'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
+            ];
+        });
+        
+        return Excel::download(new MLPlayersExport($formattedPlayers), 'ml_players.xlsx');
     }
     
     /**
@@ -184,9 +222,11 @@ class TeamPlayerController extends Controller
                 'ID' => $team->id,
                 'Nama Tim' => $team->team_name,
                 'Game' => 'Free Fire',
+                'Jenis Slot' => 'Single',
                 'Jumlah Pemain' => $team->participants_count,
                 'Status' => $team->status,
                 'Tanggal Daftar' => $team->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $team->updated_at->format('d M Y')
             ];
         })->all();
         
@@ -195,10 +235,11 @@ class TeamPlayerController extends Controller
                 'ID' => $team->id,
                 'Nama Tim' => $team->team_name,
                 'Game' => 'Mobile Legends',
-                'Jenis Slot' => $team->slot_type,
+                'Jenis Slot' => $team->slot_type ?? 'Standar',
                 'Jumlah Pemain' => $team->participants_count,
                 'Status' => $team->status,
                 'Tanggal Daftar' => $team->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $team->updated_at->format('d M Y')
             ];
         })->all();
         
@@ -222,7 +263,12 @@ class TeamPlayerController extends Controller
                 'id' => $player->id,
                 'name' => $player->name,
                 'nickname' => $player->nickname,
-                'role' => $player->role ?? 'Player',
+                'role' => $player->role ?? 'anggota',
+                'id_server' => $player->id_server,
+                'no_hp' => $player->no_hp,
+                'email' => $player->email,
+                'alamat' => $player->alamat,
+                'tanda_tangan' => $player->tanda_tangan ? asset('storage/' . $player->tanda_tangan) : null,
                 'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
                 'team_name' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'created_at' => $player->created_at,
@@ -248,7 +294,12 @@ class TeamPlayerController extends Controller
                 'id' => $player->id,
                 'name' => $player->name,
                 'nickname' => $player->nickname,
-                'role' => $player->role ?? 'Player',
+                'role' => $player->role ?? 'anggota',
+                'id_server' => $player->id_server,
+                'no_hp' => $player->no_hp,
+                'email' => $player->email,
+                'alamat' => $player->alamat,
+                'tanda_tangan' => $player->tanda_tangan ? asset('storage/' . $player->tanda_tangan) : null,
                 'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
                 'team_name' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'created_at' => $player->created_at,
@@ -278,10 +329,12 @@ class TeamPlayerController extends Controller
                 'No. HP' => $player->no_hp,
                 'Email' => $player->email,
                 'Alamat' => $player->alamat,
-                'Role' => $player->role,
+                'Role' => $player->role ?? 'Anggota',
                 'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'Game' => 'Free Fire',
-                'Tanggal Daftar' => $player->created_at->format('d M Y')
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
             ];
         }
         
@@ -294,10 +347,12 @@ class TeamPlayerController extends Controller
                 'No. HP' => $player->no_hp,
                 'Email' => $player->email,
                 'Alamat' => $player->alamat,
-                'Role' => $player->role,
+                'Role' => $player->role ?? 'Anggota',
                 'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'Game' => 'Mobile Legends',
-                'Tanggal Daftar' => $player->created_at->format('d M Y')
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
             ];
         }
         
@@ -370,9 +425,11 @@ class TeamPlayerController extends Controller
                 'ID' => $team->id,
                 'Nama Tim' => $team->team_name,
                 'Game' => 'Free Fire',
+                'Jenis Slot' => 'Single',
                 'Jumlah Pemain' => $team->participants_count,
                 'Status' => $team->status,
                 'Tanggal Daftar' => $team->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $team->updated_at->format('d M Y')
             ];
         })->all();
         
@@ -381,10 +438,11 @@ class TeamPlayerController extends Controller
                 'ID' => $team->id,
                 'Nama Tim' => $team->team_name,
                 'Game' => 'Mobile Legends',
-                'Jenis Slot' => $team->slot_type,
+                'Jenis Slot' => $team->slot_type ?? 'Standar',
                 'Jumlah Pemain' => $team->participants_count,
                 'Status' => $team->status,
                 'Tanggal Daftar' => $team->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $team->updated_at->format('d M Y')
             ];
         })->all();
         
@@ -410,10 +468,12 @@ class TeamPlayerController extends Controller
                 'No. HP' => $player->no_hp,
                 'Email' => $player->email,
                 'Alamat' => $player->alamat,
-                'Role' => $player->role,
+                'Role' => $player->role ?? 'Anggota',
                 'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'Game' => 'Free Fire',
-                'Tanggal Daftar' => $player->created_at->format('d M Y')
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
             ];
         }
         
@@ -426,10 +486,12 @@ class TeamPlayerController extends Controller
                 'No. HP' => $player->no_hp,
                 'Email' => $player->email,
                 'Alamat' => $player->alamat,
-                'Role' => $player->role,
+                'Role' => $player->role ?? 'Anggota',
                 'Tim' => $player->team ? $player->team->team_name : 'Tidak ada tim',
                 'Game' => 'Mobile Legends',
-                'Tanggal Daftar' => $player->created_at->format('d M Y')
+                'Status' => 'Aktif',
+                'Tanggal Daftar' => $player->created_at->format('d M Y'),
+                'Terakhir Diperbarui' => $player->updated_at->format('d M Y')
             ];
         }
         
@@ -473,5 +535,605 @@ class TeamPlayerController extends Controller
         } catch (\Exception $e) {
             Log::error("Error mengakses direktori {$basePath}: " . $e->getMessage());
         }
+    }
+
+    /**
+     * Menghapus pemain berdasarkan ID dan jenis game
+     * 
+     * @param string $game jenis game (ff/ml)
+     * @param int $id ID pemain
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deletePlayer($game, $id)
+    {
+        try {
+            if ($game === 'ff') {
+                $player = FF_Participant::findOrFail($id);
+            } elseif ($game === 'ml') {
+                $player = ML_Participant::findOrFail($id);
+            } else {
+                return response()->json(['error' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Hapus file yang terkait dengan pemain
+            if ($player->foto && Storage::disk('public')->exists($player->foto)) {
+                Storage::disk('public')->delete($player->foto);
+            }
+            
+            if ($player->tanda_tangan && Storage::disk('public')->exists($player->tanda_tangan)) {
+                Storage::disk('public')->delete($player->tanda_tangan);
+            }
+            
+            // Hapus pemain dari database
+            $player->delete();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Pemain berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting player', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus pemain: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Memperbarui data pemain
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $game jenis game (ff/ml)
+     * @param int $id ID pemain
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePlayer(Request $request, $game, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'sometimes|required|string|max:255',
+                'nickname' => 'sometimes|required|string|max:255',
+                'role' => 'sometimes|nullable|string|max:255',
+                'id_server' => 'sometimes|nullable|string|max:255',
+                'no_hp' => 'sometimes|nullable|string|max:20',
+                'email' => 'sometimes|nullable|email|max:255',
+                'alamat' => 'sometimes|nullable|string|max:255',
+                'foto' => 'sometimes|nullable|image|max:2048',
+                'tanda_tangan' => 'sometimes|nullable|image|max:2048',
+            ]);
+            
+            if ($game === 'ff') {
+                $player = FF_Participant::findOrFail($id);
+            } elseif ($game === 'ml') {
+                $player = ML_Participant::findOrFail($id);
+            } else {
+                return response()->json(['error' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Handle file uploads jika ada
+            if ($request->hasFile('foto')) {
+                // Hapus foto lama jika ada
+                if ($player->foto && Storage::disk('public')->exists($player->foto)) {
+                    Storage::disk('public')->delete($player->foto);
+                }
+                
+                // Simpan foto baru
+                $fotoPath = $request->file('foto')->store('players/' . ($game === 'ff' ? 'ff' : 'ml') . '/photos', 'public');
+                $validatedData['foto'] = $fotoPath;
+            }
+            
+            if ($request->hasFile('tanda_tangan')) {
+                // Hapus tanda tangan lama jika ada
+                if ($player->tanda_tangan && Storage::disk('public')->exists($player->tanda_tangan)) {
+                    Storage::disk('public')->delete($player->tanda_tangan);
+                }
+                
+                // Simpan tanda tangan baru
+                $tandaTanganPath = $request->file('tanda_tangan')->store('players/' . ($game === 'ff' ? 'ff' : 'ml') . '/signatures', 'public');
+                $validatedData['tanda_tangan'] = $tandaTanganPath;
+            }
+            
+            // Update data pemain
+            $player->update($validatedData);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Data pemain berhasil diperbarui',
+                'player' => [
+                    'id' => $player->id,
+                    'name' => $player->name,
+                    'nickname' => $player->nickname,
+                    'role' => $player->role ?? 'Player',
+                    'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
+                    'team_name' => $player->team ? $player->team->team_name : 'Tidak ada tim',
+                    'created_at' => $player->created_at,
+                    'status' => 'active',
+                    'id_server' => $player->id_server,
+                    'no_hp' => $player->no_hp,
+                    'email' => $player->email,
+                    'alamat' => $player->alamat,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating player', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data pemain: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Menyaring data pemain berdasarkan kriteria
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $game jenis game (ff/ml)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function filterPlayers(Request $request, $game)
+    {
+        try {
+            // Parameter filter yang mungkin
+            $search = $request->input('search');
+            $role = $request->input('role');
+            $team = $request->input('team');
+            
+            // Query builder berdasarkan jenis game
+            if ($game === 'ff') {
+                $query = FF_Participant::query()->with('team');
+            } elseif ($game === 'ml') {
+                $query = ML_Participant::query()->with('team');
+            } else {
+                return response()->json(['error' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Terapkan filter
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('nickname', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+                });
+            }
+            
+            // Filter berdasarkan role
+            if ($role && $role !== 'all') {
+                $query->where('role', $role);
+            }
+            
+            // Filter berdasarkan team
+            if ($team && $team !== '') {
+                $query->whereHas('team', function($q) use ($team) {
+                    $q->where('team_name', 'like', "%{$team}%");
+                });
+            }
+            
+            // Dapatkan hasil
+            $players = $query->get();
+            
+            // Format data untuk frontend
+            $formattedPlayers = $players->map(function($player) {
+                return [
+                    'id' => $player->id,
+                    'name' => $player->name,
+                    'nickname' => $player->nickname,
+                    'role' => $player->role ?? 'Player',
+                    'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
+                    'team_name' => $player->team ? $player->team->team_name : 'Tidak ada tim',
+                    'created_at' => $player->created_at,
+                    'status' => 'active',
+                    'id_server' => $player->id_server,
+                    'no_hp' => $player->no_hp,
+                    'email' => $player->email,
+                    'alamat' => $player->alamat,
+                ];
+            });
+            
+            return response()->json($formattedPlayers);
+            
+        } catch (\Exception $e) {
+            Log::error('Error filtering players', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyaring data pemain: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Menghapus tim berdasarkan ID dan jenis game
+     * 
+     * @param string $game jenis game (ff/ml)
+     * @param int $id ID tim
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteTeam($game, $id)
+    {
+        try {
+            // Log awal operasi
+            Log::info('Starting to delete team', ['game' => $game, 'id' => $id]);
+            
+            // Ambil tim berdasarkan jenis game
+            $team = null;
+            $slotCount = 1; // Default slot count untuk single slot
+            
+            if ($game === 'ff') {
+                // Cek jika tim ada
+                $team = FF_Team::findOrFail($id);
+                Log::info('Found FF team', ['team_id' => $team->id, 'team_name' => $team->team_name]);
+            } elseif ($game === 'ml') {
+                // Cek jika tim ada
+                $team = ML_Team::findOrFail($id);
+                Log::info('Found ML team', ['team_id' => $team->id, 'team_name' => $team->team_name]);
+                
+                // Ambil info slot type dan count
+                $slotType = $team->slot_type ?? 'single';
+                $slotCount = $team->slot_count ?? ($slotType === 'double' ? 2 : 1);
+                Log::info('Team slot info', [
+                    'team_id' => $team->id,
+                    'slot_type' => $slotType,
+                    'slot_count' => $slotCount
+                ]);
+            } else {
+                Log::warning('Invalid game type provided', ['game' => $game]);
+                return response()->json(['success' => false, 'message' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Simpan informasi tim untuk respons
+            $teamInfo = [
+                'id' => $team->id,
+                'name' => $team->team_name,
+                'game' => $game === 'ff' ? 'Free Fire' : 'Mobile Legends'
+            ];
+            
+            // Proses pengembalian slot sebelum menghapus tim
+            try {
+                // Tentukan nama kompetisi berdasarkan game
+                $competitionName = $game; // gunakan 'ff' atau 'ml' langsung
+                Log::info('Looking for competition slot', ['name' => $competitionName]);
+                
+                // Cek apakah slot kompetisi tersedia
+                $slot = \App\Models\CompetitionSlot::where('competition_name', $competitionName)->first();
+                
+                if ($slot) {
+                    Log::info('Found competition slot for decrementing', [
+                        'id' => $slot->id,
+                        'name' => $slot->competition_name,
+                        'current_used_slots' => $slot->used_slots,
+                        'decrementing_by' => $slotCount
+                    ]);
+                    
+                    // Kurangi used_slots sesuai dengan jumlah slot yang digunakan tim
+                    $decrementResult = $slot->decrementUsedSlots($slotCount);
+                    
+                    Log::info('Competition slot returned after team deletion', [
+                        'team_id' => $team->id,
+                        'team_name' => $team->team_name,
+                        'competition' => $competitionName,
+                        'slot_count' => $slotCount,
+                        'decrement_success' => $decrementResult,
+                        'new_used_slots' => $slot->used_slots
+                    ]);
+                } else {
+                    Log::warning('Competition slot not found when trying to return slot', [
+                        'competition_name' => $competitionName,
+                        'available_slots' => \App\Models\CompetitionSlot::pluck('competition_name')->toArray()
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Error returning slot after team deletion', [
+                    'team_id' => $team->id,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+            
+            // Hapus tim dari database - ini akan memicu cascading delete
+            // terhadap pemain karena kita sudah mengatur di model
+            $team->delete();
+            Log::info('Team deleted from database', ['team_id' => $team->id, 'team_name' => $team->team_name]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Tim dan semua pemainnya berhasil dihapus',
+                'team' => $teamInfo,
+                'redirect' => [
+                    'path' => '/lomba', // Redirect ke halaman lomba
+                    'params' => [
+                        'tab' => $game === 'ff' ? 'free-fire' : 'mobile-legends'
+                    ]
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting team', [
+                'game' => $game,
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus tim: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Memperbarui data tim
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $game jenis game (ff/ml)
+     * @param int $id ID tim
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateTeam(Request $request, $game, $id)
+    {
+        try {
+            $validatedData = $request->validate([
+                'team_name' => 'sometimes|required|string|max:255',
+                'status' => 'sometimes|required|in:pending,verified,rejected',
+                'slot_type' => 'sometimes|nullable|string|max:255', // hanya untuk ML
+                'team_logo' => 'sometimes|nullable|image|max:2048',
+                'proof_of_payment' => 'sometimes|nullable|image|max:2048',
+            ]);
+            
+            if ($game === 'ff') {
+                $team = FF_Team::findOrFail($id);
+            } elseif ($game === 'ml') {
+                $team = ML_Team::findOrFail($id);
+            } else {
+                return response()->json(['error' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Handle file uploads jika ada
+            if ($request->hasFile('team_logo')) {
+                // Hapus logo lama jika ada
+                if ($team->team_logo && Storage::disk('public')->exists($team->team_logo)) {
+                    Storage::disk('public')->delete($team->team_logo);
+                }
+                
+                // Simpan logo baru
+                $logoPath = $request->file('team_logo')->store('teams/' . ($game === 'ff' ? 'ff' : 'ml') . '/logos', 'public');
+                $validatedData['team_logo'] = $logoPath;
+            }
+            
+            if ($request->hasFile('proof_of_payment')) {
+                // Hapus bukti pembayaran lama jika ada
+                if ($team->proof_of_payment && Storage::disk('public')->exists($team->proof_of_payment)) {
+                    Storage::disk('public')->delete($team->proof_of_payment);
+                }
+                
+                // Simpan bukti pembayaran baru
+                $paymentPath = $request->file('proof_of_payment')->store('teams/' . ($game === 'ff' ? 'ff' : 'ml') . '/payments', 'public');
+                $validatedData['proof_of_payment'] = $paymentPath;
+            }
+            
+            // Update data tim
+            $team->update($validatedData);
+            
+            // Data yang akan dikembalikan ke frontend
+            $responseData = [
+                'id' => $team->id,
+                'name' => $team->team_name,
+                'game' => $game === 'ff' ? 'Free Fire' : 'Mobile Legends',
+                'playerCount' => $team->participants()->count(),
+                'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : null,
+                'payment_proof' => $team->proof_of_payment ? asset('storage/' . $team->proof_of_payment) : null,
+                'status' => $team->status,
+                'created_at' => $team->created_at->format('d M Y'),
+            ];
+            
+            // Tambahkan informasi slot_type untuk Mobile Legends
+            if ($game === 'ml') {
+                $responseData['slot_type'] = $team->slot_type;
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Data tim berhasil diperbarui',
+                'team' => $responseData
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error updating team', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui data tim: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Menyaring data tim berdasarkan kriteria
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param string $game jenis game (ff/ml)
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function filterTeams(Request $request, $game)
+    {
+        try {
+            // Parameter filter yang mungkin
+            $search = $request->input('search');
+            $status = $request->input('status');
+            $slotType = $request->input('slot_type'); // hanya untuk ML
+            
+            // Query builder berdasarkan jenis game
+            if ($game === 'ff') {
+                $query = FF_Team::query()->withCount('participants');
+            } elseif ($game === 'ml') {
+                $query = ML_Team::query()->withCount('participants');
+            } else {
+                return response()->json(['error' => 'Jenis game tidak valid'], 400);
+            }
+            
+            // Terapkan filter
+            if ($search) {
+                $query->where('team_name', 'like', "%{$search}%");
+            }
+            
+            if ($status) {
+                $query->where('status', $status);
+            }
+            
+            if ($game === 'ml' && $slotType) {
+                $query->where('slot_type', $slotType);
+            }
+            
+            // Dapatkan hasil
+            $teams = $query->get();
+            
+            // Format data untuk frontend
+            if ($game === 'ff') {
+                $formattedTeams = $teams->map(function($team) {
+                    return [
+                        'id' => $team->id,
+                        'name' => $team->team_name,
+                        'game' => 'Free Fire',
+                        'playerCount' => $team->participants_count,
+                        'achievements' => $team->achievements ?? 0,
+                        'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : '/placeholder.svg',
+                        'color' => 'from-orange-500 to-red-600',
+                        'status' => $team->status,
+                        'slot_type' => 'Single',
+                        'created_at' => $team->created_at->format('d M Y'),
+                    ];
+                });
+            } else {
+                $formattedTeams = $teams->map(function($team) {
+                    return [
+                        'id' => $team->id,
+                        'name' => $team->team_name,
+                        'game' => 'Mobile Legends',
+                        'playerCount' => $team->participants_count,
+                        'achievements' => $team->achievements ?? 0,
+                        'logo' => $team->team_logo ? asset('storage/' . $team->team_logo) : '/placeholder.svg',
+                        'color' => 'from-blue-500 to-purple-600',
+                        'status' => $team->status,
+                        'slot_type' => $team->slot_type ?? 'Standar',
+                        'created_at' => $team->created_at->format('d M Y'),
+                    ];
+                });
+            }
+            
+            return response()->json($formattedTeams);
+            
+        } catch (\Exception $e) {
+            Log::error('Error filtering teams', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyaring data tim: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    // Mendapatkan semua tim Free Fire
+    public function getFFTeams()
+    {
+        $teams = FF_Team::withCount('participants as participant_count')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return response()->json($teams);
+    }
+    
+    // Mendapatkan semua tim Mobile Legends
+    public function getMLTeams()
+    {
+        $teams = ML_Team::withCount('participants as participant_count')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        return response()->json($teams);
+    }
+    
+    // Halaman pengelolaan tim
+    public function teamManagement()
+    {
+        return Inertia::render('admin/TeamManagement/index');
+    }
+
+    /**
+     * API endpoint untuk mendapatkan data pemain Free Fire berdasarkan tim
+     * 
+     * @param int $team_id ID tim
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFFPlayersByTeam($team_id)
+    {
+        $players = FF_Participant::where('team_id', $team_id)->get();
+        
+        // Format data untuk frontend
+        $formattedPlayers = $players->map(function($player) {
+            return [
+                'id' => $player->id,
+                'name' => $player->name,
+                'nickname' => $player->nickname,
+                'id_server' => $player->id_server,
+                'role' => $player->role ?? 'Player',
+                'no_hp' => $player->no_hp,
+                'email' => $player->email,
+                'alamat' => $player->alamat,
+                'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
+                'tanda_tangan' => $player->tanda_tangan ? asset('storage/' . $player->tanda_tangan) : null,
+                'created_at' => $player->created_at->format('d M Y'),
+                'status' => 'active'
+            ];
+        });
+        
+        return response()->json($formattedPlayers);
+    }
+    
+    /**
+     * API endpoint untuk mendapatkan data pemain Mobile Legends berdasarkan tim
+     * 
+     * @param int $team_id ID tim
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getMLPlayersByTeam($team_id)
+    {
+        $players = ML_Participant::where('team_id', $team_id)->get();
+        
+        // Format data untuk frontend
+        $formattedPlayers = $players->map(function($player) {
+            return [
+                'id' => $player->id,
+                'name' => $player->name,
+                'nickname' => $player->nickname,
+                'id_server' => $player->id_server,
+                'role' => $player->role ?? 'Player',
+                'no_hp' => $player->no_hp,
+                'email' => $player->email,
+                'alamat' => $player->alamat,
+                'foto' => $player->foto ? asset('storage/' . $player->foto) : null,
+                'tanda_tangan' => $player->tanda_tangan ? asset('storage/' . $player->tanda_tangan) : null,
+                'created_at' => $player->created_at->format('d M Y'),
+                'status' => 'active'
+            ];
+        });
+        
+        return response()->json($formattedPlayers);
     }
 }

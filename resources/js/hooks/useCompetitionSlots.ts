@@ -245,6 +245,109 @@ export function useCompetitionSlots() {
         }
     };
     
+    // Decrement slot yang digunakan (memerlukan auth)
+    const decrementSlot = async (competitionName: string, count: number = 1) => {
+        try {
+            const response = await axios.post(`/api/competition-slots/${competitionName}/decrement`, { count });
+            
+            // Update local state jika berhasil
+            if (response.data.success) {
+                setSlots(prev => prev.map(slot => {
+                    if (slot.competition_name === competitionName) {
+                        return {
+                            ...slot,
+                            used_slots: response.data.usedSlots,
+                            available_slots: response.data.availableSlots,
+                            filled_percentage: (response.data.usedSlots / response.data.totalSlots) * 100
+                        };
+                    }
+                    return slot;
+                }));
+                
+                return response.data;
+            }
+            
+            throw new Error('Respon API berhasil tetapi tidak menunjukkan status sukses');
+        } catch (err: unknown) {
+            console.warn('Error decrementing slot from API, updating locally:', err);
+            
+            // Update state lokal sebagai fallback
+            setSlots(prev => prev.map(slot => {
+                if (slot.competition_name === competitionName) {
+                    const newUsedSlots = Math.max(0, slot.used_slots - count);
+                    const newAvailableSlots = slot.total_slots - newUsedSlots;
+                    
+                    return {
+                        ...slot,
+                        used_slots: newUsedSlots,
+                        available_slots: newAvailableSlots,
+                        filled_percentage: (newUsedSlots / slot.total_slots) * 100
+                    };
+                }
+                return slot;
+            }));
+            
+            return {
+                success: true, // Kita anggap sukses meski API gagal, karena kita sudah update lokal
+                message: 'Berhasil mengurangi slot (lokal)',
+                localFallback: true
+            };
+        }
+    };
+    
+    // Decrement slot berdasarkan tipe slot
+    const decrementSlotByType = async (competitionName: string, slotType: 'single' | 'double') => {
+        try {
+            const response = await axios.post(`/api/competition-slots/${competitionName}/decrement-by-type`, { slot_type: slotType });
+            
+            // Update local state jika berhasil
+            if (response.data.success) {
+                setSlots(prev => prev.map(slot => {
+                    if (slot.competition_name === competitionName) {
+                        return {
+                            ...slot,
+                            used_slots: response.data.usedSlots,
+                            available_slots: response.data.availableSlots,
+                            filled_percentage: (response.data.usedSlots / response.data.totalSlots) * 100
+                        };
+                    }
+                    return slot;
+                }));
+                
+                return response.data;
+            }
+            
+            throw new Error('Respon API berhasil tetapi tidak menunjukkan status sukses');
+        } catch (err: unknown) {
+            console.warn('Error decrementing slot by type from API, updating locally:', err);
+            
+            // Update state lokal sebagai fallback
+            const slotCount = slotType === 'double' ? 2 : 1;
+            
+            setSlots(prev => prev.map(slot => {
+                if (slot.competition_name === competitionName) {
+                    const newUsedSlots = Math.max(0, slot.used_slots - slotCount);
+                    const newAvailableSlots = slot.total_slots - newUsedSlots;
+                    
+                    return {
+                        ...slot,
+                        used_slots: newUsedSlots,
+                        available_slots: newAvailableSlots,
+                        filled_percentage: (newUsedSlots / slot.total_slots) * 100
+                    };
+                }
+                return slot;
+            }));
+            
+            return {
+                success: true, // Kita anggap sukses meski API gagal, karena kita sudah update lokal
+                message: `Berhasil mengurangi ${slotCount} slot (lokal)`,
+                slotType: slotType,
+                localFallback: true
+            };
+        }
+    };
+    
     // Load data saat komponen dimount
     useEffect(() => {
         fetchSlots();
@@ -258,6 +361,8 @@ export function useCompetitionSlots() {
         validateSlot,
         validateSlotByType,
         incrementSlot,
-        incrementSlotByType
+        incrementSlotByType,
+        decrementSlot,
+        decrementSlotByType
     };
 }

@@ -51,7 +51,15 @@ Route::get('/team-cek', function () {
 Route::get('/api/ff-players', [TeamPlayerController::class, 'getFFPlayers']);
 Route::get('/api/ml-players', [TeamPlayerController::class, 'getMLPlayers']);
 
+// API Routes for Player Management
+Route::delete('/api/players/{game}/{id}', [TeamPlayerController::class, 'deletePlayer']);
+Route::put('/api/players/{game}/{id}', [TeamPlayerController::class, 'updatePlayer']);
+Route::get('/api/players/{game}/filter', [TeamPlayerController::class, 'filterPlayers']);
 
+// API Routes for Team Management
+Route::delete('/api/teams/{game}/{id}', [TeamPlayerController::class, 'deleteTeam']);
+Route::put('/api/teams/{game}/{id}', [TeamPlayerController::class, 'updateTeam']);
+Route::get('/api/teams/{game}/filter', [TeamPlayerController::class, 'filterTeams']);
 
 Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     Route::get('dashboard', function () {
@@ -95,9 +103,16 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
 // Tambahkan route baru untuk endpoint truncate
 Route::post('/admin/truncate-teams', [IncompleteTeamController::class, 'truncateTeams'])->name('admin.truncate-teams');
 
+// Test route for TeamPlayer page - tanpa middleware auth untuk testing
+Route::get('/test-players', [TeamPlayerController::class, 'index'])->name('test.players');
 
-
-
+// Admin Player Management Routes
+Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-essega/players')->group(function () {
+    Route::get('/{game}', [App\Http\Controllers\Admin\PlayerController::class, 'index'])->name('admin.players.index');
+    Route::get('/{game}/filter', [App\Http\Controllers\Admin\PlayerController::class, 'filter'])->name('admin.players.filter');
+    Route::put('/{game}/{id}', [App\Http\Controllers\Admin\PlayerController::class, 'update'])->name('admin.players.update');
+    Route::delete('/{game}/{id}', [App\Http\Controllers\Admin\PlayerController::class, 'destroy'])->name('admin.players.destroy');
+});
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

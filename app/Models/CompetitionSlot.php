@@ -105,27 +105,60 @@ class CompetitionSlot extends Model
         $oldValue = $this->used_slots;
         $newValue = max(0, $this->used_slots - $count);
         
-        // Update menggunakan query builder untuk memastikan perubahan disimpan
-        $updated = self::where('id', $this->id)
-                      ->update([
-                          'used_slots' => $newValue,
-                          'updated_at' => now()
-                      ]);
-        
-        // Refresh model untuk mendapatkan nilai terbaru
-        $this->refresh();
-        
-        // Log perubahan nilai
-        \Illuminate\Support\Facades\Log::debug("decrementUsedSlots perubahan nilai", [
-            'competition_name' => $this->competition_name,
-            'model_id' => $this->id,
-            'before' => $oldValue,
-            'after' => $this->used_slots,
-            'expected_after' => $newValue,
-            'difference' => $oldValue - $this->used_slots,
-            'updated_rows' => $updated
-        ]);
-        
-        return $updated > 0;
+        // Coba update dengan cara aman untuk menghindari race condition
+        try {
+            // Update menggunakan query builder untuk memastikan perubahan disimpan
+            $updated = self::where('id', $this->id)
+                          ->update([
+                              'used_slots' => $newValue,
+                              'updated_at' => now()
+                          ]);
+            
+            // Refresh model untuk mendapatkan nilai terbaru
+            $this->refresh();
+            
+            // Log perubahan nilai
+            \Illuminate\Support\Facades\Log::debug("decrementUsedSlots perubahan nilai", [
+                'competition_name' => $this->competition_name,
+                'model_id' => $this->id,
+                'before' => $oldValue,
+                'after' => $this->used_slots,
+                'expected_after' => $newValue,
+                'difference' => $oldValue - $this->used_slots,
+                'updated_rows' => $updated
+            ]);
+            
+            return $updated > 0;
+        } catch (\Exception $e) {
+            // Log error
+            \Illuminate\Support\Facades\Log::error("decrementUsedSlots error", [
+                'competition_name' => $this->competition_name,
+                'model_id' => $this->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Coba cara alternatif: update model langsung
+            try {
+                $this->used_slots = $newValue;
+                $saved = $this->save();
+                
+                \Illuminate\Support\Facades\Log::debug("decrementUsedSlots alternatif", [
+                    'competition_name' => $this->competition_name,
+                    'model_id' => $this->id,
+                    'saved' => $saved,
+                    'new_used_slots' => $this->used_slots
+                ]);
+                
+                return $saved;
+            } catch (\Exception $e2) {
+                \Illuminate\Support\Facades\Log::error("decrementUsedSlots error (alternatif)", [
+                    'competition_name' => $this->competition_name,
+                    'model_id' => $this->id,
+                    'error' => $e2->getMessage()
+                ]);
+                return false;
+            }
+        }
     }
 }

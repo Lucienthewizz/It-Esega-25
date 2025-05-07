@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompetitionSlotController;
+use App\Http\Controllers\Admin\TeamPlayerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,8 @@ Route::prefix('competition-slots')->group(function () {
     Route::get('/{competitionName}/validate/{slotType}', [CompetitionSlotController::class, 'validateSlotType']);
     Route::post('/{competitionName}/increment', [CompetitionSlotController::class, 'incrementSlot']);
     Route::post('/{competitionName}/increment-by-type', [CompetitionSlotController::class, 'incrementSlotByType']);
+    Route::post('/{competitionName}/decrement', [CompetitionSlotController::class, 'decrementSlot']);
+    Route::post('/{competitionName}/decrement-by-type', [CompetitionSlotController::class, 'decrementSlotByType']);
     
     // Rute tambahan untuk debugging
     Route::get('/debug/all', function() {
@@ -135,3 +138,43 @@ Route::prefix('debug')->group(function() {
         ]);
     });
 });
+
+// API untuk Team Management
+Route::prefix('teams')->group(function () {
+    // Get teams
+    Route::get('/ff', [TeamPlayerController::class, 'getFFTeams']);
+    Route::get('/ml', [TeamPlayerController::class, 'getMLTeams']);
+    
+    // Filter teams
+    Route::get('/ff/filter', [TeamPlayerController::class, 'filterTeams']);
+    Route::get('/ml/filter', [TeamPlayerController::class, 'filterTeams']);
+    
+    // Update and delete teams
+    Route::put('/ff/{id}', [TeamPlayerController::class, 'updateTeam']);
+    Route::put('/ml/{id}', [TeamPlayerController::class, 'updateTeam']);
+    Route::delete('/ff/{id}', function($id) {
+        return app()->call([app(TeamPlayerController::class), 'deleteTeam'], ['game' => 'ff', 'id' => $id]);
+    });
+    Route::delete('/ml/{id}', function($id) {
+        return app()->call([app(TeamPlayerController::class), 'deleteTeam'], ['game' => 'ml', 'id' => $id]);
+    });
+});
+
+// API untuk Player Management
+Route::prefix('players')->group(function () {
+    // Get players by team
+    Route::get('/ff/{team_id}', [TeamPlayerController::class, 'getFFPlayersByTeam']);
+    Route::get('/ml/{team_id}', [TeamPlayerController::class, 'getMLPlayersByTeam']);
+    
+    // Update and delete players
+    Route::put('/ff/{id}', [TeamPlayerController::class, 'updatePlayer']);
+    Route::put('/ml/{id}', [TeamPlayerController::class, 'updatePlayer']);
+    Route::delete('/ff/{id}', [TeamPlayerController::class, 'deletePlayer']);
+    Route::delete('/ml/{id}', [TeamPlayerController::class, 'deletePlayer']);
+});
+
+// Get all FF players
+Route::get('/ff-players', [TeamPlayerController::class, 'getFFPlayers']);
+
+// Get all ML players 
+Route::get('/ml-players', [TeamPlayerController::class, 'getMLPlayers']);

@@ -267,4 +267,109 @@ class CompetitionSlotController extends Controller
             'message' => 'Gagal menambahkan slot'
         ], 500);
     }
+    
+    /**
+     * Decrement slot yang digunakan
+     */
+    public function decrementSlot(Request $request, string $competitionName): JsonResponse
+    {
+        $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
+        
+        if (!$slot) {
+            Log::warning('Competition not found in decrementSlot', ['competition_name' => $competitionName]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Kompetisi tidak ditemukan'
+            ], 404);
+        }
+        
+        $count = $request->input('count', 1);
+        
+        Log::info('Decrementing slot', [
+            'competition_name' => $competitionName,
+            'count' => $count,
+            'before_used_slots' => $slot->used_slots
+        ]);
+        
+        if ($slot->decrementUsedSlots($count)) {
+            Log::info('Slot decremented successfully', [
+                'competition_name' => $competitionName,
+                'count' => $count,
+                'after_used_slots' => $slot->used_slots,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Slot berhasil dikurangi',
+                'availableSlots' => $slot->getAvailableSlots(),
+                'totalSlots' => $slot->total_slots,
+                'usedSlots' => $slot->used_slots
+            ]);
+        }
+        
+        Log::error('Failed to decrement slot', [
+            'competition_name' => $competitionName,
+            'count' => $count
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengurangi slot'
+        ], 500);
+    }
+    
+    /**
+     * Decrement slot yang digunakan berdasarkan tipe slot
+     */
+    public function decrementSlotByType(Request $request, string $competitionName): JsonResponse
+    {
+        $slot = CompetitionSlot::where('competition_name', $competitionName)->first();
+        
+        if (!$slot) {
+            Log::warning('Competition not found in decrementSlotByType', ['competition_name' => $competitionName]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Kompetisi tidak ditemukan'
+            ], 404);
+        }
+        
+        $slotType = $request->input('slot_type', 'single');
+        $count = ($slotType === 'double') ? 2 : 1;
+        
+        Log::info('Decrementing slot by type', [
+            'competition_name' => $competitionName,
+            'slot_type' => $slotType,
+            'count' => $count,
+            'before_used_slots' => $slot->used_slots
+        ]);
+        
+        if ($slot->decrementUsedSlots($count)) {
+            Log::info('Slot decremented by type successfully', [
+                'competition_name' => $competitionName,
+                'slot_type' => $slotType,
+                'count' => $count,
+                'after_used_slots' => $slot->used_slots,
+                'available_slots' => $slot->getAvailableSlots()
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => "Berhasil mengurangi {$count} slot",
+                'availableSlots' => $slot->getAvailableSlots(),
+                'totalSlots' => $slot->total_slots,
+                'usedSlots' => $slot->used_slots,
+                'slotType' => $slotType
+            ]);
+        }
+        
+        Log::error('Failed to decrement slot by type', [
+            'competition_name' => $competitionName,
+            'slot_type' => $slotType,
+            'count' => $count
+        ]);
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengurangi slot'
+        ], 500);
+    }
 }

@@ -1,5 +1,6 @@
 import { GameHeader } from '@/components/cabor/game-header';
 import { PlayersList } from '@/components/cabor/players-list';
+import { TeamsTable } from '@/components/cabor/teams-table';
 import { TeamOverview } from '@/components/cabor/team-overview';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthenticatedAdminLayout from '@/layouts/admin/layout';
@@ -37,9 +38,12 @@ export default function TeamPlayerPage() {
                         </header>
 
                         <Tabs defaultValue="overview" className="w-full">
-                            <TabsList className="grid h-14 w-full grid-cols-3 rounded-xl p-1">
+                            <TabsList className="grid h-14 w-full grid-cols-4 rounded-xl p-1">
                                 <TabsTrigger value="overview" className="rounded-lg text-sm sm:text-base">
                                     Overview
+                                </TabsTrigger>
+                                <TabsTrigger value="all-teams" className="rounded-lg text-sm sm:text-base">
+                                    All Teams
                                 </TabsTrigger>
                                 <TabsTrigger value="free-fire" className="rounded-lg text-sm sm:text-base">
                                     Free Fire
@@ -58,6 +62,16 @@ export default function TeamPlayerPage() {
                                     teams={teamData}
                                 />
                             </TabsContent>
+                            
+                            <TabsContent value="all-teams" className="mt-6 space-y-6">
+                                <GameHeader
+                                    title="All Teams"
+                                    logo="/Images/LogoEsega25.png"
+                                    description="Manage all teams across different games"
+                                    color="from-red-500 to-pink-600"
+                                />
+                                <TeamsTable gameType="all" />
+                            </TabsContent>
 
                             <TabsContent value="free-fire" className="mt-6 space-y-6">
                                 <GameHeader
@@ -66,7 +80,21 @@ export default function TeamPlayerPage() {
                                     description="Team management for Free Fire division"
                                     color="from-orange-500 to-red-600"
                                 />
-                                <PlayersList gameType="free-fire" />
+                                
+                                <Tabs defaultValue="teams" className="w-full">
+                                    <TabsList className="w-full">
+                                        <TabsTrigger value="teams">Teams</TabsTrigger>
+                                        <TabsTrigger value="players">Players</TabsTrigger>
+                                    </TabsList>
+                                    
+                                    <TabsContent value="teams" className="mt-4">
+                                        <TeamsTable gameType="free-fire" />
+                                    </TabsContent>
+                                    
+                                    <TabsContent value="players" className="mt-4">
+                                        <PlayersList gameType="free-fire" />
+                                    </TabsContent>
+                                </Tabs>
                             </TabsContent>
 
                             <TabsContent value="mobile-legends" className="mt-6 space-y-6">
@@ -76,7 +104,21 @@ export default function TeamPlayerPage() {
                                     description="Team management for Mobile Legends division"
                                     color="from-blue-500 to-purple-600"
                                 />
-                                <PlayersList gameType="mobile-legends" />
+                                
+                                <Tabs defaultValue="teams" className="w-full">
+                                    <TabsList className="w-full">
+                                        <TabsTrigger value="teams">Teams</TabsTrigger>
+                                        <TabsTrigger value="players">Players</TabsTrigger>
+                                    </TabsList>
+                                    
+                                    <TabsContent value="teams" className="mt-4">
+                                        <TeamsTable gameType="mobile-legends" />
+                                    </TabsContent>
+                                    
+                                    <TabsContent value="players" className="mt-4">
+                                        <PlayersList gameType="mobile-legends" />
+                                    </TabsContent>
+                                </Tabs>
                             </TabsContent>
                         </Tabs>
                     </div>

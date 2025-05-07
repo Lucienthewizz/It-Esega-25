@@ -5,9 +5,28 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from '@inertiajs/react';
-import { Download, TrendingUp, Trophy, Users } from 'lucide-react';
+import { Download, TrendingUp, Trophy, Users, Edit, Trash2, MoreVertical } from 'lucide-react';
 import { TeamPerformanceChart } from './team-performance-chart';
 import { TeamRegistrationChart } from './team-registration-chart';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { useState } from "react"
+import axios from "axios"
+import { toast } from "react-hot-toast"
 
 interface Team {
     id: number;
@@ -28,6 +47,45 @@ interface TeamOverviewProps {
 }
 
 export function TeamOverview({ totalTeams, totalPlayers, achievementsTotal, winrate, teams = [] }: TeamOverviewProps) {
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [teamToDelete, setTeamToDelete] = useState<Team | null>(null);
+    
+    // Fungsi untuk menangani penghapusan tim
+    const handleDeleteTeam = async () => {
+        if (!teamToDelete) return;
+        
+        try {
+            const game = teamToDelete.game === 'Free Fire' ? 'ff' : 'ml';
+            const response = await axios.delete(`/api/teams/${game}/${teamToDelete.id}`);
+            
+            // Cek apakah ada informasi redirect dari backend
+            if (response.data.redirect) {
+                // Tampilkan pesan sukses
+                toast.success(`Tim ${teamToDelete.name} berhasil dihapus beserta semua pemainnya.`);
+                
+                // Redirect ke halaman yang ditentukan oleh backend
+                const redirect = response.data.redirect;
+                const url = redirect.path + 
+                    (redirect.params ? '?' + new URLSearchParams(redirect.params).toString() : '');
+                
+                // Delay sedikit untuk memastikan toast message terlihat
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 1000);
+            } else {
+                // Jika tidak ada redirect, reload halaman seperti biasa
+                toast.success(`Tim ${teamToDelete.name} berhasil dihapus beserta semua pemainnya.`);
+                window.location.reload();
+            }
+            
+            setIsDeleteDialogOpen(false);
+            setTeamToDelete(null);
+        } catch (error) {
+            console.error("Error deleting team:", error);
+            toast.error("Gagal menghapus tim. Silakan coba lagi.");
+        }
+    };
+
     return (
         <div className="space-y-8">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -163,15 +221,73 @@ export function TeamOverview({ totalTeams, totalPlayers, achievementsTotal, winr
                                             <span className="text-sm">{team.achievements} Achievements</span>
                                         </div>
                                     </div>
-                                    <Button variant="outline" className="w-full" asChild>
-                                        <Link href={`/teams/${team.id}`}>Manage Team</Link>
-                                    </Button>
+                                    <div className="flex space-x-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0 text-white">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                    <span className="sr-only">Open menu</span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        href={`/secure-admin-essega/teams/${team.game === "Free Fire" ? "ff" : "ml"}/${team.id}`}
+                                                        className="flex items-center cursor-pointer"
+                                                    >
+                                                        <Edit className="mr-2 h-4 w-4" />
+                                                        <span>Lihat Detail</span>
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem 
+                                                    className="text-red-600 flex items-center cursor-pointer"
+                                                    onClick={() => {
+                                                        setTeamToDelete(team);
+                                                        setIsDeleteDialogOpen(true);
+                                                    }}
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                    <span>Hapus Tim</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}
                     </div>
                 </CardContent>
             </Card>
+
+            {/* Dialog Konfirmasi Hapus Tim */}
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Hapus Tim</DialogTitle>
+                        <DialogDescription>
+                            Apakah Anda yakin ingin menghapus tim <span className="font-semibold">{teamToDelete?.name}</span>?
+                            <br />
+                            <span className="text-red-500">Semua pemain yang terkait dengan tim ini juga akan dihapus.</span>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                        >
+                            Batal
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDeleteTeam}
+                        >
+                            Hapus Tim
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

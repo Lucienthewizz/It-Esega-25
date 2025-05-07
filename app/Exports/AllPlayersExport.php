@@ -19,23 +19,12 @@ class AllPlayersExport implements FromArray, WithHeadings, WithStyles, ShouldAut
 
     public function array(): array
     {
-        // Hanya ambil nilai tanpa kunci untuk data di Excel
-        $data = [];
-        foreach ($this->players as $player) {
-            $data[] = array_values($player);
-        }
-        
         return $this->players;
     }
 
     public function headings(): array
     {
-        // Ambil kunci dari item pertama sebagai header
-        if (count($this->players) > 0) {
-            return array_keys($this->players[0]);
-        }
-        
-        // Default headers jika tidak ada data
+        // Default headers
         return [
             'ID',
             'Nama',
@@ -47,7 +36,9 @@ class AllPlayersExport implements FromArray, WithHeadings, WithStyles, ShouldAut
             'Role',
             'Tim',
             'Game',
-            'Tanggal Daftar'
+            'Status',
+            'Tanggal Daftar',
+            'Terakhir Diperbarui'
         ];
     }
 

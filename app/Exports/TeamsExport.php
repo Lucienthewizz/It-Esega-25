@@ -23,19 +23,16 @@ class TeamsExport implements FromArray, WithHeadings, WithStyles
 
     public function headings(): array
     {
-        // Ambil kunci dari item pertama sebagai header
-        if (count($this->teams) > 0) {
-            return array_keys($this->teams[0]);
-        }
-        
-        // Default headers jika tidak ada data
+        // Headings for teams
         return [
             'ID',
             'Nama Tim',
             'Game',
+            'Jenis Slot',
             'Jumlah Pemain',
             'Status',
-            'Tanggal Daftar'
+            'Tanggal Daftar',
+            'Terakhir Diperbarui'
         ];
     }
 
