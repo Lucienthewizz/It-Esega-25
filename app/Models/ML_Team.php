@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Models\CompetitionSlot;
 
 class ML_Team extends Model
 {
@@ -54,6 +56,28 @@ class ML_Team extends Model
             // Hapus file bukti pembayaran jika ada
             if ($team->proof_of_payment && Storage::disk('public')->exists($team->proof_of_payment)) {
                 Storage::disk('public')->delete($team->proof_of_payment);
+            }
+            
+            // Kembalikan slot kompetisi
+            try {
+                $slotCount = $team->slot_count ?? ($team->slot_type === 'double' ? 2 : 1);
+                $slot = CompetitionSlot::where('competition_name', 'Mobile Legends')->first();
+                
+                if ($slot) {
+                    \Illuminate\Support\Facades\Log::info('Returning competition slot from ML_Team model', [
+                        'team_id' => $team->id,
+                        'team_name' => $team->team_name,
+                        'slot_count' => $slotCount,
+                        'slot_type' => $team->slot_type
+                    ]);
+                    
+                    $slot->decrementUsedSlots($slotCount);
+                }
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Error returning competition slot from ML_Team model', [
+                    'team_id' => $team->id,
+                    'error' => $e->getMessage()
+                ]);
             }
         });
     }

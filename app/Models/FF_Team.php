@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Models\CompetitionSlot;
 
 class FF_Team extends Model
 {
@@ -39,6 +41,26 @@ class FF_Team extends Model
             
             if ($team->proof_of_payment && Storage::disk('public')->exists($team->proof_of_payment)) {
                 Storage::disk('public')->delete($team->proof_of_payment);
+            }
+            
+            // Kembalikan slot kompetisi
+            try {
+                $slot = CompetitionSlot::where('competition_name', 'Free Fire')->first();
+                
+                if ($slot) {
+                    Log::info('Returning competition slot from FF_Team model', [
+                        'team_id' => $team->id,
+                        'team_name' => $team->team_name,
+                        'slot_count' => 1 // FF selalu menggunakan 1 slot
+                    ]);
+                    
+                    $slot->decrementUsedSlots(1); // FF selalu menggunakan 1 slot
+                }
+            } catch (\Exception $e) {
+                Log::error('Error returning competition slot from FF_Team model', [
+                    'team_id' => $team->id,
+                    'error' => $e->getMessage()
+                ]);
             }
         });
     }

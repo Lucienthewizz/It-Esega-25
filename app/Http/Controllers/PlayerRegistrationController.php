@@ -126,10 +126,10 @@ class PlayerRegistrationController extends Controller
             Session::forget('double_slot_registered'); // Hapus penanda karena sudah tidak dibutuhkan
             
             // Arahkan ke halaman registrasi tim kedua dengan pesan
-            Session::flash('info', 'Pendaftaran pemain untuk tim pertama berhasil! Sekarang silakan mendaftar untuk tim kedua Anda.');
+            Session::flash('info', 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESEGA!.');
             return redirect()->route('home')->with([
                 'showSecondTeamRegistration' => true, 
-                'success' => 'Pendaftaran pemain untuk tim pertama berhasil. Silakan mendaftar untuk tim kedua Anda.'
+                'success' => 'Pendaftaran Player berhasil di lakukan, tunggu konfirmasi dari Humas IT-ESEGA!.'
             ]);
         }
 

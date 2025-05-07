@@ -802,7 +802,7 @@ class TeamPlayerController extends Controller
             // Proses pengembalian slot sebelum menghapus tim
             try {
                 // Tentukan nama kompetisi berdasarkan game
-                $competitionName = $game; // gunakan 'ff' atau 'ml' langsung
+                $competitionName = $game === 'ff' ? 'Free Fire' : 'Mobile Legends';
                 Log::info('Looking for competition slot', ['name' => $competitionName]);
                 
                 // Cek apakah slot kompetisi tersedia
