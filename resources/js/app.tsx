@@ -8,8 +8,19 @@ import { initializeTheme } from './hooks/use-appearance';
 
 const appName = import.meta.env.VITE_APP_NAME || 'IT-ESEGA 2025';
 
+// Add lazy loading to all images
+document.addEventListener('DOMContentLoaded', () => {
+    // Apply lazy loading to all images
+    const images = document.querySelectorAll('img');
+    images.forEach(img => {
+        if (!img.hasAttribute('loading')) {
+            img.setAttribute('loading', 'lazy');
+        }
+    });
+});
+
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => title ? title : appName,
     resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
         const root = createRoot(el);

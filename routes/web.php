@@ -114,5 +114,9 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::delete('/{game}/{id}', [App\Http\Controllers\Admin\PlayerController::class, 'destroy'])->name('admin.players.destroy');
 });
 
+Route::get('optimized-images/{path}', [\App\Http\Controllers\ImageController::class, 'serve'])
+    ->where('path', '.*')
+    ->name('optimized.images');
+
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
