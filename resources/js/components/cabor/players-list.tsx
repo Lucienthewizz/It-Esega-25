@@ -1,5 +1,3 @@
-'use client';
-
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -48,6 +46,17 @@ export function PlayersList({ players, gameType }: { players: Player[]; gameType
         }
     };
 
+    const downloadExcel = () => {
+        const endpoint = gameType === 'free-fire' ? '/export/ff-players' : '/export/ml-players';
+
+        const link = document.createElement('a');
+        link.href = endpoint;
+        link.setAttribute('download', '');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <Card className="border-none shadow-md">
             <CardHeader>
@@ -65,7 +74,7 @@ export function PlayersList({ players, gameType }: { players: Player[]; gameType
                             <Download className="h-3.5 w-3.5" />
                             <span>PDF</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="h-8 gap-1">
+                        <Button variant="outline" size="sm" className="h-8 gap-1" onClick={downloadExcel}>
                             <Download className="h-3.5 w-3.5" />
                             <span>Excel</span>
                         </Button>

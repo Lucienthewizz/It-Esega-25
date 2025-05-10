@@ -7,6 +7,9 @@ use App\Http\Controllers\Admin\TeamPlayerController;
 use App\Http\Controllers\Admin\TimelineController;
 use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
+use App\Exports\MLPlayersExport;
+use App\Exports\FFPlayersExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
@@ -18,6 +21,14 @@ use App\Http\Controllers\PageController;
 Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
+
+Route::get('/export/ml-players', function () {
+    return Excel::download(new MLPlayersExport, 'mobile-legends-players.xlsx');
+});
+
+Route::get('/export/ff-players', function () {
+    return Excel::download(new FFPlayersExport, 'free-fire-players.xlsx');
+});
 
 
 Route::middleware('guest')->group(function () {

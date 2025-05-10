@@ -2,18 +2,18 @@
 
 namespace App\Exports;
 
+use App\Models\ML_Participant;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use App\Models\FF_Participant;
 
-class FFPlayersExport implements FromCollection, WithHeadings
+class MLPlayersExport implements FromCollection, WithHeadings
 {
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return FF_Participant::all();
+        return ML_Participant::all();
     }
 
     public function headings(): array
