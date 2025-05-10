@@ -5,11 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthenticatedAdminLayout from '@/layouts/admin/layout';
 //import { TeamData } from '@/types/register';
 import { TeamOverviews } from '@/types/teamOverviews';
+import { Player } from '@/types/TeamPlayers';
 import { UserType } from '@/types/user';
 import { usePage } from '@inertiajs/react';
 
 export default function TeamPlayerPage() {
-    const { user, flash, teams, totalTeams, totalPlayers, achievementsTotal, winrate } = usePage<{
+    const { user, flash, teams, totalTeams, totalPlayers, achievementsTotal, winrate, ffPlayers, mlPlayers } = usePage<{
         user: { data: UserType };
         flash: { success?: string; error?: string };
         teams: { data: TeamOverviews[] };
@@ -17,6 +18,8 @@ export default function TeamPlayerPage() {
         totalPlayers: number;
         achievementsTotal: number;
         winrate: number;
+        ffPlayers: Player[];
+        mlPlayers: Player[];
     }>().props;
     const auth = user.data;
     const teamData = teams.data;
@@ -65,7 +68,7 @@ export default function TeamPlayerPage() {
                                     description="Team management for Free Fire division"
                                     color="from-orange-500 to-red-600"
                                 />
-                                <PlayersList gameType="free-fire" />
+                                <PlayersList gameType="free-fire" players={ffPlayers} />
                             </TabsContent>
 
                             <TabsContent value="mobile-legends" className="mt-6 space-y-6">
@@ -75,7 +78,7 @@ export default function TeamPlayerPage() {
                                     description="Team management for Mobile Legends division"
                                     color="from-blue-500 to-purple-600"
                                 />
-                                <PlayersList gameType="mobile-legends" />
+                                <PlayersList gameType="mobile-legends" players={mlPlayers} />
                             </TabsContent>
                         </Tabs>
                     </div>

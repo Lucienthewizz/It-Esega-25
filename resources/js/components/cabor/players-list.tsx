@@ -1,11 +1,9 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,148 +11,42 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search, MoreVertical, Edit, Trash2, Star, Filter, Download } from "lucide-react"
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Download, Edit, Filter, MoreVertical, Search, Star, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 type Player = {
-    id: number
-    name: string
-    nickname: string
-    role: string
-    avatar: string
-    status: "active" | "inactive" | "reserve"
-    joinDate: string
-}
+    id: number;
+    name: string;
+    nickname: string;
+    role: string;
+    avatar: string;
+    status: 'active' | 'inactive' | 'reserve';
+    joinDate: string;
+};
 
-const freeFirePlayers: Player[] = [
-    {
-        id: 1,
-        name: "Alex Johnson",
-        nickname: "FireKing",
-        role: "Rusher",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-05-15",
-    },
-    {
-        id: 2,
-        name: "Michael Chen",
-        nickname: "SniperX",
-        role: "Sniper",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-06-22",
-    },
-    {
-        id: 3,
-        name: "Sarah Williams",
-        nickname: "PhoenixGirl",
-        role: "Support",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-04-10",
-    },
-    {
-        id: 4,
-        name: "David Kim",
-        nickname: "ShadowStep",
-        role: "Flanker",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-07-05",
-    },
-    {
-        id: 5,
-        name: "Lisa Rodriguez",
-        nickname: "FlameQueen",
-        role: "IGL",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-03-18",
-    },
-    {
-        id: 6,
-        name: "Ryan Park",
-        nickname: "GhostRunner",
-        role: "Rusher",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "reserve",
-        joinDate: "2023-08-30",
-    },
-]
-
-const mobileLegendPlayers: Player[] = [
-    {
-        id: 1,
-        name: "James Wilson",
-        nickname: "TankMaster",
-        role: "Tank",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-02-10",
-    },
-    {
-        id: 2,
-        name: "Emma Garcia",
-        nickname: "MidQueen",
-        role: "Mid Laner",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-03-25",
-    },
-    {
-        id: 3,
-        name: "Kevin Lee",
-        nickname: "JungleKing",
-        role: "Jungler",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-04-15",
-    },
-    {
-        id: 4,
-        name: "Sophia Martinez",
-        nickname: "SupportPro",
-        role: "Support",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-05-20",
-    },
-    {
-        id: 5,
-        name: "Daniel Brown",
-        nickname: "GoldLaner",
-        role: "Gold Laner",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "inactive",
-        joinDate: "2023-06-05",
-    },
-]
-
-export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-legends" }) {
-    const [searchQuery, setSearchQuery] = useState("")
-
-    const players = gameType === "free-fire" ? freeFirePlayers : mobileLegendPlayers
+export function PlayersList({ players, gameType }: { players: Player[]; gameType: 'free-fire' | 'mobile-legends' }) {
+    const [searchQuery, setSearchQuery] = useState('');
 
     const filteredPlayers = players.filter(
         (player) =>
-            player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            player.nickname.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
+            player.name.toLowerCase().includes(searchQuery.toLowerCase()) || player.nickname.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "active":
-                return "bg-green-500"
-            case "inactive":
-                return "bg-red-500"
-            case "reserve":
-                return "bg-yellow-500"
+            case 'active':
+                return 'bg-green-500';
+            case 'inactive':
+                return 'bg-red-500';
+            case 'reserve':
+                return 'bg-yellow-500';
             default:
-                return "bg-gray-500"
+                return 'bg-gray-500';
         }
-    }
+    };
 
     return (
         <Card className="border-none shadow-md">
@@ -162,9 +54,7 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <CardTitle>Players</CardTitle>
-                        <CardDescription>
-                            Manage your {gameType === "free-fire" ? "Free Fire" : "Mobile Legends"} players
-                        </CardDescription>
+                        <CardDescription>Manage your {gameType === 'free-fire' ? 'Free Fire' : 'Mobile Legends'} players</CardDescription>
                     </div>
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm" className="h-8 gap-1">
@@ -183,9 +73,9 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+                <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="relative w-full sm:w-64">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Search className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                         <Input
                             type="search"
                             placeholder="Search players..."
@@ -217,14 +107,14 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <Avatar className="h-10 w-10 border">
-                                                <AvatarImage src={player.avatar || "/placeholder.svg"} alt={player.name} />
+                                                <AvatarImage src={player.avatar || '/placeholder.svg'} alt={player.name} />
                                                 <AvatarFallback>{player.nickname.substring(0, 2)}</AvatarFallback>
                                             </Avatar>
                                             <div>
                                                 <div className="font-medium">{player.name}</div>
-                                                <div className="text-sm text-muted-foreground flex items-center gap-1">
+                                                <div className="text-muted-foreground flex items-center gap-1 text-sm">
                                                     {player.nickname}
-                                                    {player.role === "IGL" && <Star className="h-3 w-3 text-yellow-500 ml-1" />}
+                                                    {player.role === 'IGL' && <Star className="ml-1 h-3 w-3 text-yellow-500" />}
                                                 </div>
                                             </div>
                                         </div>
@@ -233,9 +123,9 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                                         <Badge
                                             variant="outline"
                                             className={
-                                                gameType === "free-fire"
-                                                    ? "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-400"
-                                                    : "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-400"
+                                                gameType === 'free-fire'
+                                                    ? 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950/30 dark:text-orange-400'
+                                                    : 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950/30 dark:text-blue-400'
                                             }
                                         >
                                             {player.role}
@@ -277,5 +167,5 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                 </div>
             </CardContent>
         </Card>
-    )
+    );
 }

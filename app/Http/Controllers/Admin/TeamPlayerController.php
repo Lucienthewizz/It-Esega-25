@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\FFTeamResource;
+use App\Models\FF_Participant;
+use App\Models\ML_Participant;
 use App\Models\FF_Team;
 use App\Models\ML_Team;
 use Illuminate\Http\Request;
@@ -41,6 +43,9 @@ class TeamPlayerController extends Controller
             })
         )->values();
 
+        $ffPlayers = FF_Participant::with('team')->get();
+        $mlPlayers = ML_Participant::with('team')->get();
+
     
         return Inertia::render('admin/lomba/index', [
             'teams' => $combinedTeams,
@@ -48,6 +53,8 @@ class TeamPlayerController extends Controller
             'totalPlayers' => $combinedTeams->sum('playerCount'),
             'achievementsTotal' => $combinedTeams->sum('achievements'),
             'winRate' => 68,
+            'ffPlayers' => $ffPlayers,
+            'mlPlayers' => $mlPlayers,
         ]);
 
 

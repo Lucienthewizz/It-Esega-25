@@ -19,6 +19,7 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
+
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
 
