@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Link } from '@inertiajs/react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,134 +15,30 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { MLPlayer } from '@/types/register';
+import { FFPlayer } from '@/types/register';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Search, MoreVertical, Edit, Trash2, Star, Filter, Download } from "lucide-react"
 
-type Player = {
-    id: number
-    name: string
-    nickname: string
-    role: string
-    avatar: string
-    status: "active" | "inactive" | "reserve"
-    joinDate: string
+interface PlayersListProps {
+  playerML: MLPlayer[];
+  playerFF: FFPlayer[];
+  gameType: "free-fire" | "mobile-legends";
 }
-
-const freeFirePlayers: Player[] = [
-    {
-        id: 1,
-        name: "Alex Johnson",
-        nickname: "FireKing",
-        role: "Rusher",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-05-15",
-    },
-    {
-        id: 2,
-        name: "Michael Chen",
-        nickname: "SniperX",
-        role: "Sniper",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-06-22",
-    },
-    {
-        id: 3,
-        name: "Sarah Williams",
-        nickname: "PhoenixGirl",
-        role: "Support",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-04-10",
-    },
-    {
-        id: 4,
-        name: "David Kim",
-        nickname: "ShadowStep",
-        role: "Flanker",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-07-05",
-    },
-    {
-        id: 5,
-        name: "Lisa Rodriguez",
-        nickname: "FlameQueen",
-        role: "IGL",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-03-18",
-    },
-    {
-        id: 6,
-        name: "Ryan Park",
-        nickname: "GhostRunner",
-        role: "Rusher",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "reserve",
-        joinDate: "2023-08-30",
-    },
-]
-
-const mobileLegendPlayers: Player[] = [
-    {
-        id: 1,
-        name: "James Wilson",
-        nickname: "TankMaster",
-        role: "Tank",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-02-10",
-    },
-    {
-        id: 2,
-        name: "Emma Garcia",
-        nickname: "MidQueen",
-        role: "Mid Laner",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-03-25",
-    },
-    {
-        id: 3,
-        name: "Kevin Lee",
-        nickname: "JungleKing",
-        role: "Jungler",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-04-15",
-    },
-    {
-        id: 4,
-        name: "Sophia Martinez",
-        nickname: "SupportPro",
-        role: "Support",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "active",
-        joinDate: "2023-05-20",
-    },
-    {
-        id: 5,
-        name: "Daniel Brown",
-        nickname: "GoldLaner",
-        role: "Gold Laner",
-        avatar: "/placeholder.svg?height=40&width=40",
-        status: "inactive",
-        joinDate: "2023-06-05",
-    },
-]
-
-export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-legends" }) {
+export function PlayersList({ playerML, playerFF, gameType }: PlayersListProps) {
     const [searchQuery, setSearchQuery] = useState("")
 
-    const players = gameType === "free-fire" ? freeFirePlayers : mobileLegendPlayers
+    const players = gameType === "free-fire" ? playerFF : playerML
+    console.log('componen player list', gameType);
+    console.log('componen player list', playerFF);
+    // if(gameType === "free-fire"){
+        const filteredPlayers = players.filter(
+            (player) =>
+                player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                player.nickname.toLowerCase().includes(searchQuery.toLowerCase()),
+        )
+    // }
 
-    const filteredPlayers = players.filter(
-        (player) =>
-            player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            player.nickname.toLowerCase().includes(searchQuery.toLowerCase()),
-    )
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -160,25 +57,32 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
         <Card className="border-none shadow-md">
             <CardHeader>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <CardTitle>Players</CardTitle>
-                        <CardDescription>
-                            Manage your {gameType === "free-fire" ? "Free Fire" : "Mobile Legends"} players
-                        </CardDescription>
-                    </div>
+                        <div>
+                            <CardTitle>Players</CardTitle>
+                            <CardDescription>
+                                Manage your {gameType === "free-fire" ? "Free Fire" : "Mobile Legends"} players
+                            </CardDescription>
+                        </div>
+                    
                     <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="h-8 gap-1">
-                            <Download className="h-3.5 w-3.5" />
-                            <span>CSV</span>
-                        </Button>
+                        <a href={ gameType === "free-fire" ? route("export.ffplayerscsv") : route("export.mlplayerscsv")}>
+                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                                <Download className="h-3.5 w-3.5" />
+                                <span>CSV</span>
+                            </Button>
+                        </a>
+                        <a href={ gameType === "free-fire" ? route("export.ffplayerspdf") : route("export.mlplayerspdf")}>
                         <Button variant="outline" size="sm" className="h-8 gap-1">
                             <Download className="h-3.5 w-3.5" />
                             <span>PDF</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="h-8 gap-1">
-                            <Download className="h-3.5 w-3.5" />
-                            <span>Excel</span>
-                        </Button>
+                        </a>
+                        <a href={ gameType === "free-fire" ? route("export.ffplayersexcel") : route("export.mlplayersexcel")}>
+                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                                <Download className="h-3.5 w-3.5" />
+                                <span>Excel</span>
+                            </Button>
+                        </a>
                     </div>
                 </div>
             </CardHeader>
@@ -217,14 +121,14 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <Avatar className="h-10 w-10 border">
-                                                <AvatarImage src={player.avatar || "/placeholder.svg"} alt={player.name} />
+                                                <AvatarImage src={player.foto && typeof player.foto === "string" ? player.foto : "/placeholder.svg"} alt={player.name} />
                                                 <AvatarFallback>{player.nickname.substring(0, 2)}</AvatarFallback>
                                             </Avatar>
                                             <div>
                                                 <div className="font-medium">{player.name}</div>
                                                 <div className="text-sm text-muted-foreground flex items-center gap-1">
                                                     {player.nickname}
-                                                    {player.role === "IGL" && <Star className="h-3 w-3 text-yellow-500 ml-1" />}
+                                                    {player.role === "ketua" && <Star className="h-3 w-3 text-yellow-500 ml-1" />}
                                                 </div>
                                             </div>
                                         </div>
@@ -243,11 +147,11 @@ export function PlayersList({ gameType }: { gameType: "free-fire" | "mobile-lege
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
-                                            <div className={`h-2.5 w-2.5 rounded-full ${getStatusColor(player.status)}`}></div>
-                                            <span className="capitalize">{player.status}</span>
+                                            <div className={`h-2.5 w-2.5 rounded-full ${getStatusColor(player.role)}`}></div>
+                                            <span className="capitalize">{player.role}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell>{new Date(player.joinDate).toLocaleDateString()}</TableCell>
+                                    <TableCell>{player.created_at ? new Date(player.created_at).toLocaleDateString() : "-"}</TableCell>
                                     <TableCell>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>

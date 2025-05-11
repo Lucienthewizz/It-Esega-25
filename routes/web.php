@@ -61,14 +61,22 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::resource('players', TeamPlayerController::class);
     Route::get('testff', [TeamPlayerController::class, 'ffPlayer'])->name('ffPlayer.list');
     Route::get('testml', [TeamPlayerController::class, 'mlPlayer'])->name('ffPlayer.list');
-    Route::get('/export/MLplayers', function () {
+    Route::get('/export/excel/MLplayers', function () {
         return Excel::download(new MLPlayersExport, 'mlplayers.xlsx');
-    });
-    Route::get('/export/FFplayers', function () {
+    })->name('export.mlplayersexcel');
+    Route::get('/export/excel/FFplayers', function () {
         return Excel::download(new FFPlayersExport, 'ffplayers.xlsx');
-    });
+    })->name('export.ffplayersexcel');
 
-
+    Route::get('/export/csv/MLplayers', function () {
+        return Excel::download(new MLPlayersExport, 'mlplayers.csv');
+    })->name('export.mlplayerscsv');
+    Route::get('/export/csv/FFplayers', function () {
+        return Excel::download(new FFPlayersExport, 'ffplayers.csv');
+    })->name('export.ffplayerscsv');
+    
+    Route::get('/export/pdf/MLplayers', [TeamPlayerController::class, 'exportMLPlayer'])->name('export.mlplayerspdf');
+    Route::get('/export/pdf/FFplayers', [TeamPlayerController::class, 'exportFFPlayer'])->name('export.ffplayerspdf');
     Route::post('logout/admin/it-esega', [AuthenticatedSessionControllerAdmin::class, 'destroy'])
         ->name('logout.admin');
 });

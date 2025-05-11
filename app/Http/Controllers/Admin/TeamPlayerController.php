@@ -10,6 +10,7 @@ use App\Models\FF_Participant;
 use App\Models\ML_Participant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use PDF;
 
 class TeamPlayerController extends Controller
 {
@@ -18,6 +19,8 @@ class TeamPlayerController extends Controller
 
         $ffTeams = FF_Team::withCount('participants')->get();
         $mlTeams = ML_Team::withCount('participants')->get();
+        $mlPlayers = ML_Participant::all();
+        $ffPlayers = FF_Participant::all();
 
         $combinedTeams = $ffTeams->map(function ($team) {
             return [
@@ -42,6 +45,7 @@ class TeamPlayerController extends Controller
                 ];
             })
         )->values();
+
     
         return Inertia::render('admin/lomba/index', [
             'teams' => $combinedTeams,
@@ -49,6 +53,8 @@ class TeamPlayerController extends Controller
             'totalPlayers' => $combinedTeams->sum('playerCount'),
             'achievementsTotal' => $combinedTeams->sum('achievements'),
             'winRate' => 68,
+            'mlPlayers' => $mlPlayers,
+            'ffPlayers' => $ffPlayers,
         ]);
     }
 
@@ -60,5 +66,23 @@ class TeamPlayerController extends Controller
     public function mlPlayer(){
         $players = ML_Participant::all();
         dd($players);
+    }
+
+    public function exportMLPlayer(){
+        $mlPlayers = ML_Participant::all();
+
+        $pdf = PDF::loadView('exports.ml-players', compact('mlPlayers'))
+                 ->setPaper('a4', 'landscape');
+
+        return $pdf->download('ml-players.pdf');
+    }
+    
+    public function exportFFPlayer(){
+        $ffPlayers = FF_Participant::all();
+
+        $pdf = PDF::loadView('exports.ff-players', compact('ffPlayers'))
+                 ->setPaper('a4', 'landscape');
+
+        return $pdf->download('ff-players.pdf');
     }
 }
