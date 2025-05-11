@@ -12,6 +12,7 @@
     <table>
         <thead>
             <tr>
+                <th>Team</th>
                 <th>Nama</th>
                 <th>IGN</th>
                 <th>ID Server</th>
@@ -19,12 +20,15 @@
                 <th>Email</th>
                 <th>Alamat</th>
                 <th>Role</th>
+                <th>Foto</th>
+                <th>TTD</th>
                 <th>Dibuat</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($ffPlayers as $player)
                 <tr>
+                    <td>{{ $player->team->team_name }}</td>
                     <td>{{ $player->name }}</td>
                     <td>{{ $player->nickname }}</td>
                     <td>{{ $player->id_server }}</td>
@@ -32,6 +36,20 @@
                     <td>{{ $player->email }}</td>
                     <td>{{ $player->alamat }}</td>
                     <td>{{ $player->role }}</td>
+                    <td>
+                        @if($player->foto)
+                            <a href="{{ asset('storage/' . $player->foto) }}" target="_blank">Lihat</a>
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if($player->foto)
+                            <a href="{{ asset('storage/' . $player->tanda_tangan) }}" target="_blank">Lihat</a>
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td>{{ $player->created_at ? $player->created_at->format('d-m-Y') : '-' }}</td>
                 </tr>
             @endforeach

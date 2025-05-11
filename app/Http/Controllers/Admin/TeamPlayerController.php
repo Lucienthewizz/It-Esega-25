@@ -64,12 +64,12 @@ class TeamPlayerController extends Controller
     }
     
     public function mlPlayer(){
-        $players = ML_Participant::all();
+        $players = ML_Participant::with('team')->get();
         dd($players);
     }
 
     public function exportMLPlayer(){
-        $mlPlayers = ML_Participant::all();
+        $mlPlayers = ML_Participant::with('team')->get();
 
         $pdf = PDF::loadView('exports.ml-players', compact('mlPlayers'))
                  ->setPaper('a4', 'landscape');
