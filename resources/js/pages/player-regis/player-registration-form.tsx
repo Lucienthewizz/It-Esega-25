@@ -107,6 +107,35 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
             return
         }
 
+        // Validasi ketua tim
+        const ketuaCount = formData.ml_players.filter(player => player.role === 'ketua').length;
+        if (ketuaCount === 0) {
+            setShowValidationError(true)
+            setAlertMessage("Tim harus memiliki satu Ketua. Silakan pilih salah satu pemain sebagai Ketua.")
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        } else if (ketuaCount > 1) {
+            setShowValidationError(true)
+            setAlertMessage("Tim hanya boleh memiliki satu Ketua. Silakan periksa kembali peran pemain.")
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        }
+
+        // Validasi jumlah cadangan
+        const cadanganCount = formData.ml_players.filter(player => player.role === 'cadangan').length;
+        if (cadanganCount > 2) {
+            setShowValidationError(true)
+            setAlertMessage("Tim hanya boleh memiliki maksimal 2 pemain Cadangan. Silakan periksa kembali peran pemain.")
+            setTimeout(() => {
+                setShowValidationError(false)
+            }, 10000)
+            return
+        }
+
         // Validasi field wajib untuk semua pemain
         const invalidPlayers = formData.ml_players.map((player, index) => {
             const errors = [];
@@ -364,6 +393,50 @@ export default function PlayerRegistrationForm({ teamData, gameType }: PlayerReg
     const handleSuccessDialogClose = () => {
         router.visit(route('register'))
     }
+
+    useEffect(() => {
+        // Menambahkan beberapa state history untuk mencegah navigasi back langsung
+        // Tambahkan state untuk halaman saat ini
+        window.history.pushState({ page: 'player-registration' }, "", window.location.href);
+        // Tambahkan lagi satu state yang sama untuk membuat back button lebih handal
+        window.history.pushState({ page: 'player-registration' }, "", window.location.href);
+        
+        // Menangani tombol back di browser
+        const handlePopState = (e: PopStateEvent) => {
+            // Cek state history saat ini
+            const state = e.state;
+            
+            // Jika state tidak ada atau bukan dari halaman kita, tampilkan dialog
+            if (!state || state.page === 'player-registration') {
+                // Tampilkan dialog konfirmasi
+                setBackDialogOpen(true);
+                
+                // Tambahkan kembali state untuk mencegah navigasi langsung jika user cancel
+                window.history.pushState({ page: 'player-registration' }, "", window.location.href);
+            }
+        };
+        
+        // Tambahkan event listener
+        window.addEventListener("popstate", handlePopState);
+        
+        // Tambahkan event beforeunload untuk mencegah refresh atau menutup tab secara tidak sengaja
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            // Hanya jika form belum di-submit
+            if (formData.ml_players.length > 0 && !showSuccessDialog) {
+                const message = "Data pemain Anda akan hilang jika Anda meninggalkan halaman ini.";
+                e.returnValue = message;
+                return message;
+            }
+        };
+        
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        
+        return () => {
+            // Bersihkan semua event listener saat komponen unmount
+            window.removeEventListener("popstate", handlePopState);
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [formData.ml_players.length, showSuccessDialog]);
 
     return (
         <>

@@ -22,9 +22,9 @@ export function FFPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
         switch (field) {
             case 'nickname':
-                return /^[a-zA-Z0-9_]+$/.test(value) ? undefined : 'Nickname hanya boleh alfanumerik dan underscore.'
+                return undefined // Terima semua karakter
             case 'id_server':
-                return /^[\d()]+$/.test(value) ? undefined : 'Server ID hanya boleh angka dan tanda kurung ().'
+                return undefined // Terima semua karakter
             case 'email':
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'Format email tidak valid.'
             case 'alamat':

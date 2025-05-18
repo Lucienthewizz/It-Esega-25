@@ -223,7 +223,16 @@ export default function Home() {
                                     >
                                         Register Now!
                                     </Link>
-                                    {/* Tombol "How to Register" dinonaktifkan sementara */}
+                                    <a
+                                        href="https://www.instagram.com/reel/DJx6DmICh5B/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold
+                                            bg-white text-red-600 border-2 border-red-600 rounded-lg transform transition-all duration-300
+                                            hover:bg-red-50 hover:scale-105 hover:shadow-lg"
+                                    >
+                                        How to Register
+                                    </a>
                                 </div>
                             </div>
                             <div className="hidden justify-center md:flex md:justify-end" data-aos="fade-up" data-aos-delay="100">

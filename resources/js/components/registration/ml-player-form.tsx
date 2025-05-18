@@ -22,9 +22,9 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
 
         switch (field) {
             case 'nickname':
-                return /^[a-zA-Z0-9_]+$/.test(value) ? undefined : 'Nickname hanya boleh alfanumerik dan underscore.'
+                return undefined // Terima semua karakter
             case 'id_server':
-                return /^[\d()]+$/.test(value) ? undefined : 'Server ID hanya boleh angka dan tanda kurung ().'
+                return undefined // Terima semua karakter
             case 'email':
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? undefined : 'Format email tidak valid.'
             case 'alamat':
@@ -274,8 +274,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                                 value={player.role}
                                 onValueChange={handleRoleChange}
                             >
-                                <SelectTrigger className={`py-2.5 sm:py-3.5 px-4 sm:px-5 bg-white border-gray-200 rounded-lg text-gray-900 
-                                                text-sm sm:text-base h-[34px] sm:h-[42px] ${errors.role ? 'border-red-500' : ''}`}>
+                                <SelectTrigger className={`py-1.5 sm:py-2.5 px-3 sm:px-4 bg-white border-gray-200 rounded-lg text-gray-900 
+                                                text-xs sm:text-sm h-[34px] sm:h-[42px] ${errors.role ? 'border-red-500' : ''}`}>
                                     <SelectValue placeholder="Pilih role pemain" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -335,8 +335,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                             value={player.alamat}
                             onChange={handleInputChange("alamat")}
                             placeholder="Alamat lengkap"
-                            className="py-2 sm:py-3 bg-white border-gray-200 rounded-lg text-gray-900 
-                                       px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200"
+                            className="py-2.5 sm:py-3.5 bg-white border-gray-200 rounded-lg text-gray-900 
+                                       px-4 sm:px-5 text-sm sm:text-base placeholder:text-gray-400 focus:border-red-400 focus:ring-red-200 shadow-sm"
                             required
                         />
                         {renderError("alamat")}
@@ -344,8 +344,8 @@ export function MLPlayerForm({ player, index, onChange, onDelete, allPlayers, er
                 </div>
 
                 {/* File Upload Section */}
-                <div className="space-y-4 sm:space-y-6 md:col-span-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-4 sm:space-y-5 md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                         {[
                             ["foto", "Foto Selfie", photoPreview, true, "Wajib terlihat wajah peserta, bukan gambar acak"] as const,
                             ["tanda_tangan", "Tanda Tangan", signaturePreview, true, "Tanda tangan harus jelas dan mudah dibaca"] as const,

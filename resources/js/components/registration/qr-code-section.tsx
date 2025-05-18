@@ -67,12 +67,12 @@ export function QRCodeSection({
                         <div 
                             className="bg-white rounded-xl overflow-hidden
                                 transition-all duration-300 hover:scale-[1.02] group 
-                                w-full max-w-[360px] shadow-sm border border-gray-100 cursor-pointer relative"
+                                w-full max-w-[400px] shadow-sm border border-gray-100 cursor-pointer relative"
                             onClick={() => setIsQRModalOpen(true)}
                         >
-                            <div className="p-4">
+                            <div className="p-3">
                                 <img
-                                    src="/Images/qrcode.jpeg"
+                                    src="/Images/qrcode-2.png"
                                     alt={`${gameType.toUpperCase()} Payment QR Code`}
                                     className="w-full aspect-square object-contain rounded-lg"
                                 />
@@ -167,7 +167,7 @@ export function QRCodeSection({
             
             {/* QR Code Modal/Dialog untuk menampilkan QR code lebih besar */}
             <Dialog open={isQRModalOpen} onOpenChange={setIsQRModalOpen}>
-                <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-white">
+                <DialogContent className="sm:max-w-lg md:max-w-xl p-0 overflow-hidden bg-white">
                         <div className="relative">
                         {/* Header dengan tombol close */}
                         <div className="absolute top-2 right-2 z-10">
@@ -180,11 +180,11 @@ export function QRCodeSection({
                         </div>
                         
                         {/* QR Code yang lebih besar */}
-                        <div className="p-6 sm:p-8">
+                        <div className="p-3 sm:p-4">
                             <img
-                                src="/Images/qrcode.jpeg"
+                                src="/Images/qrcode-2.png"
                                 alt={`${gameType.toUpperCase()} Payment QR Code`}
-                                className="w-full aspect-square object-contain rounded-lg max-w-full max-h-[70vh]"
+                                className="w-full aspect-square object-contain rounded-lg max-w-full max-h-[85vh]"
                             />
                         </div>
                         
