@@ -3,8 +3,10 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AuthenticatedSessionControllerAdmin;
+use App\Http\Controllers\Admin\PlayerController;
 use App\Http\Controllers\Admin\TeamPlayerController;
 use App\Http\Controllers\Admin\TimelineController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\IncompleteTeamController;
 use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
@@ -22,6 +24,9 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
+
+// Tournament Bracket public page
+Route::get('/tournament', [PageController::class, 'tournament'])->name('tournament');
 
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
@@ -74,6 +79,11 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
     Route::resource('admins', AdminUserController::class);
     Route::resource('timeline', TimelineController::class);
     Route::resource('players', TeamPlayerController::class);
+    
+    // Tournament Bracket admin page
+    Route::get('ff-tournament', function() {
+        return Inertia::render('admin/ff-tournament');
+    })->name('ff-tournament.index');
     
     // Rute Tim dan Pemain
     Route::get('teams/{game}/{id}', [TeamPlayerController::class, 'showTeam'])->name('admin.teams.show');

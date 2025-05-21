@@ -42,4 +42,9 @@ class PageController extends Controller
     {
         return Inertia::render('Contact');
     }
+
+    public function tournament()
+    {
+        return Inertia::render('tournament');
+    }
 }

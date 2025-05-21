@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompetitionSlotController;
 use App\Http\Controllers\Admin\TeamPlayerController;
+use App\Http\Controllers\FFTournamentBracketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,17 @@ use App\Http\Controllers\Admin\TeamPlayerController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+// Tournament Bracket routes
+Route::prefix('ff-tournament')->group(function () {
+    Route::get('/brackets', [FFTournamentBracketController::class, 'index']);
+    Route::post('/brackets', [FFTournamentBracketController::class, 'store']);
+    Route::get('/brackets/{bracket}', [FFTournamentBracketController::class, 'show']);
+    Route::put('/brackets/{bracket}', [FFTournamentBracketController::class, 'update']);
+    Route::delete('/brackets/{bracket}', [FFTournamentBracketController::class, 'destroy']);
+    Route::post('/initialize-group', [FFTournamentBracketController::class, 'initializeGroup']);
+    Route::get('/available-teams', [FFTournamentBracketController::class, 'getAvailableTeams']);
 });
 
 // Competition Slot routes

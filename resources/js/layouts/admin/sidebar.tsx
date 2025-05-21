@@ -55,6 +55,12 @@ export default function SidebarNav({ activeItem, setActiveItem, user }: SidebarN
             icon: Layers,
             link: route('players.index'),
         },
+        {
+            id: 'ff-tournament',
+            label: 'FF Tournament Bracket',
+            icon: Layers,
+            link: route('ff-tournament.index'),
+        },
     ];
 
     const menuItems = rawMenuItems.filter((item) => {
