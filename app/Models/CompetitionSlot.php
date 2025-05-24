@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CompetitionSlot extends Model
 {
@@ -105,14 +106,26 @@ class CompetitionSlot extends Model
         $oldValue = $this->used_slots;
         $newValue = max(0, $this->used_slots - $count);
         
-        // Coba update dengan cara aman untuk menghindari race condition
         try {
-            // Update menggunakan query builder untuk memastikan perubahan disimpan
-            $updated = self::where('id', $this->id)
-                          ->update([
-                              'used_slots' => $newValue,
-                              'updated_at' => now()
-                          ]);
+            // Gunakan transaction dan query builder untuk menghindari race condition
+            DB::transaction(function() use ($newValue, $count) {
+                // Update menggunakan query builder dengan where clause untuk mencegah race condition
+                $updated = self::where('id', $this->id)
+                              ->where('used_slots', $this->used_slots) // Pastikan nilai used_slots belum berubah
+                              ->update([
+                                  'used_slots' => $newValue,
+                                  'updated_at' => now()
+                              ]);
+                
+                if ($updated === 0) {
+                    // Jika tidak berhasil update karena race condition, coba cara kedua
+                    $latestSlot = self::find($this->id);
+                    if ($latestSlot) {
+                        $latestSlot->used_slots = max(0, $latestSlot->used_slots - $count);
+                        $latestSlot->save();
+                    }
+                }
+            });
             
             // Refresh model untuk mendapatkan nilai terbaru
             $this->refresh();
@@ -124,11 +137,10 @@ class CompetitionSlot extends Model
                 'before' => $oldValue,
                 'after' => $this->used_slots,
                 'expected_after' => $newValue,
-                'difference' => $oldValue - $this->used_slots,
-                'updated_rows' => $updated
+                'difference' => $oldValue - $this->used_slots
             ]);
             
-            return $updated > 0;
+            return true;
         } catch (\Exception $e) {
             // Log error
             \Illuminate\Support\Facades\Log::error("decrementUsedSlots error", [
@@ -138,7 +150,7 @@ class CompetitionSlot extends Model
                 'trace' => $e->getTraceAsString()
             ]);
             
-            // Coba cara alternatif: update model langsung
+            // Coba cara alternatif jika masih gagal
             try {
                 $this->used_slots = $newValue;
                 $saved = $this->save();

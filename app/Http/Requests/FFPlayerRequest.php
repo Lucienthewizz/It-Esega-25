@@ -19,8 +19,8 @@ class FFPlayerRequest extends FormRequest
 
             'ff_players' => ['required', 'array', 'min:4', 'max:6'],
             'ff_players.*.name' => ['required', 'string', 'max:255'],
-            'ff_players.*.nickname' => ['required', 'string', 'max:50', 'regex:/^[a-zA-Z0-9_]+$/'],
-            'ff_players.*.id_server' => ['required', 'string', 'max:50', 'regex:/^[\d()]+$/'],
+            'ff_players.*.nickname' => ['required', 'string', 'max:50'],
+            'ff_players.*.id_server' => ['required', 'string', 'max:50'],
             'ff_players.*.no_hp' => ['required', 'digits_between:10,15'],
             'ff_players.*.email' => ['required', 'email', 'max:255'],
             'ff_players.*.alamat' => ['required', 'string', 'min:10'],
@@ -45,10 +45,8 @@ class FFPlayerRequest extends FormRequest
 
             'ff_players.*.name.required' => 'Nama pemain wajib diisi.',
             'ff_players.*.nickname.required' => 'Nickname pemain wajib diisi.',
-            'ff_players.*.nickname.regex' => 'Nickname hanya boleh berisi huruf, angka, dan garis bawah (_).',
 
             'ff_players.*.id_server.required' => 'ID server wajib diisi.',
-            'ff_players.*.id_server.regex' => 'ID server hanya boleh angka dan tanda kurung.',
 
             'ff_players.*.no_hp.required' => 'Nomor HP wajib diisi.',
             'ff_players.*.no_hp.digits_between' => 'Nomor HP harus terdiri dari 10 hingga 15 digit angka.',
