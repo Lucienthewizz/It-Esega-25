@@ -3,6 +3,7 @@ export interface TeamData {
     team_name: string
     proof_of_payment: File | null
     team_logo: File | null
+    email: string
     game_type?: "ml" | "ff"
     slot_type?: "single" | "double"
     teamIdToReuse?: number | null

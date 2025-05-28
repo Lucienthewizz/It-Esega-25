@@ -20,6 +20,7 @@ class ML_Team extends Model
         'proof_of_payment', 
         'status',
         'slot_type',
+        'email',
         'slot_count'
     ];
 

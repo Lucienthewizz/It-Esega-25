@@ -18,6 +18,7 @@ class FF_Team extends Model
         'team_name', 
         'team_logo', 
         'proof_of_payment', 
+        'email', 
         'status'
     ];
 
