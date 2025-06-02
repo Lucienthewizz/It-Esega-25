@@ -8,11 +8,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('ff_teams', function (Blueprint $table) {
-            $table->string('email')->after('name')->nullable();
+            $table->string('email')->after('team_name')->nullable();
         });
 
         Schema::table('ml_teams', function (Blueprint $table) {
-            $table->string('email')->after('name')->nullable();
+            $table->string('email')->after('team_name')->nullable();
         });
     }
 
