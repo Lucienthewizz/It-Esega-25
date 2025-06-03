@@ -22,6 +22,7 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
+
 Route::get('/export/ml-players', function () {
     return Excel::download(new MLPlayersExport, 'mobile-legends-players.xlsx');
 });
@@ -76,7 +77,9 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
 });
 
 
-
+Route::get('/bracket', function () {
+    return Inertia::render('bracket');
+})->name('bracket');
 
 
 require __DIR__ . '/settings.php';
