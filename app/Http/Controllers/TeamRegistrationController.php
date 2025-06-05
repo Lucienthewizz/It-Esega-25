@@ -342,13 +342,22 @@ class TeamRegistrationController extends Controller
                     $url = route('player-registration-ff.form', ['encryptedTeamName' => $encryptedTeamName]);
                 }
 
-
-                Mail::to($team->email)->send(new TeamRegistered(
-                    $team->team_name,
-                    $gameType,
-                    $team->email,
-                    $url
-                ));
+                try {
+                    Mail::to($team->email)->send(new TeamRegistered(
+                        $team->team_name,
+                        $gameType,
+                        $team->email,
+                        $url
+                    ));
+                } catch (\Exception $e) {
+                    // Log the email error but continue with the registration process
+                    Log::error('Error sending registration email', [
+                        'error' => $e->getMessage(),
+                        'team' => $team->team_name,
+                        'email' => $team->email
+                    ]);
+                    // Don't return here, continue to redirect to player registration
+                }
 
                 if ($isML) {
                     return redirect()->route('player-registration.form', ['encryptedTeamName' => $encryptedTeamName]);
