@@ -52,15 +52,35 @@ class FF_Team extends Model
                     Log::info('Returning competition slot from FF_Team model', [
                         'team_id' => $team->id,
                         'team_name' => $team->team_name,
-                        'slot_count' => 1 // FF selalu menggunakan 1 slot
+                        'slot_count' => 1, // FF selalu menggunakan 1 slot
+                        'current_used_slots' => $slot->used_slots
                     ]);
                     
-                    $slot->decrementUsedSlots(1); // FF selalu menggunakan 1 slot
+                    // Pastikan jumlah slot yang dikembalikan tidak membuat used_slots negatif
+                    if ($slot->used_slots >= 1) {
+                        $success = $slot->decrementUsedSlots(1); // FF selalu menggunakan 1 slot
+                        
+                        Log::info('Slot decrement result', [
+                            'success' => $success,
+                            'slot_count' => 1,
+                            'new_used_slots' => $slot->fresh()->used_slots
+                        ]);
+                    } else {
+                        Log::warning('Cannot decrement more slots than used', [
+                            'team_id' => $team->id,
+                            'team_name' => $team->team_name,
+                            'slot_count' => 1,
+                            'current_used_slots' => $slot->used_slots
+                        ]);
+                    }
+                } else {
+                    Log::warning('Free Fire competition slot not found');
                 }
             } catch (\Exception $e) {
                 Log::error('Error returning competition slot from FF_Team model', [
                     'team_id' => $team->id,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
                 ]);
             }
         });

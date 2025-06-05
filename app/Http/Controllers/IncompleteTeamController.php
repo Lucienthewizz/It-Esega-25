@@ -232,4 +232,143 @@ class IncompleteTeamController extends Controller
             ], 500);
         }
     }
+
+    public function cleanupIncompleteTeams(Request $request)
+    {
+        // Format: game_type=ml&team_id=123
+        $gameType = $request->input('game_type');
+        $teamId = $request->input('team_id');
+        
+        if (!$gameType || !$teamId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Missing required parameters: game_type and team_id'
+            ], 400);
+        }
+        
+        try {
+            DB::beginTransaction();
+            
+            if ($gameType === 'ml') {
+                // Ambil data tim untuk mengetahui tipe slot
+                $team = ML_Team::find($teamId);
+                
+                if ($team) {
+                    // Simpan tipe slot dan jumlah slot
+                    $slotType = $team->slot_type ?? 'single';
+                    $slotCount = $team->slot_count ?? ($slotType === 'double' ? 2 : 1);
+                    $releaseSlot = true;
+                    
+                    // Hapus pemain ML
+                    $players = ML_Participant::where('ml_team_id', $teamId)->get();
+                    
+                    foreach ($players as $player) {
+                        // Hapus file foto dan tanda tangan jika ada
+                        if ($player->foto) {
+                            Storage::delete('public/' . $player->foto);
+                        }
+                        if ($player->tanda_tangan) {
+                            Storage::delete('public/' . $player->tanda_tangan);
+                        }
+                    }
+                    
+                    // Hapus semua pemain
+                    ML_Participant::where('ml_team_id', $teamId)->delete();
+                    
+                    // Hapus logo tim jika ada
+                    if ($team->team_logo) {
+                        Storage::delete('public/' . $team->team_logo);
+                    }
+                    
+                    // Hapus tim
+                    $team->delete();
+                    
+                    // Update slot kompetisi
+                    $slot = CompetitionSlot::where('competition_name', 'Mobile Legends')->first();
+                    if ($slot) {
+                        // Hitung ulang slot ML yang terpakai
+                        $mlSlotsUsed = DB::table('ml_teams')
+                            ->select(DB::raw('COALESCE(SUM(CASE WHEN slot_type = "double" THEN 2 WHEN slot_type = "single" THEN 1 ELSE COALESCE(slot_count, 1) END), 0) as total_slots'))
+                            ->first()->total_slots;
+                            
+                        $slot->used_slots = $mlSlotsUsed;
+                        $slot->save();
+                        
+                        Log::info('Competition slot updated after incomplete team cleanup', [
+                            'competition' => 'Mobile Legends',
+                            'new_used_slots' => $slot->used_slots
+                        ]);
+                    }
+                }
+            } elseif ($gameType === 'ff') {
+                // Ambil data tim
+                $team = FF_Team::find($teamId);
+                
+                if ($team) {
+                    // Hapus pemain FF
+                    $players = FF_Participant::where('ff_team_id', $teamId)->get();
+                    
+                    foreach ($players as $player) {
+                        // Hapus file foto dan tanda tangan jika ada
+                        if ($player->foto) {
+                            Storage::delete('public/' . $player->foto);
+                        }
+                        if ($player->tanda_tangan) {
+                            Storage::delete('public/' . $player->tanda_tangan);
+                        }
+                    }
+                    
+                    // Hapus semua pemain
+                    FF_Participant::where('ff_team_id', $teamId)->delete();
+                    
+                    // Hapus logo tim jika ada
+                    if ($team->team_logo) {
+                        Storage::delete('public/' . $team->team_logo);
+                    }
+                    
+                    // Hapus tim
+                    $team->delete();
+                    
+                    // Update slot kompetisi
+                    $slot = CompetitionSlot::where('competition_name', 'Free Fire')->first();
+                    if ($slot) {
+                        // Untuk FF, jumlah tim = jumlah slot
+                        $slot->used_slots = FF_Team::count();
+                        $slot->save();
+                        
+                        Log::info('Competition slot updated after incomplete team cleanup', [
+                            'competition' => 'Free Fire',
+                            'new_used_slots' => $slot->used_slots
+                        ]);
+                    }
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid game type: ' . $gameType
+                ], 400);
+            }
+            
+            DB::commit();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Team cleaned up successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            
+            Log::error('Error cleaning up incomplete team', [
+                'game_type' => $gameType,
+                'team_id' => $teamId,
+                'error' => $e->getMessage()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to clean up team: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

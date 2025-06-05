@@ -178,3 +178,14 @@ Route::get('/ff-players', [TeamPlayerController::class, 'getFFPlayers']);
 
 // Get all ML players 
 Route::get('/ml-players', [TeamPlayerController::class, 'getMLPlayers']);
+
+// Admin routes
+Route::middleware(['auth:sanctum', 'verified'])->group(function() {
+    // ... existing routes ...
+    
+    // Slot management routes
+    Route::get('/admin/slots/status', [App\Http\Controllers\Admin\SlotManagementController::class, 'getSlotStatus']);
+    Route::post('/admin/slots/sync', [App\Http\Controllers\Admin\SlotManagementController::class, 'syncSlots']);
+    
+    // ... existing routes ...
+});

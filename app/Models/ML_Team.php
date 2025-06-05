@@ -69,15 +69,35 @@ class ML_Team extends Model
                         'team_id' => $team->id,
                         'team_name' => $team->team_name,
                         'slot_count' => $slotCount,
-                        'slot_type' => $team->slot_type
+                        'slot_type' => $team->slot_type,
+                        'current_used_slots' => $slot->used_slots
                     ]);
                     
-                    $slot->decrementUsedSlots($slotCount);
+                    // Pastikan jumlah slot yang dikembalikan tidak membuat used_slots negatif
+                    if ($slot->used_slots >= $slotCount) {
+                        $success = $slot->decrementUsedSlots($slotCount);
+                        
+                        \Illuminate\Support\Facades\Log::info('Slot decrement result', [
+                            'success' => $success,
+                            'slot_count' => $slotCount,
+                            'new_used_slots' => $slot->fresh()->used_slots
+                        ]);
+                    } else {
+                        \Illuminate\Support\Facades\Log::warning('Cannot decrement more slots than used', [
+                            'team_id' => $team->id,
+                            'team_name' => $team->team_name,
+                            'slot_count' => $slotCount,
+                            'current_used_slots' => $slot->used_slots
+                        ]);
+                    }
+                } else {
+                    \Illuminate\Support\Facades\Log::warning('Mobile Legends competition slot not found');
                 }
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::error('Error returning competition slot from ML_Team model', [
                     'team_id' => $team->id,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
                 ]);
             }
         });

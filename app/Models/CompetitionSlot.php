@@ -111,19 +111,32 @@ class CompetitionSlot extends Model
             DB::transaction(function() use ($newValue, $count) {
                 // Update menggunakan query builder dengan where clause untuk mencegah race condition
                 $updated = self::where('id', $this->id)
-                              ->where('used_slots', $this->used_slots) // Pastikan nilai used_slots belum berubah
+                              ->where('used_slots', '>=', $count) // Pastikan nilai used_slots cukup untuk dikurangi
                               ->update([
-                                  'used_slots' => $newValue,
+                                  'used_slots' => DB::raw("used_slots - $count"),
                                   'updated_at' => now()
                               ]);
                 
                 if ($updated === 0) {
-                    // Jika tidak berhasil update karena race condition, coba cara kedua
+                    // Jika tidak berhasil update karena race condition atau nilai used_slots < count, coba cara kedua
                     $latestSlot = self::find($this->id);
                     if ($latestSlot) {
                         $latestSlot->used_slots = max(0, $latestSlot->used_slots - $count);
                         $latestSlot->save();
+                        
+                        \Illuminate\Support\Facades\Log::info("Fallback method used for slot decrement", [
+                            'competition_name' => $latestSlot->competition_name,
+                            'before' => $latestSlot->getOriginal('used_slots'),
+                            'after' => $latestSlot->used_slots,
+                            'decrement_count' => $count
+                        ]);
                     }
+                } else {
+                    \Illuminate\Support\Facades\Log::info("Direct DB query used for slot decrement", [
+                        'competition_name' => $this->competition_name,
+                        'updated_rows' => $updated,
+                        'decrement_count' => $count
+                    ]);
                 }
             });
             
@@ -131,46 +144,23 @@ class CompetitionSlot extends Model
             $this->refresh();
             
             // Log perubahan nilai
-            \Illuminate\Support\Facades\Log::debug("decrementUsedSlots perubahan nilai", [
+            \Illuminate\Support\Facades\Log::info("Slot decremented successfully", [
                 'competition_name' => $this->competition_name,
-                'model_id' => $this->id,
                 'before' => $oldValue,
                 'after' => $this->used_slots,
-                'expected_after' => $newValue,
-                'difference' => $oldValue - $this->used_slots
+                'difference' => $oldValue - $this->used_slots,
+                'requested_decrement' => $count
             ]);
             
             return true;
         } catch (\Exception $e) {
-            // Log error
-            \Illuminate\Support\Facades\Log::error("decrementUsedSlots error", [
+            \Illuminate\Support\Facades\Log::error("Error decrementing slot", [
                 'competition_name' => $this->competition_name,
-                'model_id' => $this->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTrace()
             ]);
             
-            // Coba cara alternatif jika masih gagal
-            try {
-                $this->used_slots = $newValue;
-                $saved = $this->save();
-                
-                \Illuminate\Support\Facades\Log::debug("decrementUsedSlots alternatif", [
-                    'competition_name' => $this->competition_name,
-                    'model_id' => $this->id,
-                    'saved' => $saved,
-                    'new_used_slots' => $this->used_slots
-                ]);
-                
-                return $saved;
-            } catch (\Exception $e2) {
-                \Illuminate\Support\Facades\Log::error("decrementUsedSlots error (alternatif)", [
-                    'competition_name' => $this->competition_name,
-                    'model_id' => $this->id,
-                    'error' => $e2->getMessage()
-                ]);
-                return false;
-            }
+            return false;
         }
     }
 }

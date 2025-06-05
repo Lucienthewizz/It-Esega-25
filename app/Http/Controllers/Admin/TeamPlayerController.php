@@ -15,6 +15,7 @@ use App\Exports\FFPlayersExport;
 use App\Exports\MLPlayersExport;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class TeamPlayerController extends Controller
 {
@@ -801,50 +802,49 @@ class TeamPlayerController extends Controller
             
             // Proses pengembalian slot sebelum menghapus tim
             try {
-                // Tentukan nama kompetisi berdasarkan game
                 $competitionName = $game === 'ff' ? 'Free Fire' : 'Mobile Legends';
-                Log::info('Looking for competition slot', ['name' => $competitionName]);
-                
-                // Cek apakah slot kompetisi tersedia
                 $slot = \App\Models\CompetitionSlot::where('competition_name', $competitionName)->first();
                 
                 if ($slot) {
-                    Log::info('Found competition slot for decrementing', [
-                        'id' => $slot->id,
-                        'name' => $slot->competition_name,
-                        'current_used_slots' => $slot->used_slots,
-                        'decrementing_by' => $slotCount
-                    ]);
-                    
-                    // Kurangi used_slots sesuai dengan jumlah slot yang digunakan tim
-                    $decrementResult = $slot->decrementUsedSlots($slotCount);
-                    
-                    Log::info('Competition slot returned after team deletion', [
+                    Log::info('Decreasing competition slot in TeamPlayerController', [
                         'team_id' => $team->id,
                         'team_name' => $team->team_name,
                         'competition' => $competitionName,
                         'slot_count' => $slotCount,
-                        'decrement_success' => $decrementResult,
-                        'new_used_slots' => $slot->used_slots
+                        'used_slots_before' => $slot->used_slots
                     ]);
-                } else {
-                    Log::warning('Competition slot not found when trying to return slot', [
-                        'competition_name' => $competitionName,
-                        'available_slots' => \App\Models\CompetitionSlot::pluck('competition_name')->toArray()
+                    
+                    // Hapus tim dari database
+                    $team->delete();
+                    Log::info('Team deleted from database', ['team_id' => $team->id, 'team_name' => $team->team_name]);
+                    
+                    // Pastikan slot kompetisi sinkron dengan data aktual
+                    if ($game === 'ml') {
+                        // Hitung ulang slot ML yang terpakai
+                        $mlSlotsUsed = DB::table('ml_teams')
+                            ->select(DB::raw('COALESCE(SUM(CASE WHEN slot_type = "double" THEN 2 WHEN slot_type = "single" THEN 1 ELSE COALESCE(slot_count, 1) END), 0) as total_slots'))
+                            ->first()->total_slots;
+                            
+                        $slot->used_slots = $mlSlotsUsed;
+                    } else {
+                        // Untuk FF, jumlah tim = jumlah slot
+                        $slot->used_slots = FF_Team::count();
+                    }
+                    
+                    $slot->save();
+                    
+                    Log::info('Competition slot updated after team deletion', [
+                        'competition' => $competitionName,
+                        'new_used_slots' => $slot->used_slots
                     ]);
                 }
             } catch (\Exception $e) {
-                Log::error('Error returning slot after team deletion', [
+                Log::error('Error updating slot after team deletion', [
                     'team_id' => $team->id,
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString()
                 ]);
             }
-            
-            // Hapus tim dari database - ini akan memicu cascading delete
-            // terhadap pemain karena kita sudah mengatur di model
-            $team->delete();
-            Log::info('Team deleted from database', ['team_id' => $team->id, 'team_name' => $team->team_name]);
             
             return response()->json([
                 'success' => true,
