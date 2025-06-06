@@ -78,14 +78,14 @@ export function GameSelectionForm({ onGameSelect, gameStats: initialGameStats }:
             bgImage: "/Images/ML-bg-high.jpeg",
             icon: Smartphone,
             color: "from-purple-500 to-indigo-600",
-            hoverColor: "hover:border-purple-400",
             textColor: "text-purple-600",
             bgColor: "bg-purple-100",
             fee: "Rp 100.000",
-            status: "Available",
-            statusColor: "bg-green-500",
+            status: getSlotRemaining('ml') > 0 ? "Available" : "Closed",
+            statusColor: getSlotRemaining('ml') > 0 ? "bg-green-500" : "bg-red-500",
             totalSlots: gameStats?.find((g: GameStats) => g.game_type === 'ml')?.total_slots || 64,
-            teams: gameStats?.find((g: GameStats) => g.game_type === 'ml')?.registered_teams || "0 Teams"
+            teams: gameStats?.find((g: GameStats) => g.game_type === 'ml')?.registered_teams || "0 Teams",
+            isDisabled: getSlotRemaining('ml') <= 0
         },
         {
             id: "ff",
@@ -99,14 +99,14 @@ export function GameSelectionForm({ onGameSelect, gameStats: initialGameStats }:
             bgImage: "/Images/FF-bg-high.jpeg",
             icon: Gamepad2,
             color: "from-orange-500 to-red-600",
-            hoverColor: "hover:border-orange-400",
             textColor: "text-orange-600",
             bgColor: "bg-orange-100",
             fee: "Rp 100.000",
-            status: "Available",
-            statusColor: "bg-green-500",
+            status: getSlotRemaining('ff') > 0 ? "Available" : "Closed",
+            statusColor: getSlotRemaining('ff') > 0 ? "bg-green-500" : "bg-red-500",
             totalSlots: gameStats?.find((g: GameStats) => g.game_type === 'ff')?.total_slots || 48,
-            teams: gameStats?.find((g: GameStats) => g.game_type === 'ff')?.registered_teams || "0 Teams"
+            teams: gameStats?.find((g: GameStats) => g.game_type === 'ff')?.registered_teams || "0 Teams",
+            isDisabled: getSlotRemaining('ff') <= 0
         }
     ]
 
@@ -119,14 +119,28 @@ export function GameSelectionForm({ onGameSelect, gameStats: initialGameStats }:
                     </div>
                 )}
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {games.map((game) => (
-                        <motion.div 
+                        <motion.div
                             key={game.id}
-                            className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer hover:shadow-xl transition-all duration-300 border border-gray-100 group"
-                            whileHover={{ scale: 1.02, y: -4 }}
-                            onClick={() => onGameSelect(game.id as "ml" | "ff")}
+                            className={`relative rounded-xl overflow-hidden transition-all duration-300 border border-gray-100 group
+                                ${game.isDisabled ? 'cursor-not-allowed' : 'cursor-pointer hover:shadow-xl'}`}
+                            whileHover={!game.isDisabled ? { scale: 1.02, y: -4 } : {}}
+                            onClick={() => !game.isDisabled && onGameSelect(game.id as "ml" | "ff")}
                         >
+                            {game.isDisabled && (
+                                <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px] flex items-center justify-center z-10">
+                                    <div className="text-center px-6 py-4 bg-white/10 rounded-lg border border-white/20">
+                                        <div className="mb-2">
+                                            <svg className="w-12 h-12 mx-auto text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            </svg>
+                                        </div>
+                                        <span className="text-white font-bold text-xl block mb-2">Registrasi Ditutup</span>
+                                        <span className="text-white/90 text-sm block max-w-[200px] mx-auto">Slot sudah penuh</span>
+                                    </div>
+                                </div>
+                            )}
                             {/* Game Header */}
                             <div className="h-55 bg-gradient-to-r relative overflow-hidden" 
                                  style={{backgroundImage: `url(${game.bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '210px'}}>

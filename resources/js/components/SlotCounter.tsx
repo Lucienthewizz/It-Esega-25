@@ -53,6 +53,12 @@ export function SlotCounter({ totalSlots, usedSlots, competitionName }: SlotCoun
                 <span>0</span>
                 <span>{totalSlots} Slots</span>
             </div>
+            
+            {availableSlots <= 0 && (
+                <div className="mt-2 text-sm text-red-600 font-medium">
+                    Pendaftaran untuk kompetisi ini telah ditutup karena slot sudah penuh
+                </div>
+            )}
         </div>
     );
 }

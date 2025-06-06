@@ -138,7 +138,18 @@ class TeamRegistrationController extends Controller
                 ]);
                 return response()->json([
                     'success' => false,
-                    'message' => "Maaf, slot untuk {$competitionName} tidak mencukupi. Tersedia {$availableSlots} slot, dibutuhkan {$slotCount} slot."
+                    'message' => "Maaf, slot untuk {$competitionName} sudah penuh. Silakan coba kompetisi lain atau hubungi panitia untuk informasi lebih lanjut."
+                ], 400);
+            }
+
+            // Pastikan slot masih aktif
+            if (!$slot->is_active) {
+                Log::error('Competition is not active', [
+                    'competition' => $competitionName
+                ]);
+                return response()->json([
+                    'success' => false,
+                    'message' => "Maaf, pendaftaran untuk {$competitionName} sudah ditutup."
                 ], 400);
             }
 
