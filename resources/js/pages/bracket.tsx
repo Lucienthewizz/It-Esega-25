@@ -1,11 +1,28 @@
+import { Navbar } from '@/components/navbar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Head } from '@inertiajs/react';
 import React from 'react';
 
+const navItems = [
+    { title: 'Home', href: route('home') },
+    { title: 'About', href: route('about') },
+    { title: 'FAQ', href: '#faq' },
+    { title: 'Contact', href: '#contact' },
+    { title: 'Bracket', href: route('bracket') },
+];
+
 const Bracket: React.FC = () => {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 sm:p-6 lg:p-8">
+        <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 pt-5 sm:p-6 lg:p-8">
             <Head title="IT-ESEGA 2025 Official Website" />
+            <Navbar
+                logo={
+                    <div className="flex items-center justify-start">
+                        <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
+                    </div>
+                }
+                items={navItems}
+            />
             <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
                 <CardHeader>
                     <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
