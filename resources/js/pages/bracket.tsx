@@ -15,6 +15,7 @@ const navItems = [
 
 const Bracket: React.FC = () => {
     const { user } = usePage<{ user: { data: UserType } }>().props;
+
     return (
         <>
             <div className="flex min-h-screen flex-col bg-gray-100 p-4 pt-5 sm:p-6 lg:p-8">
@@ -30,9 +31,9 @@ const Bracket: React.FC = () => {
                         items={navItems}
                     />
                 </div>
-                <div className="mt-16 flex flex-grow items-center justify-center">
-                    {' '}
-                    {/* Tambahkan margin-top */}
+
+                <div className="mt-16 flex flex-col items-center justify-center gap-10">
+                    {/* Bracket Challonge */}
                     <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
                         <CardHeader>
                             <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
@@ -50,6 +51,28 @@ const Bracket: React.FC = () => {
                                     allowTransparency={true}
                                     className="w-full rounded-lg sm:h-[500px] md:h-[600px] lg:h-[700px]"
                                     title="Challonge Tournament Bracket"
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Bracket FF - SpreadSheet */}
+                    <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
+                                Bracket Free Fire <span className="text-red-500">IT-ESEGA</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+                                <iframe
+                                    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRwd9OsfNVvi12-NpQT-laeEpkIoy49yno6wg_3giLSEnyyvSE0cqiN_Wd6OSv4AHs134ponqnDeo8h/pubhtml?widget=true&headers=false"
+                                    width="100%"
+                                    height="700"
+                                    frameBorder="0"
+                                    scrolling="auto"
+                                    className="w-full rounded-lg"
+                                    title="Google Spreadsheet Bracket"
                                 />
                             </div>
                         </CardContent>
