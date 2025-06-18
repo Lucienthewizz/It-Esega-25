@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AuthenticatedAdminLayout from '@/layouts/admin/layout';
 //import { TeamData } from '@/types/register';
 import { TeamOverviews } from '@/types/teamOverviews';
+import { Player } from '@/types/TeamPlayers';
 import { UserType } from '@/types/user';
 import { Head, usePage } from '@inertiajs/react';
 
@@ -18,6 +19,8 @@ export default function TeamPlayerPage() {
         totalPlayers: number;
         achievementsTotal: number;
         winrate: number;
+        ffPlayers: Player[];
+        mlPlayers: Player[];
     }>().props;
     const auth = user.data;
     const teamData = teams.data;

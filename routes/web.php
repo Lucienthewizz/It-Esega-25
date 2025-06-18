@@ -10,12 +10,12 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\IncompleteTeamController;
 use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Http\Controllers\PageController;
 use App\Exports\MLPlayersExport;
 use App\Exports\FFPlayersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use App\Http\Controllers\PageController;
 
 // Route::get('/', function () {
 //     return Inertia::render('home');
@@ -27,6 +27,16 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 
 // Tournament Bracket public page
 Route::get('/tournament', [PageController::class, 'tournament'])->name('tournament');
+
+
+Route::get('/export/ml-players', function () {
+    return Excel::download(new MLPlayersExport, 'mobile-legends-players.xlsx');
+});
+
+Route::get('/export/ff-players', function () {
+    return Excel::download(new FFPlayersExport, 'free-fire-players.xlsx');
+});
+
 
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
@@ -127,6 +137,11 @@ Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-esse
 Route::get('optimized-images/{path}', [\App\Http\Controllers\ImageController::class, 'serve'])
     ->where('path', '.*')
     ->name('optimized.images');
+
+Route::get('/bracket', function () {
+    return Inertia::render('bracket');
+})->name('bracket');
+
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
