@@ -82,18 +82,11 @@ Route::middleware(['auth', 'verified', 'role:user'])->group(function () {
     })->name('dashboard');
 });
 
-
-
 Route::middleware(['auth', 'role:super_admin|admin'])->prefix('secure-admin-essega')->group(function () {
     Route::get('dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::resource('admins', AdminUserController::class);
     Route::resource('timeline', TimelineController::class);
     Route::resource('players', TeamPlayerController::class);
-    
-    // Tournament Bracket admin page
-    Route::get('ff-tournament', function() {
-        return Inertia::render('admin/ff-tournament');
-    })->name('ff-tournament.index');
     
     // Rute Tim dan Pemain
     Route::get('teams/{game}/{id}', [TeamPlayerController::class, 'showTeam'])->name('admin.teams.show');
