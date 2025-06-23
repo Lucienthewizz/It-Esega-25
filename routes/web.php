@@ -135,6 +135,13 @@ Route::get('/bracket', function () {
     return Inertia::render('bracket');
 })->name('bracket');
 
+Route::get('/bracket/mobile-legends', function () {
+    return Inertia::render('bracketml');
+})->name('bracket.ml');
+
+Route::get('/bracket/free-fire', function () {
+    return Inertia::render('bracketff');
+})->name('bracket.ff');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';
