@@ -10,6 +10,7 @@ use App\Http\Controllers\PlayerRegistrationController;
 use App\Http\Controllers\TeamRegistrationController;
 use App\Mail\TeamRegistered;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use App\Http\Controllers\PageController;
 use App\Exports\MLPlayersExport;
