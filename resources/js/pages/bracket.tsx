@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { UserType } from '@/types/user';
 import { Head, router, usePage } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const navItems = [
     { title: 'Home', href: route('home') },
@@ -17,6 +19,18 @@ const navItems = [
 
 const Bracket: React.FC = () => {
     const { user } = usePage<{ user: { data: UserType } }>().props;
+
+    useEffect(() => {
+        // Inisialisasi AOS
+        AOS.init({
+            duration: 800,
+            once: false,
+            mirror: true,
+        });
+
+        // Reset scroll ke atas saat halaman dimuat
+        window.scrollTo(0, 0);
+    }, []);
 
     const brackets = [
         {
@@ -43,40 +57,20 @@ const Bracket: React.FC = () => {
                 
                 {/* Cross Blob - Top Left */}
                 <div className="absolute -left-12 top-24 w-28 h-28 opacity-5 pointer-events-none">
-                    <motion.div
-                        animate={{
-                            rotate: [0, -360],
-                        }}
-                        transition={{
-                            duration: 28,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                        className="w-full h-full"
-                    >
+                    <div className="w-full h-full animate-spin-slow">
                         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
                             <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
                         </svg>
-                    </motion.div>
+                    </div>
                 </div>
 
                 {/* Cross Blob - Bottom Right */}
                 <div className="absolute -right-8 bottom-16 w-20 h-20 opacity-5 pointer-events-none">
-                    <motion.div
-                        animate={{
-                            rotate: [360, 0],
-                        }}
-                        transition={{
-                            duration: 22,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-                        className="w-full h-full"
-                    >
+                    <div className="w-full h-full animate-spin-reverse-slow">
                         <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
                             <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
                         </svg>
-                    </motion.div>
+                    </div>
                 </div>
                 
                 <div className="relative z-10 mx-auto">
@@ -92,21 +86,15 @@ const Bracket: React.FC = () => {
                 </div>
 
                 <div className="mt-16 flex flex-col items-center justify-center gap-10">
-                    <div>
-                        <h2 className="mt-10 mb-4 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl" data-aos="fade-up">
+                    <div data-aos="fade-up">
+                        <h2 className="mt-10 mb-4 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">
                             <span className="text-red-600">IT-ESEGA</span> Brackets
                         </h2>
-                        <div className="mx-auto h-1 w-20 rounded-full bg-red-600 sm:w-24" data-aos="fade-up" data-aos-delay="50"></div>
+                        <div className="mx-auto h-1 w-20 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
                     </div>
                     <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
                         {brackets.map((bracket, index) => (
-                            <motion.div
-                                key={index}
-                                initial={{ opacity: 0, y: 50 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                whileHover={{ scale: 1.03 }}
-                                transition={{ duration: 0.5, delay: index * 0.2 }}
-                            >
+                            <div key={index} className="transition-all duration-300 hover:scale-[1.03]" data-aos="fade-up" data-aos-delay={index * 100}>
                                 <Card className="rounded-2xl bg-white shadow-md transition hover:shadow-xl">
                                     <CardContent className="flex h-full flex-col justify-between p-6">
                                         <div>
@@ -120,7 +108,7 @@ const Bracket: React.FC = () => {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>

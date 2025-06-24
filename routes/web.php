@@ -25,10 +25,6 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
-// Tournament Bracket public page
-Route::get('/tournament', [PageController::class, 'tournament'])->name('tournament');
-
-
 Route::get('/export/ml-players', function () {
     return Excel::download(new MLPlayersExport, 'mobile-legends-players.xlsx');
 });
