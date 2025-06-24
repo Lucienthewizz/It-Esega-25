@@ -25,6 +25,19 @@ Route::get('/', [PageController::class, 'home'])->name('home');
 
 Route::get('/about', [PageController::class, 'about'])->name('about');
 
+Route::get('/bracket', function () {
+    return Inertia::render('bracket');
+})->name('bracket');
+
+Route::get('/bracket/mobile-legends', function () {
+    return Inertia::render('bracketml');
+})->name('bracket.ml');
+
+Route::get('/bracket/free-fire', function () {
+    return Inertia::render('bracketff');
+})->name('bracket.ff');
+
+
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');
 

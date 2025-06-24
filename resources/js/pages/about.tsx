@@ -1,14 +1,13 @@
-import { Head, usePage } from "@inertiajs/react";
+import { Footer } from '@/components/footer';
 import { Navbar } from '@/components/navbar';
 import * as AOS from 'aos';
 import 'aos/dist/aos.css';
+import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import { route } from 'ziggy-js';
-import { router } from '@inertiajs/react';
-import { Footer } from '@/components/footer';
-import { motion } from 'framer-motion';
-import { UserType } from '@/types/user';
-
+import { usePage, Head } from '@inertiajs/react'; 
+import { router } from '@inertiajs/react'; 
+import type { UserType } from '@/types/user';
 interface NavItem {
     title: string;
     href: string;
@@ -43,24 +42,24 @@ export default function About() {
     const navItems: NavItem[] = [
         { title: 'Home', href: route('home') },
         { title: 'About', href: route('about'), isActive: true },
-        { 
-            title: 'FAQ', 
+        {
+            title: 'FAQ',
             href: '#faq',
-            onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavigation(e, '#faq')
+            onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavigation(e, '#faq'),
         },
-        { 
-            title: 'Contact', 
+        {
+            title: 'Contact',
             href: '#contact',
-            onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavigation(e, '#contact')
-        }
-
+            onClick: (e: React.MouseEvent<HTMLAnchorElement>) => handleNavigation(e, '#contact'),
+        },
+        { title: 'Bracket', href: route('bracket') },
     ];
 
     if (!user) {
-        navItems.push({ 
-            title: 'Register', 
-            href: route('register'), 
-            className: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-lg transition-colors duration-200' 
+        navItems.push({
+            title: 'Register',
+            href: route('register'),
+            className: 'bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-lg transition-colors duration-200',
         });
     }
 
@@ -102,7 +101,7 @@ export default function About() {
     return (
         <>
             <Head title="Tentang IT-ESEGA 2025 | Kompetisi Teknologi Premier" />
-            <div className="home min-h-screen relative overflow-hidden">
+            <div className="home relative min-h-screen overflow-hidden">
                 <div className="relative z-10 mx-auto">
                     <Navbar
                         user={user}
@@ -119,12 +118,12 @@ export default function About() {
                         <div className="relative overflow-hidden">
                             {/* Background Layer */}
                             <div className="absolute inset-0 bg-white"></div>
-                            
+
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
 
                             {/* Cross Blob - Top Left */}
-                            <div className="absolute -left-12 top-24 w-28 h-28 opacity-5 pointer-events-none">
+                            <div className="pointer-events-none absolute top-24 -left-12 h-28 w-28 opacity-5">
                                 <motion.div
                                     animate={{
                                         rotate: [0, -360],
@@ -132,18 +131,18 @@ export default function About() {
                                     transition={{
                                         duration: 28,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
 
                             {/* Cross Blob - Bottom Right */}
-                            <div className="absolute -right-8 bottom-16 w-20 h-20 opacity-5 pointer-events-none">
+                            <div className="pointer-events-none absolute -right-8 bottom-16 h-20 w-20 opacity-5">
                                 <motion.div
                                     animate={{
                                         rotate: [360, 0],
@@ -151,16 +150,16 @@ export default function About() {
                                     transition={{
                                         duration: 22,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
-                            
+
                             {/* Content Container */}
                             <div className="relative max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 pt-28 md:pt-36 pb-16 md:pb-24">
                                 <div className="text-center" data-aos="fade-up">
@@ -175,44 +174,83 @@ export default function About() {
                                 </div>
 
                                 {/* Vision, Mission, Values Cards */}
-                                <div className="mt-12 sm:mt-16 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3" data-aos="fade-up">
-                                    <div className="rounded-xl bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
+                                <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-16 sm:gap-8 md:grid-cols-3" data-aos="fade-up">
+                                    <div className="rounded-xl border border-red-100 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
                                         <div className="mb-6 flex justify-center">
                                             <div className="rounded-full bg-red-100 p-4">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-8 w-8 text-red-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                                    />
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                                    />
                                                 </svg>
                                             </div>
                                         </div>
-                                        <h3 className="mb-4 text-xl font-semibold text-red-600 text-center">Visi</h3>
-                                        <p className="text-gray-600 text-center leading-relaxed">
+                                        <h3 className="mb-4 text-center text-xl font-semibold text-red-600">Visi</h3>
+                                        <p className="text-center leading-relaxed text-gray-600">
                                             Menjadi platform utama yang mempertemukan dan mengembangkan bakat esports.
                                         </p>
                                     </div>
-                                    <div className="rounded-xl bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
+                                    <div className="rounded-xl border border-red-100 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
                                         <div className="mb-6 flex justify-center">
                                             <div className="rounded-full bg-red-100 p-4">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-8 w-8 text-red-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                                                    />
                                                 </svg>
                                             </div>
                                         </div>
-                                        <h3 className="mb-4 text-xl font-semibold text-red-600 text-center">Misi</h3>
-                                        <p className="text-gray-600 text-center leading-relaxed">
-                                            Menyelenggarakan kompetisi berkualitas tinggi yang mendorong sportivitas dan profesionalisme dalam esports.
+                                        <h3 className="mb-4 text-center text-xl font-semibold text-red-600">Misi</h3>
+                                        <p className="text-center leading-relaxed text-gray-600">
+                                            Menyelenggarakan kompetisi berkualitas tinggi yang mendorong sportivitas dan profesionalisme dalam
+                                            esports.
                                         </p>
                                     </div>
-                                    <div className="rounded-xl bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100">
+                                    <div className="rounded-xl border border-red-100 bg-white p-8 shadow-lg transition-all duration-300 hover:shadow-xl">
                                         <div className="mb-6 flex justify-center">
                                             <div className="rounded-full bg-red-100 p-4">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    className="h-8 w-8 text-red-600"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        strokeWidth={2}
+                                                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                                                    />
                                                 </svg>
                                             </div>
                                         </div>
-                                        <h3 className="mb-4 text-xl font-semibold text-red-600 text-center">Nilai</h3>
-                                        <p className="text-gray-600 text-center leading-relaxed">
+                                        <h3 className="mb-4 text-center text-xl font-semibold text-red-600">Nilai</h3>
+                                        <p className="text-center leading-relaxed text-gray-600">
                                             Integritas, Sportivitas, Inovasi, dan Kebersamaan dalam setiap aspek kompetisi.
                                         </p>
                                     </div>
@@ -224,12 +262,12 @@ export default function About() {
                         <div className="relative overflow-hidden">
                             {/* Background Layer */}
                             <div className="absolute inset-0 bg-white"></div>
-                            
+
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-b from-red-100/30 via-white to-red-50/40"></div>
 
                             {/* Cross Blob - Top Right Mascot */}
-                            <div className="absolute right-16 top-20 w-24 h-24 opacity-5 pointer-events-none">
+                            <div className="pointer-events-none absolute top-20 right-16 h-24 w-24 opacity-5">
                                 <motion.div
                                     animate={{
                                         rotate: [0, 360],
@@ -237,18 +275,18 @@ export default function About() {
                                     transition={{
                                         duration: 24,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
 
                             {/* Cross Blob - Bottom Left Mascot */}
-                            <div className="absolute -left-8 bottom-24 w-20 h-20 opacity-5 pointer-events-none">
+                            <div className="pointer-events-none absolute bottom-24 -left-8 h-20 w-20 opacity-5">
                                 <motion.div
                                     animate={{
                                         rotate: [360, 0],
@@ -256,40 +294,45 @@ export default function About() {
                                     transition={{
                                         duration: 26,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
-                            
+
                             {/* Content Container */}
-                            <div className="relative max-w-[1350px] mx-auto px-4 md:px-8 lg:px-12 py-16 md:py-24">
+                            <div className="relative mx-auto max-w-[1350px] px-4 py-16 md:px-8 md:py-24 lg:px-12">
                                 <div className="grid grid-cols-1 items-center gap-8 sm:gap-12 md:grid-cols-2">
                                     <div className="order-2 md:order-1" data-aos="fade-right">
-                                        <h2 className="mb-4 sm:mb-6 text-3xl sm:text-4xl font-bold text-[#333]">
+                                        <h2 className="mb-4 text-3xl font-bold text-[#333] sm:mb-6 sm:text-4xl">
                                             About Our <span className="text-red-600">Mascot</span>
                                         </h2>
-                                        <div className="w-20 sm:w-24 h-1 bg-red-600 rounded-full mb-6 sm:mb-8"></div>
-                                        <div className="space-y-4 sm:space-y-6 text-gray-600">
+                                        <div className="mb-6 h-1 w-20 rounded-full bg-red-600 sm:mb-8 sm:w-24"></div>
+                                        <div className="space-y-4 text-gray-600 sm:space-y-6">
                                             <div>
-                                                <h3 className="text-2xl font-semibold text-red-600 mb-4">[VALDRON]</h3>
-                                                <p className="leading-relaxed mb-6">
-                                                    VALDRON adalah simbol dari kekuatan yang tak terhentikan untuk memimpin pertempuran dan menghancurkan batasan. Maskot ini menjadi pemantik semangat, pengobar ambisi, dan penakluk segala rintangan mewakili keberanian untuk keluar dari batas yang dimiliki dan membebaskan potensi terbaik daslam setiap jiwa kompetitor.
+                                                <h3 className="mb-4 text-2xl font-semibold text-red-600">[VALDRON]</h3>
+                                                <p className="mb-6 leading-relaxed">
+                                                    VALDRON adalah simbol dari kekuatan yang tak terhentikan untuk memimpin pertempuran dan
+                                                    menghancurkan batasan. Maskot ini menjadi pemantik semangat, pengobar ambisi, dan penakluk segala
+                                                    rintangan mewakili keberanian untuk keluar dari batas yang dimiliki dan membebaskan potensi
+                                                    terbaik daslam setiap jiwa kompetitor.
                                                 </p>
                                             </div>
-                                            
+
                                             <div>
-                                                <p className="leading-relaxed mb-6">
-                                                    Desain maskot kami menggabungkan unsur gaming modern dengan sentuhan teknologi futuristik. Warna merah yang dominan melambangkan semangat dan energi yang membara, sementara elemen teknologi yang menyatu dalam desainnya mencerminkan inovasi dan kemajuan yang menjadi inti dari IT-ESEGA.
+                                                <p className="mb-6 leading-relaxed">
+                                                    Desain maskot kami menggabungkan unsur gaming modern dengan sentuhan teknologi futuristik. Warna
+                                                    merah yang dominan melambangkan semangat dan energi yang membara, sementara elemen teknologi yang
+                                                    menyatu dalam desainnya mencerminkan inovasi dan kemajuan yang menjadi inti dari IT-ESEGA.
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="order-1 md:order-2 flex justify-center" data-aos="fade-left">
+                                    <div className="order-1 flex justify-center md:order-2" data-aos="fade-left">
                                         <div className="relative">
                                             <div className="absolute"></div>
                                             <motion.img 
@@ -302,7 +345,7 @@ export default function About() {
                                                 transition={{
                                                     duration: 4,
                                                     repeat: Infinity,
-                                                    ease: "easeInOut"
+                                                    ease: 'easeInOut',
                                                 }}
                                             />
                                         </div>
@@ -315,7 +358,7 @@ export default function About() {
                         <div className="relative overflow-hidden pt-0">
                             {/* Background Layer */}
                             <div className="absolute inset-0 bg-white"></div>
-                            
+
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
 
@@ -425,12 +468,12 @@ export default function About() {
                                     transition={{
                                         duration: 20,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
@@ -444,12 +487,12 @@ export default function About() {
                                     transition={{
                                         duration: 22,
                                         repeat: Infinity,
-                                        ease: "linear"
+                                        ease: 'linear',
                                     }}
-                                    className="w-full h-full"
+                                    className="h-full w-full"
                                 >
-                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full fill-red-500">
-                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z"/>
+                                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="h-full w-full fill-red-500">
+                                        <path d="M85,40 h30 v45 h45 v30 h-45 v45 h-30 v-45 h-45 v-30 h45 z" />
                                     </svg>
                                 </motion.div>
                             </div>
@@ -463,16 +506,16 @@ export default function About() {
                                     <div className="w-20 sm:w-24 h-1 bg-red-600 rounded-full mx-auto mb-10 sm:mb-14"></div>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                                         {afterEventVideos.map((video, index) => (
-                                            <div 
+                                            <div
                                                 key={index}
-                                                className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-red-100"
+                                                className="overflow-hidden rounded-xl border border-red-100 bg-white shadow-lg transition-all duration-300 hover:shadow-xl"
                                                 data-aos="fade-up"
                                                 data-aos-delay={index * 100}
                                             >
                                                 {/* Video Container dengan Aspect Ratio 16:9 *//*}
                                                 <div className="relative w-full pt-[56.25%]">
                                                     <iframe
-                                                        className="absolute top-0 left-0 w-full h-full"
+                                                        className="absolute top-0 left-0 h-full w-full"
                                                         src={video.videoUrl}
                                                         title={video.title}
                                                         frameBorder="0"
@@ -481,10 +524,21 @@ export default function About() {
                                                     ></iframe>
                                                 </div>
                                                 <div className="p-4 sm:p-6">
-                                                    <div className="flex items-center justify-between mb-3">
-                                                        <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs sm:text-sm font-semibold">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                    <div className="mb-3 flex items-center justify-between">
+                                                        <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-semibold text-red-600 sm:px-3 sm:text-sm">
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className="mr-1 h-4 w-4"
+                                                                fill="none"
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={2}
+                                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                                />
                                                             </svg>
                                                             {video.year}
                                                         </span>
@@ -512,4 +566,4 @@ export default function About() {
             </div>
         </>
     );
-} 
+}
