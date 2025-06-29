@@ -46,9 +46,9 @@ export default function AuthenticatedAdminLayout({ children, user, headerTitle, 
                 <div className={`flex h-screen w-full ${theme === 'light' ? 'text-black' : 'text-white-400'}`}>
                     <SidebarNav activeItem={activeItem} setActiveItem={setActiveItem} user={user} />
                     <SidebarInset>
-                        <div className="flex h-full flex-col">
+                        <div className="flex flex-col h-full">
                             <DashboardHeader user={user} headerTitle={headerTitle} />
-                            <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
+                            <main className="flex-1 p-4 overflow-auto lg:p-6">{children}</main>
                         </div>
                     </SidebarInset>
                 </div>
