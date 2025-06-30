@@ -17,6 +17,7 @@ import { Inertia } from '@inertiajs/inertia';
 // Keen Slider imports
 import "keen-slider/keen-slider.min.css";
 import { useKeenSlider } from "keen-slider/react";
+import dayjs from 'dayjs';
 
 export default function Home() {
     const { user, flash, event = { data: [] }, showSecondTeamRegistration } = usePage<{ 
@@ -206,6 +207,20 @@ export default function Home() {
 
     useEffect(() => {
         setShowMerchPopup(true); // Always show on mount/reload
+    }, []);
+
+    // === PENDAFTARAN OTOMATIS TUTUP ===
+    const REGISTRATION_DEADLINE = dayjs('2025-07-02T00:00:00');
+    const [isRegistrationClosed, setIsRegistrationClosed] = useState(false);
+    const [showClosedPopup, setShowClosedPopup] = useState(false);
+
+    useEffect(() => {
+        const now = dayjs();
+        setIsRegistrationClosed(now.isAfter(REGISTRATION_DEADLINE));
+        const interval = setInterval(() => {
+            setIsRegistrationClosed(dayjs().isAfter(REGISTRATION_DEADLINE));
+        }, 60000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
@@ -410,6 +425,8 @@ export default function Home() {
                             </div>
                         }
                         items={navItems}
+                        isRegistrationClosed={isRegistrationClosed}
+                        setShowClosedPopup={setShowClosedPopup}
                     />
 
                     {/* Hero Section */}
@@ -424,12 +441,22 @@ export default function Home() {
                                     rupiah! Ayo Menjadi Juara dalam IT-ESEGA 2025
                                 </p>
                                 <div className="flex justify-center space-x-4 md:justify-start">
-                                    <Link
-                                        href={route('register')}
-                                        className="inline-flex items-center px-6 py-3 text-base font-semibold text-white transition-all duration-300 transform bg-red-600 rounded-lg hover:scale-105 hover:bg-red-700 hover:shadow-lg sm:px-8 sm:py-4 sm:text-lg"
+                                    {/* HERO SECTION BUTTON */}
+                                    <button
+                                        type="button"
+                                        className="inline-flex items-center px-6 py-3 text-base font-semibold text-white transition-all duration-300 transform bg-red-600 rounded-lg hover:scale-105 hover:bg-red-700 hover:shadow-lg sm:px-8 sm:py-4 sm:text-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                                        disabled={isRegistrationClosed}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            if (isRegistrationClosed) {
+                                                setShowClosedPopup(true);
+                                            } else {
+                                                window.location.href = route('register');
+                                            }
+                                        }}
                                     >
                                         Register Now!
-                                    </Link>
+                                    </button>
                                     <a
                                         href="https://www.instagram.com/reel/DJx6DmICh5B/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA=="
                                         target="_blank"
@@ -680,7 +707,17 @@ export default function Home() {
 
                                                 <Link
                                                     href={route('register')}
-                                                    className="inline-block px-8 py-3 text-base font-semibold text-white transition-all duration-300 transform bg-red-600 rounded-lg hover:scale-105 hover:bg-red-700 hover:shadow-lg"
+                                                    className="inline-block px-8 py-3 text-base font-semibold text-white transition-all duration-300 transform bg-red-600 rounded-lg hover:scale-105 hover:bg-red-700 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                                                    onClick={(e) => {
+                                                        if (isRegistrationClosed) {
+                                                            e.preventDefault();
+                                                            setShowClosedPopup(true);
+                                                        }
+                                                    }}
+                                                    tabIndex={isRegistrationClosed ? -1 : 0}
+                                                    aria-disabled={isRegistrationClosed}
+                                                    style={isRegistrationClosed ? { pointerEvents: 'auto', cursor: 'not-allowed' } : {}}
+                                                    disabled={isRegistrationClosed ? true : undefined}
                                                 >
                                                     Register Now
                                                 </Link>
@@ -802,7 +839,17 @@ export default function Home() {
                                             </div>
                                             <Link
                                                 href={route('register')}
-                                                className="mt-6 inline-flex transform items-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:from-red-600 hover:to-red-700"
+                                                className="mt-6 inline-flex transform items-center rounded-lg bg-gradient-to-r from-red-500 to-red-600 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:from-red-600 hover:to-red-700 disabled:opacity-60 disabled:cursor-not-allowed"
+                                                onClick={(e) => {
+                                                    if (isRegistrationClosed) {
+                                                        e.preventDefault();
+                                                        setShowClosedPopup(true);
+                                                    }
+                                                }}
+                                                tabIndex={isRegistrationClosed ? -1 : 0}
+                                                aria-disabled={isRegistrationClosed}
+                                                style={isRegistrationClosed ? { pointerEvents: 'auto', cursor: 'not-allowed' } : {}}
+                                                disabled={isRegistrationClosed ? true : undefined}
                                             >
                                                 Daftar Sekarang
                                             </Link>
@@ -1059,6 +1106,62 @@ export default function Home() {
                     <Footer />
                 </div>
             </div>
+
+            {/* Popup Pendaftaran Tutup */}
+            <Transition appear show={showClosedPopup} as={Fragment}>
+                <Dialog as="div" className="fixed inset-0 z-[200] overflow-y-auto" onClose={() => setShowClosedPopup(false)}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-200"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-150"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        {/* Overlay tanpa blur, dan gunakan pointer-events-auto agar modal tetap interaktif */}
+                        <div className="fixed inset-0 bg-black/40" style={{ zIndex: 201 }} />
+                    </Transition.Child>
+                    <div className="flex items-center justify-center min-h-screen p-4" style={{ position: 'fixed', inset: 0, zIndex: 202, pointerEvents: 'none' }}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-200"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-150"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            {/* Modal dengan pointer-events-auto agar tidak kena efek overlay */}
+                            <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden transition-all transform bg-white shadow-xl rounded-2xl" style={{ zIndex: 203, pointerEvents: 'auto' }}>
+                                <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900">
+                                    Pendaftaran Ditutup
+                                </Dialog.Title>
+                                <div className="mt-2">
+                                    <p className="text-sm text-gray-500">
+                                        Mohon maaf, pendaftaran untuk IT-ESEGA 2025 sudah ditutup. Pastikan untuk mengikuti kami di media sosial
+                                        untuk informasi lebih lanjut tentang event mendatang.
+                                    </p>
+                                </div>
+                                <div className="flex flex-col gap-4 mt-4">
+                                    <Link
+                                        href={route('home')}
+                                        className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white transition bg-red-600 rounded-md hover:bg-red-700"
+                                    >
+                                        Kembali ke Beranda
+                                    </Link>
+                                    <button
+                                        onClick={() => setShowClosedPopup(false)}
+                                        className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 transition bg-gray-100 rounded-md hover:bg-gray-200"
+                                    >
+                                        Tutup
+                                    </button>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition>
         </>
     );
 }

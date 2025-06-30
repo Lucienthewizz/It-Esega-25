@@ -21,9 +21,11 @@ interface NavbarProps {
     logo?: React.ReactNode;
     items?: NavItem[];
     user?: { data: UserType };
+    isRegistrationClosed?: boolean;
+    setShowClosedPopup?: (show: boolean) => void;
 }
 
-export function Navbar({ logo, items = [], user }: NavbarProps) {
+export function Navbar({ logo, items = [], user, isRegistrationClosed = false, setShowClosedPopup }: NavbarProps) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownTriggerRef = useRef<HTMLButtonElement>(null);
@@ -236,15 +238,25 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                             </div>
                         ) : (
                             registerItem && (
-                                <Link
-                                    href={registerItem.href}
+                                <button
+                                    type="button"
                                     className="inline-flex items-center px-6 py-2.5 font-semibold rounded-lg
                                         bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90 text-white
                                         shadow-md hover:shadow-lg transform hover:-translate-y-0.5
-                                        transition-all duration-300 hover:from-[#ba0000]/90 hover:to-[#ba0000]"
+                                        transition-all duration-300 hover:from-[#ba0000]/90 hover:to-[#ba0000]
+                                        disabled:opacity-60 disabled:cursor-not-allowed"
+                                    disabled={isRegistrationClosed}
+                                    onClick={(e) => {
+                                        if (isRegistrationClosed) {
+                                            e.preventDefault();
+                                            setShowClosedPopup && setShowClosedPopup(true);
+                                        } else {
+                                            window.location.href = registerItem.href;
+                                        }
+                                    }}
                                 >
                                     {registerItem.title}
-                                </Link>
+                                </button>
                             )
                         )}
                     </div>
@@ -254,8 +266,7 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                         <div 
                             className="fixed inset-0 z-[999]"
                             onClick={() => setIsDropdownOpen(false)}
-                        />,
-                        document.body
+                        />, document.body
                     )}
 
                     {/* Mobile Menu */}
@@ -338,14 +349,24 @@ export function Navbar({ logo, items = [], user }: NavbarProps) {
                                             </>
                                         ) : (
                                             registerItem && (
-                                                <Link
-                                                    href={registerItem.href}
+                                                <button
+                                                    type="button"
                                                     className="block px-4 py-3 mt-2 text-[15px] font-semibold text-center text-white rounded-lg
                                                         bg-gradient-to-r from-[#ba0000] to-[#ba0000]/90
-                                                        hover:from-[#ba0000]/90 hover:to-[#ba0000] transition-all duration-300"
+                                                        hover:from-[#ba0000]/90 hover:to-[#ba0000] transition-all duration-300
+                                                        disabled:opacity-60 disabled:cursor-not-allowed"
+                                                    disabled={isRegistrationClosed}
+                                                    onClick={(e) => {
+                                                        if (isRegistrationClosed) {
+                                                            e.preventDefault();
+                                                            setShowClosedPopup && setShowClosedPopup(true);
+                                                        } else {
+                                                            window.location.href = registerItem.href;
+                                                        }
+                                                    }}
                                                 >
                                                     {registerItem.title}
-                                                </Link>
+                                                </button>
                                             )
                                         )}
                                     </div>
