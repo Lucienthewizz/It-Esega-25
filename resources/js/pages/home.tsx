@@ -10,8 +10,9 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import * as AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { route } from 'ziggy-js';
+import { Inertia } from '@inertiajs/inertia';
 
 // Keen Slider imports
 import "keen-slider/keen-slider.min.css";
@@ -44,6 +45,24 @@ export default function Home() {
         }
     );
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [showMerchPopup, setShowMerchPopup] = useState(true);
+
+    // State for merch popup slider
+    const [popupSlide, setPopupSlide] = useState(0);
+    const [popupSliderRef, popupInstanceRef] = useKeenSlider({
+        initial: 0,
+        slides: { perView: 1 },
+        loop: true,
+        mode: 'snap',
+        renderMode: 'performance',
+        drag: true,
+        slideChanged(slider) {
+            setPopupSlide(slider.track.details.rel);
+        },
+        created(slider) {
+            setPopupSlide(slider.track.details.rel);
+        },
+    });
 
     // Auto slide effect
     useEffect(() => {
@@ -54,6 +73,16 @@ export default function Home() {
         }, 3500); // 3.5 detik per slide
         return () => clearInterval(interval);
     }, [instanceRef]);
+
+    // Auto slide effect for popup slider
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (popupInstanceRef.current) {
+                popupInstanceRef.current.next();
+            }
+        }, 3500); // 3.5 detik per slide
+        return () => clearInterval(interval);
+    }, [popupInstanceRef]);
 
     // Debugging data timeline
     console.log('Timeline data dari API:', event);
@@ -170,8 +199,109 @@ export default function Home() {
     );
     const activeInfo = merchSlides && merchSlides.length > 0 ? merchSlides[currentSlide] : merchData[0];
 
+    // Hapus useEffect router.on('navigate', ...) yang error
+
+    // Tambahkan deklarasi merchImage sebelum return agar bisa digunakan di JSX
+    const merchImage = (activeInfo as any).image || (activeInfo as any).images?.[0] || '/Images/LogoEsega25.png';
+
+    useEffect(() => {
+        setShowMerchPopup(true); // Always show on mount/reload
+    }, []);
+
     return (
         <>
+            {/* Merch Popup Modal with Horizontal Layout and Professional Style */}
+            <Transition appear show={showMerchPopup} as={Fragment}>
+                <Dialog as="div" className="fixed inset-0 z-[100] overflow-y-auto" onClose={() => setShowMerchPopup(false)}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-200"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-150"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+                    </Transition.Child>
+                    <div className="flex items-center justify-center min-h-screen p-4">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-200"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-150"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            <Dialog.Panel className="w-full max-w-5xl h-[600px] md:h-[500px] p-0 overflow-hidden transition-all transform bg-white shadow-2xl rounded-2xl relative flex items-center justify-center">
+                                <button
+                                    onClick={() => setShowMerchPopup(false)}
+                                    className="absolute z-20 p-2 text-gray-400 transition rounded-full top-4 right-4 hover:bg-gray-100 hover:text-gray-600"
+                                >
+                                    <span className="sr-only">Close</span>
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <div className="flex flex-col items-stretch w-full h-full md:flex-row">
+                                    {/* Left: Keen Slider for merch images */}
+                                    <div className="relative flex items-center justify-center w-full h-full p-6 bg-gray-50 md:w-3/5 md:p-10">
+                                        <button
+                                            aria-label="Sebelumnya"
+                                            onClick={() => popupInstanceRef.current?.prev()}
+                                            className="absolute z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow left-2 top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
+                                            style={{ display: merchSlides.length > 1 ? 'block' : 'none' }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                                        </button>
+                                        <div ref={popupSliderRef} className="flex w-full h-full overflow-hidden keen-slider">
+                                            {merchSlides.map((slide, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="flex items-center justify-center w-full min-w-0 keen-slider__slide"
+                                                >
+                                                    <img src={slide.image} alt={slide.title} className="h-[340px] md:h-[420px] w-auto max-w-full object-contain drop-shadow rounded-xl mx-auto" />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <button
+                                            aria-label="Selanjutnya"
+                                            onClick={() => popupInstanceRef.current?.next()}
+                                            className="absolute z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow right-2 top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
+                                            style={{ display: merchSlides.length > 1 ? 'block' : 'none' }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                                        </button>
+                                        {/* Dot navigation */}
+                                        <div className="absolute left-0 flex justify-center w-full gap-2 mt-4 bottom-4">
+                                            {merchSlides.map((_, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => popupInstanceRef.current?.moveToIdx(idx)}
+                                                    className={`w-3 h-3 rounded-full ${popupSlide === idx ? 'bg-red-600' : 'bg-gray-300'} transition`}
+                                                ></button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {/* Right: Info Merch (sync with popupSlide) */}
+                                    <div className="flex flex-col justify-center w-full h-full p-6 md:w-2/5 md:p-10">
+                                        <h3 className="mb-2 text-xl font-bold text-left text-gray-900 md:text-2xl">{merchSlides[popupSlide].title}</h3>
+                                        <div className="mb-1 text-lg font-semibold text-red-600 md:text-xl">{merchSlides[popupSlide].price}</div>
+                                        <div className="mb-3 text-xs font-medium text-gray-500 md:text-sm">{merchSlides[popupSlide].preorder}</div>
+                                        <p className="mb-6 text-sm text-left text-gray-700 md:text-base">{merchSlides[popupSlide].desc}</p>
+                                        <a href={merchSlides[popupSlide].link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full py-3 text-sm font-semibold text-white transition bg-red-600 rounded-lg shadow px-7 md:text-base hover:bg-red-700 md:w-auto">
+                                            Order Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition>
+
+            {/* Head title tetap */}
             <Head title="IT-ESEGA 2025 Official Website" />
             
             {/* Notifikasi Double Slot */}
@@ -573,7 +703,6 @@ export default function Home() {
                                             src="https://www.instagram.com/reel/DIlLmrxSbpP/embed/"
                                             frameBorder="0"
                                             scrolling="no"
-                                            allowTransparency={true}
                                             allowFullScreen={true}
                                         ></iframe>
                                     </div>
@@ -802,7 +931,7 @@ export default function Home() {
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
                                                         strokeWidth={2}
-                                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C2.493 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                                                     />
                                                 </svg>
                                             </div>
@@ -843,14 +972,18 @@ export default function Home() {
                             </p>
                             <div className="flex flex-col items-center justify-between gap-10 md:flex-row md:gap-20">
                                 {/* Left: Gambar Merch + Navigasi (Keen Slider) */}
-                                <div className="relative flex flex-col items-center justify-center w-full md:w-1/2">
+                                <div
+                                    className="relative flex flex-col items-center justify-center w-full md:w-1/2"
+                                    data-aos="fade-up"
+                                    data-aos-delay="0"
+                                >
                                     <button
                                         aria-label="Sebelumnya"
                                         onClick={() => instanceRef.current?.prev()}
                                         className="absolute z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow -left-8 top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
                                         style={{ display: merchSlides.length > 1 ? 'block' : 'none' }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
                                     </button>
                                     <div ref={sliderRef} className="w-full overflow-hidden keen-slider">
                                         {merchSlides.map((slide, idx) => (
@@ -865,7 +998,7 @@ export default function Home() {
                                         className="absolute right-0 z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
                                         style={{ display: merchSlides.length > 1 ? 'block' : 'none' }}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
                                     </button>
                                     {/* Dot navigation */}
                                     <div className="flex gap-2 mt-2">
@@ -878,8 +1011,12 @@ export default function Home() {
                                         ))}
                                     </div>
                                 </div>
-                                {/* Right: Info Merch (sync with currentSlide) */}
-                                <div className="flex flex-col items-start justify-center w-full px-2 md:w-1/2 md:pl-12">
+                                {/* Right: Info Merch */}
+                                <div
+                                    className="flex flex-col items-start justify-center w-full px-2 md:w-1/2 md:pl-12"
+                                    data-aos="fade-left"
+                                    data-aos-delay="200"
+                                >
                                     {/* Info berdasarkan slide aktif */}
                                     {/*
                                     <h3 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">{merchData[currentSlide].title}</h3>

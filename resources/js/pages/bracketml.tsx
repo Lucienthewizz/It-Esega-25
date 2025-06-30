@@ -48,7 +48,6 @@ const BracketML: React.FC = () => {
                                     height="700"
                                     frameBorder="0"
                                     scrolling="auto"
-                                    allowTransparency={true}
                                     className="w-full rounded-lg sm:h-[500px] md:h-[600px] lg:h-[700px]"
                                     title="Challonge Tournament Bracket"
                                 />
