@@ -51,10 +51,8 @@ const Bracket: React.FC = () => {
                 <Head title="Tournament Brackets | IT-ESEGA 2025" />
                 {/* Background Layer */}
                 <div className="absolute inset-0 bg-white"></div>
-                
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-b from-white via-red-50/40 to-red-100/30"></div>
-                
                 {/* Cross Blob - Top Left */}
                 <div className="absolute -left-12 top-24 w-28 h-28 opacity-5 pointer-events-none">
                     <div className="w-full h-full animate-spin-slow">
@@ -63,7 +61,6 @@ const Bracket: React.FC = () => {
                         </svg>
                     </div>
                 </div>
-
                 {/* Cross Blob - Bottom Right */}
                 <div className="absolute -right-8 bottom-16 w-20 h-20 opacity-5 pointer-events-none">
                     <div className="w-full h-full animate-spin-reverse-slow">
@@ -72,7 +69,6 @@ const Bracket: React.FC = () => {
                         </svg>
                     </div>
                 </div>
-                
                 <div className="relative z-10 mx-auto">
                     <Navbar
                         user={user}
@@ -84,25 +80,24 @@ const Bracket: React.FC = () => {
                         items={navItems}
                     />
                 </div>
-
-                <div className="mt-16 flex flex-col items-center justify-center gap-10">
+                <div className="mt-10 flex flex-col items-center justify-center gap-8 px-2 sm:px-0">
                     <div data-aos="fade-up">
-                        <h2 className="mt-10 mb-4 text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl">
+                        <h2 className="mt-8 mb-3 text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl text-center">
                             <span className="text-red-600">IT-ESEGA</span> Brackets
                         </h2>
-                        <div className="mx-auto h-1 w-20 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
+                        <div className="mx-auto h-1 w-16 sm:w-24 rounded-full bg-red-600" data-aos-delay="50"></div>
                     </div>
-                    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 w-full">
                         {brackets.map((bracket, index) => (
-                            <div key={index} className="transition-all duration-300 hover:scale-[1.03]" data-aos="fade-up" data-aos-delay={index * 100}>
-                                <Card className="rounded-2xl bg-white shadow-md transition hover:shadow-xl">
-                                    <CardContent className="flex h-full flex-col justify-between p-6">
+                            <div key={index} className="transition-all duration-300 hover:scale-[1.03] w-full" data-aos="fade-up" data-aos-delay={index * 100}>
+                                <Card className="rounded-2xl bg-white shadow-md transition hover:shadow-xl w-full">
+                                    <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
                                         <div>
-                                            <h2 className="mb-2 text-xl font-bold text-gray-800">{bracket.title}</h2>
-                                            <p className="text-sm text-gray-600">{bracket.summary}</p>
+                                            <h2 className="mb-2 text-lg sm:text-xl font-bold text-gray-800 text-center sm:text-left">{bracket.title}</h2>
+                                            <p className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">{bracket.summary}</p>
                                         </div>
                                         <div className="mt-4">
-                                            <Button className="w-full cursor-pointer" onClick={() => router.visit(bracket.link)}>
+                                            <Button className="w-full cursor-pointer py-2 sm:py-3 text-sm sm:text-base" onClick={() => router.visit(bracket.link)}>
                                                 View Bracket
                                             </Button>
                                         </div>

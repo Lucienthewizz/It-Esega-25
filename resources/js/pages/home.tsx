@@ -286,11 +286,27 @@ export default function Home() {
                                     </div>
                                     {/* Right: Info Merch (sync with popupSlide) */}
                                     <div className="flex flex-col justify-center w-full h-full p-6 md:w-2/5 md:p-10">
-                                        <h3 className="mb-2 text-xl font-bold text-left text-gray-900 md:text-2xl">{merchSlides[popupSlide].title}</h3>
-                                        <div className="mb-1 text-lg font-semibold text-red-600 md:text-xl">{merchSlides[popupSlide].price}</div>
-                                        <div className="mb-3 text-xs font-medium text-gray-500 md:text-sm">{merchSlides[popupSlide].preorder}</div>
-                                        <p className="mb-6 text-sm text-left text-gray-700 md:text-base">{merchSlides[popupSlide].desc}</p>
-                                        <a href={merchSlides[popupSlide].link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full py-3 text-sm font-semibold text-white transition bg-red-600 rounded-lg shadow px-7 md:text-base hover:bg-red-700 md:w-auto">
+                                        <h3 className="mb-3 text-2xl font-extrabold leading-tight text-gray-900 md:text-3xl">
+                                            {merchSlides[popupSlide].title}
+                                        </h3>
+                                        <div className="mb-2 text-xl font-bold text-red-600 md:text-2xl">
+                                            {merchSlides[popupSlide].price}
+                                        </div>
+                                        <div className="mb-4 text-xs font-medium text-gray-500 md:text-sm">
+                                            {merchSlides[popupSlide].preorder}
+                                        </div>
+                                        {/* Hapus deskripsi untuk tampilan lebih clean */}
+                                        {/* <p className="mb-6 text-sm text-left text-gray-700 md:text-base">{merchSlides[popupSlide].desc}</p> */}
+                                        <a
+                                            href={merchSlides[popupSlide].link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center justify-center w-full py-3 mb-2 -mt-2 text-base font-bold text-white transition bg-red-600 rounded-lg shadow px-7 hover:bg-red-700 sm:w-auto sm:mt-6 sm:mb-0"
+                                            style={{ letterSpacing: '0.5px' }}
+                                        >
+                                            <svg className="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 12h18m-6-6l6 6-6 6" />
+                                            </svg>
                                             Order Now
                                         </a>
                                     </div>
@@ -462,7 +478,7 @@ export default function Home() {
                                 leaveTo="opacity-0"
                             >
                                 <div className="fixed inset-0">
-                                    <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+                                    <div className="absolute inset-0 bg-black/50 backdrop-blur" />
                                 </div>
                             </Transition.Child>
 
@@ -477,7 +493,7 @@ export default function Home() {
                                     leaveTo="opacity-0 scale-95"
                                 >
                                     <Dialog.Panel className="w-full max-w-5xl overflow-hidden transition-all transform bg-white shadow-xl rounded-2xl">
-                                        <div className="relative">
+                                        <div className="relative pb-8 sm:pb-0"> {/* Tambah padding bawah di mobile */}
                                             {/* Header */}
                                             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
                                                 <Dialog.Title as="h3" className="text-xl font-semibold leading-6 text-gray-900">
@@ -980,7 +996,7 @@ export default function Home() {
                                     <button
                                         aria-label="Sebelumnya"
                                         onClick={() => instanceRef.current?.prev()}
-                                        className="absolute z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow -left-8 top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
+                                        className="absolute z-10 p-2 text-red-600 transition -translate-y-1/2 border border-red-200 rounded-full shadow -left-2 top-1/2 bg-white/80 hover:bg-red-100 disabled:opacity-50"
                                         style={{ display: merchSlides.length > 1 ? 'block' : 'none' }}
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
@@ -1031,7 +1047,7 @@ export default function Home() {
                                     <div className="mb-1 text-xl font-semibold text-red-600">{activeInfo.price}</div>
                                     <div className="mb-3 text-sm text-gray-500">{activeInfo.preorder}</div>
                                     <p className="mb-6 text-base text-gray-700 sm:text-lg">{activeInfo.desc}</p>
-                                    <a href={activeInfo.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full py-3 text-base font-semibold text-white transition bg-red-600 rounded-lg shadow px-7 hover:bg-red-700 md:w-auto">
+                                    <a href={activeInfo.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center w-full py-3 mt-0 mb-2 text-base font-bold text-white transition bg-red-600 rounded-lg shadow px-7 hover:bg-red-700 md:w-auto">
                                         Order Now
                                     </a>
                                 </div>
