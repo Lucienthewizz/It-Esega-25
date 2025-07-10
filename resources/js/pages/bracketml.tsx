@@ -33,27 +33,59 @@ const BracketML: React.FC = () => {
                 </div>
 
                 <div className="mt-24 flex flex-col items-center justify-center gap-10">
+                    <div>
+                        <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
+                            <span className="text-red-600">IT-ESEGA</span> Mobile Legends Bracket
+                        </h2>
+                        <div className="mx-auto h-1 w-16 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
+                    </div>
                     {/* Bracket Challonge */}
-                    <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
-                                Bracket ML <span className="text-red-500">IT-ESEGA</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
-                                <iframe
-                                    src="https://challonge.com/DMLITESEGA2025/module"
-                                    width="100%"
-                                    height="700"
-                                    frameBorder="0"
-                                    scrolling="auto"
-                                    className="w-full rounded-lg sm:h-[500px] md:h-[600px] lg:h-[700px]"
-                                    title="Challonge Tournament Bracket"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {Array.from({ length: 16 }, (_, i) => {
+                        const groupLetter = String.fromCharCode(65 + i);
+                        return (
+                            <Card key={groupLetter} className="mb-8 w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
+                                <CardHeader>
+                                    <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
+                                        Grup {groupLetter} Mobile Legends <span className="text-red-500">IT-ESEGA</span>
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+                                        <iframe
+                                            src={(() => {
+                                                // Iframe untuk masing masing grup
+                                                const groupIframes: Record<string, string> = {
+                                                    A: 'https://challonge.com/A_ITESEGA2025/module',
+                                                    B: 'https://challonge.com/B_ITESEGA2025/module',
+                                                    C: 'https://challonge.com/C_ITESEGA2025/module',
+                                                    D: 'https://challonge.com/D_ITESEGA2025/module',
+                                                    E: 'https://challonge.com/E_ITESEGA2025/module',
+                                                    F: 'https://challonge.com/F_ITESEGA2025/module',
+                                                    G: 'https://challonge.com/G_ITESEGA2025/module',
+                                                    H: 'https://challonge.com/H_ITESEGA2025/module',
+                                                    I: 'https://challonge.com/I_ITESEGA2025/module',
+                                                    J: 'https://challonge.com/J_ITESEGA2025/module',
+                                                    K: 'https://challonge.com/K_ITESEGA2025/module',
+                                                    L: 'https://challonge.com/L_ITESEGA2025/module',
+                                                    M: 'https://challonge.com/M_ITESEGA2025/module',
+                                                    N: 'https://challonge.com/N_ITESEGA2025/module',
+                                                    O: 'https://challonge.com/O_ITESEGA2025/module',
+                                                    P: 'https://challonge.com/P_ITESEGA2025/module',
+                                                };
+                                                return groupIframes[groupLetter] || '';
+                                            })()}
+                                            width="100%"
+                                            height="700"
+                                            frameBorder="0"
+                                            scrolling="auto"
+                                            className="w-full rounded-lg sm:h-[500px] md:h-[600px] lg:h-[700px]"
+                                            title={`Challonge Tournament Bracket Grup ${groupLetter}`}
+                                        />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
                 </div>
             </div>
             <Footer />

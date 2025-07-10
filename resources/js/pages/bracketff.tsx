@@ -18,30 +18,36 @@ const BracketFF: React.FC = () => {
 
     return (
         <>
-            <div className="flex flex-col min-h-screen p-4 pt-5 bg-gray-100 sm:p-6 lg:p-8">
+            <div className="flex min-h-screen flex-col bg-gray-100 p-4 pt-5 sm:p-6 lg:p-8">
                 <Head title="IT-ESEGA 2025 Official Website" />
                 <div className="relative z-10">
                     <Navbar
                         user={user}
                         logo={
                             <div className="flex items-center justify-start">
-                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="object-contain w-auto h-18" />
+                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
                         items={navItems}
                     />
                 </div>
 
-                <div className="flex flex-col items-center justify-center gap-10 mt-24">
+                <div className="mt-24 flex flex-col items-center justify-center gap-10">
+                    <div>
+                        <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
+                            <span className="text-red-600">IT-ESEGA</span> Free Fire Bracket
+                        </h2>
+                        <div className="mx-auto h-1 w-16 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
+                    </div>
                     {/* Bracket FF - SpreadSheet */}
-                    <Card className="w-full max-w-5xl border border-gray-300 rounded-lg shadow-lg">
+                    <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
                         <CardHeader>
-                            <CardTitle className="p-4 text-xl font-semibold text-center text-gray-800 bg-white rounded-t-lg sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
-                                Bracket Free Fire <span className="text-red-500">IT-ESEGA</span>
+                            <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
+                                Free Fire Table Point
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="w-full overflow-hidden border border-gray-200 rounded-lg">
+                            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
                                 <iframe
                                     src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRwd9OsfNVvi12-NpQT-laeEpkIoy49yno6wg_3giLSEnyyvSE0cqiN_Wd6OSv4AHs134ponqnDeo8h/pubhtml?widget=true&headers=false"
                                     width="100%"
