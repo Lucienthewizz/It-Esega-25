@@ -43,7 +43,7 @@ const BracketML: React.FC = () => {
                     {Array.from({ length: 16 }, (_, i) => {
                         const groupLetter = String.fromCharCode(65 + i);
                         return (
-                            <Card key={groupLetter} className="mb-8 w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
+                            <Card key={groupLetter} className="mb-8 w-full max-w-4xl rounded-lg border border-gray-300 shadow-lg">
                                 <CardHeader>
                                     <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
                                         Grup {groupLetter} Mobile Legends <span className="text-red-500">IT-ESEGA</span>
@@ -78,7 +78,7 @@ const BracketML: React.FC = () => {
                                             height="700"
                                             frameBorder="0"
                                             scrolling="auto"
-                                            className="w-full rounded-lg sm:h-[500px] md:h-[600px] lg:h-[700px]"
+                                            className="w-full rounded sm:h-[300px] md:h-[400px] lg:h-[450px]"
                                             title={`Challonge Tournament Bracket Grup ${groupLetter}`}
                                         />
                                     </div>
