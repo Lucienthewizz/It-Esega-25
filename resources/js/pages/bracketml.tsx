@@ -86,6 +86,29 @@ const BracketML: React.FC = () => {
                             </Card>
                         );
                     })}
+                    {/* Untuk Day-2 Playoff Bracket Iframe */}
+                    {/* Munculin pas day 2 (soalnya belum ada)
+                    <Card className="mb-8 w-full max-w-4xl rounded-lg border border-gray-300 shadow-lg">
+                        <CardHeader>
+                            <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
+                                Playoff Mobile Legends <span className="text-red-500">IT-ESEGA</span>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+                                <iframe
+                                    src="https://challonge.com/PO_ITESEGA2025/module"
+                                    width="100%"
+                                    height="700"
+                                    frameBorder="0"
+                                    scrolling="auto"
+                                    className="w-full rounded sm:h-[300px] md:h-[400px] lg:h-[450px]"
+                                    title="Challonge Tournament Playoff Bracket"
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
+                    */}
                 </div>
             </div>
             <Footer />

@@ -130,7 +130,7 @@ const Bracket: React.FC = () => {
                                 <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
                                     <div>
                                         <h2 className="mb-2 text-center text-xl font-extrabold text-yellow-700 sm:text-2xl">
-                                            Mobile Legends Final & Semifinal
+                                            Mobile Legends Semifinal & Final
                                         </h2>
                                         <p className="text-center text-base font-semibold text-yellow-600 sm:text-lg">Coming Soon</p>
                                         <p className="mt-2 text-center text-xs text-gray-700 sm:text-sm">
