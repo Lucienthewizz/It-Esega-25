@@ -13,7 +13,7 @@ const navItems = [
     { title: 'Register', href: route('register') },
 ];
 
-const BracketFF: React.FC = () => {
+const BracketML2: React.FC = () => {
     const { user } = usePage<{ user: { data: UserType } }>().props;
 
     return (
@@ -35,27 +35,28 @@ const BracketFF: React.FC = () => {
                 <div className="mt-24 flex flex-col items-center justify-center gap-10">
                     <div>
                         <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
-                            <span className="text-red-600">IT-ESEGA</span> Free Fire Bracket
+                            <span className="text-red-600">IT-ESEGA</span> Mobile Legends <br /> Qualification Day 2 & Grand Final Bracket
                         </h2>
                         <div className="mx-auto h-1 w-16 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
                     </div>
-                    {/* Bracket FF - SpreadSheet */}
-                    <Card className="w-full max-w-5xl rounded-lg border border-gray-300 shadow-lg">
+                    {/* Day 2 dan day 3 */}
+                    <Card className="mb-8 w-full max-w-4xl rounded-lg border border-gray-300 shadow-lg">
                         <CardHeader>
                             <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
-                                Free Fire Table Point
+                                <span className="text-red-500">IT-ESEGA</span> Mobile Legends Bracket
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="w-full overflow-hidden rounded-lg border border-gray-200">
                                 <iframe
-                                    src="https://docs.google.com/spreadsheets/d/e/2PACX-1vRwd9OsfNVvi12-NpQT-laeEpkIoy49yno6wg_3giLSEnyyvSE0cqiN_Wd6OSv4AHs134ponqnDeo8h/pubhtml?widget=true&headers=false"
+                                    src="https://challonge.com/PO_ITESEGA2025/module"
                                     width="100%"
-                                    height="700"
+                                    height="100%"
                                     frameBorder="0"
                                     scrolling="auto"
-                                    className="w-full rounded-lg"
-                                    title="Google Spreadsheet Bracket"
+                                    className="h-[700px] w-full rounded"
+                                    title="Challonge Tournament Playoff Bracket"
+                                    style={{ display: 'block' }}
                                 />
                             </div>
                         </CardContent>
@@ -67,4 +68,4 @@ const BracketFF: React.FC = () => {
     );
 };
 
-export default BracketFF;
+export default BracketML2;

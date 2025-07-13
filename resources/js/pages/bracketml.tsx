@@ -19,13 +19,13 @@ const BracketML: React.FC = () => {
     return (
         <>
             <div className="flex min-h-screen flex-col bg-gray-100 p-4 pt-5 sm:p-6 lg:p-8">
-                <Head title="IT-ESEGA 2025 Official Website" />
+                <Head title="Tournament Brackets | IT-ESEGA 2025" />
                 <div className="relative z-10">
                     <Navbar
                         user={user}
                         logo={
                             <div className="flex items-center justify-start">
-                                <img src="/images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
+                                <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25 Logo" className="h-18 w-auto object-contain" />
                             </div>
                         }
                         items={navItems}
@@ -35,7 +35,7 @@ const BracketML: React.FC = () => {
                 <div className="mt-24 flex flex-col items-center justify-center gap-10">
                     <div>
                         <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
-                            <span className="text-red-600">IT-ESEGA</span> Mobile Legends Bracket
+                            <span className="text-red-600">IT-ESEGA</span> Mobile Legends Qualification Day 1 Bracket
                         </h2>
                         <div className="mx-auto h-1 w-16 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
                     </div>
@@ -46,7 +46,7 @@ const BracketML: React.FC = () => {
                             <Card key={groupLetter} className="mb-8 w-full max-w-4xl rounded-lg border border-gray-300 shadow-lg">
                                 <CardHeader>
                                     <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
-                                        Grup {groupLetter} Mobile Legends <span className="text-red-500">IT-ESEGA</span>
+                                        Group {groupLetter} Mobile Legends <span className="text-red-500">IT-ESEGA</span>
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
@@ -86,29 +86,6 @@ const BracketML: React.FC = () => {
                             </Card>
                         );
                     })}
-                    {/* Untuk Day-2 Playoff Bracket Iframe */}
-                    {/* Munculin pas day 2 (soalnya belum ada)
-                    <Card className="mb-8 w-full max-w-4xl rounded-lg border border-gray-300 shadow-lg">
-                        <CardHeader>
-                            <CardTitle className="rounded-t-lg bg-white p-4 text-center text-xl font-semibold text-gray-800 sm:p-6 sm:text-2xl md:text-3xl lg:text-4xl">
-                                Playoff Mobile Legends <span className="text-red-500">IT-ESEGA</span>
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="w-full overflow-hidden rounded-lg border border-gray-200">
-                                <iframe
-                                    src="https://challonge.com/PO_ITESEGA2025/module"
-                                    width="100%"
-                                    height="700"
-                                    frameBorder="0"
-                                    scrolling="auto"
-                                    className="w-full rounded sm:h-[300px] md:h-[400px] lg:h-[450px]"
-                                    title="Challonge Tournament Playoff Bracket"
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                    */}
                 </div>
             </div>
             <Footer />

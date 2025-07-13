@@ -37,6 +37,10 @@ Route::get('/bracket/free-fire', function () {
     return Inertia::render('bracketff');
 })->name('bracket.ff');
 
+Route::get('/bracket/mobile-legends/day2-3', function () {
+    return Inertia::render('bracketml2');
+})->name('bracket.ff');
+
 
 Route::middleware('guest')->group(function () {
     Route::post('/team-registration', [TeamRegistrationController::class, 'store'])->name('team-registration.store');

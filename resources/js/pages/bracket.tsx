@@ -39,7 +39,7 @@ const Bracket: React.FC = () => {
 
     const brackets = [
         {
-            title: 'Mobile Legends',
+            title: 'Mobile Legends Qualification Day 1',
             summary: 'Explore the full Mobile Legends bracket. Follow every matchup and track your favorite teams.',
             link: '/bracket/mobile-legends',
         },
@@ -97,11 +97,11 @@ const Bracket: React.FC = () => {
                         {brackets.map((bracket, index) => (
                             <div
                                 key={index}
-                                className="flex w-full items-end transition-all duration-300 hover:scale-[1.03]"
+                                className="flex h-full w-full items-stretch transition-all duration-300 hover:scale-[1.03]"
                                 data-aos="fade-up"
                                 data-aos-delay={index * 100}
                             >
-                                <Card className="w-full max-w-lg rounded-2xl border-2 bg-white shadow-lg transition hover:shadow-2xl">
+                                <Card className="flex h-full w-full max-w-lg flex-col justify-between rounded-2xl border-2 bg-white shadow-lg transition hover:shadow-2xl">
                                     <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
                                         <div>
                                             <h2 className="mb-2 text-center text-lg font-bold text-gray-800 sm:text-xl">{bracket.title}</h2>
@@ -119,7 +119,7 @@ const Bracket: React.FC = () => {
                                 </Card>
                             </div>
                         ))}
-                        {/*Bracket Comming Soon */}
+                        {/*Bracket day 2 dan day 3 ML  */}
                         <div
                             key="special"
                             className="flex w-full justify-center md:col-span-2"
@@ -128,22 +128,23 @@ const Bracket: React.FC = () => {
                         >
                             <Card className="mb-8 w-full max-w-lg rounded-2xl border-2 border-yellow-400 bg-gradient-to-br from-yellow-100 via-yellow-50 to-white shadow-lg transition hover:shadow-2xl">
                                 <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
-                                    <div>
-                                        <h2 className="mb-2 text-center text-xl font-extrabold text-yellow-700 sm:text-2xl">
-                                            Mobile Legends Semifinal & Final
+                                    <div className="flex flex-col items-center justify-center gap-2">
+                                        <h2 className="text-center text-xl font-extrabold text-yellow-700 sm:text-2xl">
+                                            Mobile Legends <br /> Qualification Day 2 & Grand Final
                                         </h2>
-                                        <p className="text-center text-base font-semibold text-yellow-600 sm:text-lg">Coming Soon</p>
-                                        <p className="mt-2 text-center text-xs text-gray-700 sm:text-sm">
-                                            Stay tuned for the most anticipated matches of the tournament. The Final and Semifinal brackets will be
-                                            revealed soon!
-                                        </p>
+                                        <div className="mt-2 flex flex-col items-center">
+                                            <p className="max-w-xs text-center text-xs text-gray-700 sm:max-w-sm sm:text-sm">
+                                                Come and see the most anticipated matches of the tournament. The winner of the brackets will be
+                                                revealed soon!
+                                            </p>
+                                        </div>
                                     </div>
                                     <div className="mt-4">
                                         <Button
-                                            className="w-full cursor-not-allowed bg-yellow-300 py-2 text-sm text-yellow-900 sm:py-3 sm:text-base"
-                                            disabled
+                                            className="w-full cursor-pointer bg-yellow-300 py-2 text-sm text-yellow-900 hover:bg-yellow-400 sm:py-3 sm:text-base"
+                                            onClick={() => router.visit('/bracket/mobile-legends/day2-3')}
                                         >
-                                            Coming Soon
+                                            View Details
                                         </Button>
                                     </div>
                                 </CardContent>
