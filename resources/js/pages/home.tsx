@@ -1103,7 +1103,10 @@ export default function Home() {
                     </section>
 
                     {/* Footer */}
-                    <Footer />
+                    <Footer 
+                        isRegistrationClosed={isRegistrationClosed}
+                        setShowClosedPopup={setShowClosedPopup}
+                    />
                 </div>
             </div>
 

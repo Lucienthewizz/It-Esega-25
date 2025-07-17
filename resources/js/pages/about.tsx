@@ -3,11 +3,12 @@ import { Navbar } from '@/components/navbar';
 import * as AOS from 'aos';
 import 'aos/dist/aos.css';
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { route } from 'ziggy-js';
-import { usePage, Head } from '@inertiajs/react'; 
+import { usePage, Head, Link } from '@inertiajs/react'; 
 import { router } from '@inertiajs/react'; 
 import type { UserType } from '@/types/user';
+import { Dialog, Transition } from '@headlessui/react';
 interface NavItem {
     title: string;
     href: string;
@@ -19,6 +20,10 @@ interface NavItem {
 export default function About() {
     const { user } = usePage<{ user: { data: UserType } }>().props;
     console.log('About page is rendering');
+
+    // State untuk kontrol registration closed popup
+    const [showClosedPopup, setShowClosedPopup] = useState(false);
+    const isRegistrationClosed = true; // Set registration sebagai closed
 
     useEffect(() => {
         // Reset scroll position ke atas 
@@ -111,6 +116,8 @@ export default function About() {
                             </div>
                         }
                         items={navItems}
+                        isRegistrationClosed={isRegistrationClosed}
+                        setShowClosedPopup={setShowClosedPopup}
                     />
 
                     <div className="bg-gradient-to-b from-white">
@@ -561,9 +568,68 @@ export default function About() {
                     </div>
 
                     {/* Footer */}
-                    <Footer />
+                    <Footer 
+                        isRegistrationClosed={isRegistrationClosed}
+                        setShowClosedPopup={setShowClosedPopup}
+                    />
                 </div>
             </div>
+
+            {/* Popup Pendaftaran Tutup */}
+            <Transition appear show={showClosedPopup} as={Fragment}>
+                <Dialog as="div" className="fixed inset-0 z-[200] overflow-y-auto" onClose={() => setShowClosedPopup(false)}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-200"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-150"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        {/* Overlay tanpa blur, dan gunakan pointer-events-auto agar modal tetap interaktif */}
+                        <div className="fixed inset-0 bg-black/40" style={{ zIndex: 201 }} />
+                    </Transition.Child>
+                    <div className="flex items-center justify-center min-h-screen p-4" style={{ position: 'fixed', inset: 0, zIndex: 202, pointerEvents: 'none' }}>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-200"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-150"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            {/* Modal dengan pointer-events-auto agar tidak kena efek overlay */}
+                            <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden transition-all transform bg-white shadow-xl rounded-2xl" style={{ zIndex: 203, pointerEvents: 'auto' }}>
+                                <Dialog.Title as="h3" className="text-lg font-semibold leading-6 text-gray-900">
+                                    Pendaftaran Ditutup
+                                </Dialog.Title>
+                                <div className="mt-2">
+                                    <p className="text-sm text-gray-500">
+                                        Mohon maaf, pendaftaran untuk IT-ESEGA 2025 sudah ditutup. Pastikan untuk mengikuti kami di media sosial
+                                        untuk informasi lebih lanjut tentang event mendatang.
+                                    </p>
+                                </div>
+                                <div className="flex flex-col gap-4 mt-4">
+                                    <Link
+                                        href={route('home')}
+                                        className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white transition bg-red-600 rounded-md hover:bg-red-700"
+                                    >
+                                        Kembali ke Beranda
+                                    </Link>
+                                    <button
+                                        onClick={() => setShowClosedPopup(false)}
+                                        className="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 transition bg-gray-100 rounded-md hover:bg-gray-200"
+                                    >
+                                        Tutup
+                                    </button>
+                                </div>
+                            </Dialog.Panel>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition>
         </>
     );
 }

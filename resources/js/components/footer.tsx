@@ -23,6 +23,8 @@ interface FooterProps {
     customSections?: FooterSection[];
     customSocialMedia?: SocialMedia[];
     customLogo?: React.ReactNode;
+    isRegistrationClosed?: boolean;
+    setShowClosedPopup?: (show: boolean) => void;
 }
 
 // Default footer sections
@@ -111,13 +113,13 @@ const defaultSocialMedia: SocialMedia[] = [
 
 // Default logo
 const defaultLogo = (
-    <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25" className="h-20 w-auto object-contain transition-transform duration-300 hover:scale-105" />
+    <img src="/Images/LogoEsega25.png" alt="IT-ESEGA-25" className="object-contain w-auto h-20 transition-transform duration-300 hover:scale-105" />
 );
 
 // Default description
 const defaultDescription = "Information Technology Electronic Sport Based On Excellent Games 2025";
 
-export function Footer({ customDescription, customSections, customSocialMedia, customLogo }: FooterProps) {
+export function Footer({ customDescription, customSections, customSocialMedia, customLogo, isRegistrationClosed = false, setShowClosedPopup }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     // Use custom values if provided, otherwise use defaults
@@ -127,6 +129,13 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
     const logo = customLogo || defaultLogo;
 
     const handleNavigation = (e: React.MouseEvent<Element, MouseEvent>, href: string, title: string) => {
+        // Cek jika link menuju ke register dan registration closed
+        if (href === route('register') && isRegistrationClosed) {
+            e.preventDefault();
+            setShowClosedPopup && setShowClosedPopup(true);
+            return;
+        }
+
         // Cek apakah link menuju ke section dalam halaman (menggunakan hash '#')
         if (href.startsWith('#')) {
             e.preventDefault();
@@ -169,7 +178,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
     };
 
     return (
-        <footer className="bg-gradient-to-b from-red-500 to-red-900 py-12 text-white">
+        <footer className="py-12 text-white bg-gradient-to-b from-red-500 to-red-900">
             <div className="mx-auto max-w-[1350px] px-4 md:px-8 lg:px-12">
                 {/* Main Footer Content */}
                 <div className="grid grid-cols-1 gap-10 md:grid-cols-[2.5fr_1fr_1fr]">
@@ -178,7 +187,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                         <h3 className="text-2xl font-bold">
                             IT-ESEGA {currentYear}
                         </h3>
-                        <p className="text-gray-100 max-w-md leading-relaxed">
+                        <p className="max-w-md leading-relaxed text-gray-100">
                             {description}
                         </p>
                         <div className="flex space-x-4">
@@ -186,7 +195,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                                 <a
                                     key={index}
                                     href={social.href}
-                                    className="p-2 rounded-full hover:bg-white/10 transition-all duration-300"
+                                    className="p-2 transition-all duration-300 rounded-full hover:bg-white/10"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -208,14 +217,14 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                                         key={linkIndex}
                                         href={link.href}
                                         onClick={(e: React.MouseEvent<Element, MouseEvent>) => handleNavigation(e, link.href, link.title)}
-                                        className="group -mx-3 flex w-fit items-center rounded-lg px-3 py-2 text-gray-100 transition-all duration-300 hover:bg-white/10 hover:text-white"
+                                        className="flex items-center px-3 py-2 -mx-3 text-gray-100 transition-all duration-300 rounded-lg group w-fit hover:bg-white/10 hover:text-white"
                                     >
                                         <span>{link.title}</span>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 20 20"
                                             fill="currentColor"
-                                            className="ml-2 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1"
+                                            className="w-4 h-4 ml-2 transition-transform duration-300 transform group-hover:translate-x-1"
                                         >
                                             <path
                                                 fillRule="evenodd"
@@ -231,7 +240,7 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                 </div>
 
                 {/* Bottom Section with Logo, Copyright, and Scroll to Top */}
-                <div className="mt-12 border-t border-white/20 pt-8">
+                <div className="pt-8 mt-12 border-t border-white/20">
                     <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                         {/* Logo */}
                         <div className="order-1">
@@ -250,21 +259,21 @@ export function Footer({ customDescription, customSections, customSocialMedia, c
                         </div>
 
                         {/* Copyright */}
-                        <p className="text-gray-100 text-center order-2">
+                        <p className="order-2 text-center text-gray-100">
                             &copy; {currentYear} IT-ESEGA. All rights reserved.
                         </p>
 
                         {/* Scroll to Top Button */}
                         <button
                             onClick={scrollToTop}
-                            className="group bg-white/10 hover:bg-white/20 p-4 rounded-full transition-all duration-300 flex items-center gap-2 order-3"
+                            className="flex items-center order-3 gap-2 p-4 transition-all duration-300 rounded-full group bg-white/10 hover:bg-white/20"
                             aria-label="Scroll to top"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20"
                                 fill="currentColor"
-                                className="h-6 w-6 transform transition-transform duration-300 group-hover:-translate-y-1"
+                                className="w-6 h-6 transition-transform duration-300 transform group-hover:-translate-y-1"
                             >
                                 <path
                                     fillRule="evenodd"
