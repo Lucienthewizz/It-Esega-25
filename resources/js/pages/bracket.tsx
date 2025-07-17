@@ -80,7 +80,7 @@ const Bracket: React.FC = () => {
                         </svg>
                     </div>
                 </div>
-                <div className="relative z-10 mx-auto">
+                <div className="relative z-10">
                     <Navbar
                         user={user}
                         logo={
@@ -92,69 +92,69 @@ const Bracket: React.FC = () => {
                         isRegistrationClosed={isRegistrationClosed}
                         setShowClosedPopup={setShowClosedPopup}
                     />
-                </div>
-                <div className="mt-10 flex flex-col items-center justify-center gap-8 px-2 sm:px-0">
-                    <div data-aos="fade-up">
-                        <h2 className="mt-20 mb-3 text-center text-2xl font-bold tracking-tight text-gray-800 sm:text-4xl">
-                            <span className="text-red-600">IT-ESEGA</span> Brackets
-                        </h2>
-                        <div className="mx-auto h-1 w-16 rounded-full bg-red-600 sm:w-24" data-aos-delay="50"></div>
-                    </div>
-                    <div className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-6 md:grid-cols-2">
-                        {/* Bracket Cards */}
-                        {brackets.map((bracket, index) => (
-                            <div
-                                key={index}
-                                className="flex h-full w-full items-stretch transition-all duration-300 hover:scale-[1.03]"
-                                data-aos="fade-up"
-                                data-aos-delay={index * 100}
-                            >
-                                <Card className="flex h-full w-full max-w-lg flex-col justify-between rounded-2xl border-2 bg-white shadow-lg transition hover:shadow-2xl">
-                                    <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
-                                        <div>
-                                            <h2 className="mb-2 text-center text-lg font-bold text-gray-800 sm:text-xl">{bracket.title}</h2>
-                                            <p className="text-center text-xs text-gray-600 sm:text-sm">{bracket.summary}</p>
-                                        </div>
-                                        <div className="mt-4">
-                                            <Button
-                                                className="w-full cursor-pointer py-2 text-sm sm:py-3 sm:text-base"
-                                                onClick={() => router.visit(bracket.link)}
-                                            >
-                                                View Bracket
-                                            </Button>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))}
-                        {/*Bracket day 2 dan day 3 ML  */}
-                        <div
-                            key="special"
-                            className="flex w-full justify-center md:col-span-2"
-                            data-aos="fade-up"
-                            data-aos-delay={brackets.length * 100}
-                        >
-                            <Card className="mb-8 w-full max-w-lg rounded-2xl border-2 border-yellow-400 bg-gradient-to-br from-yellow-100 via-yellow-50 to-white shadow-lg transition hover:shadow-2xl">
-                                <CardContent className="flex h-full flex-col justify-between p-4 sm:p-6">
-                                    <div className="flex flex-col items-center justify-center gap-2">
-                                        <h2 className="text-center text-xl font-extrabold text-yellow-700 sm:text-2xl">
-                                            Mobile Legends <br /> Qualification Day 2 & Grand Final
-                                        </h2>
-                                        <div className="mt-2 flex flex-col items-center">
-                                            <p className="max-w-xs text-center text-xs text-gray-700 sm:max-w-sm sm:text-sm">
-                                                Come and see the most anticipated matches of the tournament. The winner of the brackets will be
-                                                revealed soon!
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4">
-                                        <Button
-                                            className="w-full cursor-pointer bg-yellow-300 py-2 text-sm text-yellow-900 hover:bg-yellow-400 sm:py-3 sm:text-base"
-                                            onClick={() => router.visit('/bracket/mobile-legends/day2-3')}
-                                        >
-                                            View Details
-                                        </Button>
-                                    </div>
+
+                    {/* Main Content Container */}
+                    <div className="mx-auto max-w-[1350px] px-4 md:px-8 lg:px-12 py-16 pt-32">
+                        {/* Header Section */}
+                        <div className="text-center mb-8" data-aos="fade-up">
+                            <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+                                <span className="text-red-600">IT-ESEGA</span> Brackets
+                            </h1>
+                            <div className="w-16 h-0.5 bg-red-600 rounded-full mx-auto mb-4"></div>
+                            <p className="text-base text-gray-600 max-w-xl mx-auto">
+                                Follow your favorite teams and watch live matches
+                            </p>
+                        </div>
+
+                        {/* Brackets Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            {brackets.map((bracket, index) => (
+                                <div
+                                    key={index}
+                                    className="group"
+                                    data-aos="fade-up"
+                                    data-aos-delay={index * 100}
+                                >
+                                    <Card className="h-full border border-gray-200 hover:border-red-300 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+                                        <CardContent className="p-6">
+                                            <div className="text-center">
+                                                <h2 className="text-xl font-semibold text-gray-800 mb-3">
+                                                    {bracket.title}
+                                                </h2>
+                                                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                                                    {bracket.summary}
+                                                </p>
+                                                <Button
+                                                    className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-all duration-300"
+                                                    onClick={() => router.visit(bracket.link)}
+                                                >
+                                                    View Bracket
+                                                </Button>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Special Card - Day 2 & Grand Final */}
+                        <div className="flex justify-center" data-aos="fade-up" data-aos-delay={300}>
+                            <Card className="max-w-xl w-full border border-yellow-400 bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300">
+                                <CardContent className="p-6 text-center">
+                                    <h2 className="text-2xl font-semibold text-yellow-700 mb-3">
+                                        Mobile Legends
+                                        <br />
+                                        <span className="text-lg">Day 2 & Grand Final</span>
+                                    </h2>
+                                    <p className="text-gray-700 mb-4 text-sm leading-relaxed max-w-md mx-auto">
+                                        Watch the most anticipated matches of the tournament
+                                    </p>
+                                    <Button
+                                        className="bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-6 rounded-lg text-sm font-medium transition-all duration-300"
+                                        onClick={() => router.visit('/bracket/mobile-legends/day2-3')}
+                                    >
+                                        View Finals
+                                    </Button>
                                 </CardContent>
                             </Card>
                         </div>

@@ -39,7 +39,7 @@ Route::get('/bracket/free-fire', function () {
 
 Route::get('/bracket/mobile-legends/day2-3', function () {
     return Inertia::render('bracketml2');
-})->name('bracket.ff');
+})->name('bracket.ml2');
 
 
 Route::middleware('guest')->group(function () {
